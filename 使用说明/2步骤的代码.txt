@@ -1,0 +1,5 @@
+import sys
+sys.path.append("C:/Users/26593/Desktop/pyhoudini/") 
+from imp import reload
+import pyHoudini
+reload(pyHoudini)

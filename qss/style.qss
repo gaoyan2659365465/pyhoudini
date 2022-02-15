@@ -1,0 +1,112 @@
+QMainWindow::separator{
+    background-color: #1c1c1c;
+    color: white;
+    padding-left: 4px;
+    spacing: 4px;
+    border: 0px dashed #282828;}
+QMainWindow::separator:hover{
+    background-color: #787876;
+    color: white;
+    padding-left: 4px;
+    border: 0px solid #282828;
+    spacing: 4px;}
+QTabBar::tab {
+    color: #eff0f1;
+    border: 1px solid #282828;
+    border-bottom: 1px transparent #1c1c1c;
+    background-color: #1c1c1c;
+    padding: 5px;
+    min-width: 50px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;}
+QTabBar::tab:!selected{
+    color: #eff0f1;
+    background-color: #54575B;
+    border: 1px solid #282828;
+    border-bottom: 1px transparent #1c1c1c;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;}
+QTabBar::tab:!selected:hover {
+    background-color: #d9fffe;
+    color: #1c1c1c;}
+
+
+QMenuBar {
+    background-color:#1c1c1c;
+    border:1px solid #000000;}
+QMenuBar::item{
+    color: #d2d2d2;}/*文字颜色*/
+QMenuBar::item:selected{
+    background:#dea309;
+    border-radius:2px;}
+QMenu {
+    background-color:#1c1c1c;
+    border:1px solid #1c1c1c;}
+QMenu::item {
+    min-width:50px;
+    font-size: 12px;
+    color: #d2d2d2;/*文字颜色*/
+    background:#1c1c1c;
+    border:1px solid #1c1c1c;
+    padding:1px 1px;margin:1px 1px;}
+QMenu::item:selected {
+    background:#dea309;
+    border:1px solid #dea309;}  /*选中或者说鼠标滑过状态*/
+QMenu::item:pressed {
+    background:#dea309;
+    border:1px solid #dea309;/*摁下状态*/}
+
+
+QCheckBox:indicator{
+    width: 10px;
+    height: 10px;
+    background:#2e302e;
+    border:2px solid #dddddd;
+    border-radius:3px;}
+QCheckBox:indicator:checked {
+    image: url(examples/Node/images/checkbox_checked.png);}
+
+QLineEdit{  
+    border:1px solid #a8a9a8;/*边框*/
+    border-radius:2px;/*边框圆角*/
+    color:#dddddd;/*文字颜色*/
+    padding-bottom:1px;/*边框下加1像素*/
+    qproperty-alignment:AlignHCenter;/*文字居中*/
+    background:#0f120f;/*背景颜色*/}
+QLineEdit:hover{
+    background:#2e302e;}/*悬浮时颜色*/
+
+QTextEdit{border:1px solid #a8a9a8;/*边框*/
+    border-radius:2px;/*边框圆角*/
+    color:#dddddd;/*文字颜色*/
+    padding-bottom:1px;/*边框下加1像素*/
+    qproperty-alignment:AlignHCenter;/*文字居中*/
+    background:#0f120f;/*背景颜色*/}
+
+QGraphicsView{
+    selection-background-color:rgba(255,255,0,255);
+    border:2px solid #3c3c3c;}
+
+
+QScrollBar {
+    width: 10px;
+    background: #003c3c3c;
+    margin: 0px,0px,0px,0px;
+    padding-top: 0px;
+    padding-bottom: 0px;}
+QScrollBar::handle:vertical {
+    background: #ffffff;
+    border-radius: 1px;}
+QScrollBar::handle:vertical:hover {
+    background: #ffffff;
+    border-radius: 1px;}
+QScrollBar::sub-page:vertical {
+    background: none;}
+QScrollBar::add-page:vertical {
+    background: none;}
+QScrollBar::add-line:vertical {
+    border: none;
+    background: none;}
+QScrollBar::sub-line:vertical {
+    border: none;
+    background: none;}

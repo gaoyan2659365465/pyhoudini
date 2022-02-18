@@ -85,10 +85,10 @@ class IconsWidget(QWidget):
         self.icon_name = i
         label = QLabel(self)
         label.setPixmap(QPixmap(self.icon_path))
-        label.setFixedSize(48,48)
+        label.setFixedSize(p.iconsize,p.iconsize)#图标尺寸默认48
         self.label_text = QLabel(self)
         self.label_text.setText(str(i)[:-4])
-        self.label_text.setFont(QFont("Microsoft YaHei",10,QFont.Bold))
+        self.label_text.setFont(QFont("Microsoft YaHei",p.iconfontsize,QFont.Bold))#文字尺寸默认10
         self.label_text.setStyleSheet("color: #a4a4a4 ")
         
         v_layout.addWidget(label)
@@ -104,7 +104,8 @@ class HoudiniHelp(QWidget):
         self.initIconsDir()
         self.initBackground()
         self.initQss()
-        self.resize(500,500)
+        self.initSize()
+        
         #self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         
         self.h_layout = QHBoxLayout()#横向
@@ -113,14 +114,14 @@ class HoudiniHelp(QWidget):
         self.h_layout.setAlignment(Qt.AlignLeft)
         
         self.setbutton = QPushButton("设置",self)
-        self.setbutton.setFixedSize(50,50)
+        self.setbutton.setFixedSize(self.selectheight,self.selectheight)
         self.setbutton.clicked.connect(self.clickSetButton)
         
         self.line_edit = QLineEdit(self)
-        self.line_edit.setFixedHeight(50)
+        self.line_edit.setFixedHeight(self.selectheight)
         
         self.selectbutton = QPushButton("搜索",self)
-        self.selectbutton.setFixedSize(50,50)
+        self.selectbutton.setFixedSize(self.selectheight,self.selectheight)
         self.selectbutton.clicked.connect(self.selectNode)
         
         self.h_layout.addWidget(self.setbutton)
@@ -165,6 +166,15 @@ class HoudiniHelp(QWidget):
         SCRPATH  = conf.get("config","SCRPATH")
         PATH = __file__[:-13]
         SORT  = conf.get("config","SORT")
+        self.default_size = conf.get("config","DefaultSize")
+        self.iconsize = int(conf.get("config","iconsize"))
+        self.iconfontsize = int(conf.get("config","iconfontsize"))
+        self.selectheight = int(conf.get("config","selectheight"))
+    
+    def initSize(self):
+        """初始化窗口尺寸"""
+        self.default_size = self.default_size.split(',')#字符串转列表
+        self.resize(int(self.default_size[0]),int(self.default_size[1]))
     
     def initIconsDir(self):
         """判断图标文件夹是否存在"""
@@ -226,8 +236,8 @@ class HoudiniHelp(QWidget):
         self.setPalette(QPalette(QColor('#ffffff'))) #着色区分背景
     
     def resizeEvent(self, a0: QResizeEvent):
-        self.w.setGeometry(0, 50, self.width(), self.height()-50)
-        self.scrollArea.setAutomaticSize(0, 0, self.width(), self.height()-50)
+        self.w.setGeometry(0, self.selectheight, self.width(), self.height()-self.selectheight)
+        self.scrollArea.setAutomaticSize(0, 0, self.width(), self.height()-self.selectheight)
         try:
             self.nodewidget.resize(self.width(), self.height())
         except:pass

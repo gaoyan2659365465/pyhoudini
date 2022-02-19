@@ -59,6 +59,10 @@ class SetWidget(QWidget):
         self.v_layout.addLayout(self.h_layout6)
         self.v_layout.addLayout(self.h_layout7)
         
+        self.updatebutton = QPushButton("打印最新版网址",self)
+        self.updatebutton.clicked.connect(self.updateEvent)
+        self.v_layout.addWidget(self.updatebutton)
+        
         self.savebutton = QPushButton("保存",self)
         self.savebutton.clicked.connect(self.saveEvent)
         self.v_layout.addWidget(self.savebutton)
@@ -114,6 +118,15 @@ class SetWidget(QWidget):
         conf.set('config', 'selectheight', self.line_edit7.text())
         
         conf.write(open(__file__[:-12]+"config.ini", 'w'))
+        
+        print("已保存请重新打开插件^-^")
+    
+    def updateEvent(self):
+        """打开更新网页"""
+        print("-------------------------------")
+        print("最新版更新网址:https://gitee.com/seerhugan/py-houdini")
+        print("与开发者交流:QQ:2659365465")
+        print("-------------------------------")
 
 # [config]
 # PATH = C:\Users\26593\Desktop\pyhoudini\

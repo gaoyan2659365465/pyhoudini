@@ -84,7 +84,7 @@ class IconsWidget(QWidget):
         self.icon_path = PATH+"/icons/"+SORT+"/"+str(i)
         self.icon_name = i
         label = QLabel(self)
-        label.setPixmap(QPixmap(self.icon_path))
+        label.setPixmap(QPixmap(self.icon_path).scaled(p.iconsize,p.iconsize,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
         label.setFixedSize(p.iconsize,p.iconsize)#图标尺寸默认48
         self.label_text = QLabel(self)
         self.label_text.setText(str(i)[:-4])

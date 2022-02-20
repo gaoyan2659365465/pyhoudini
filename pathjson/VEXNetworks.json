@@ -1,0 +1,92 @@
+[
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/rsl_displace.html",
+        "标签": "RSL Displacement Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/displace.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/rsl_imager.html",
+        "标签": "RSL Imager Shader",
+        "字段": "<img src=\"../../icons/TOOLS/view.svg\" class=\"icon medium\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/rsl_light.html",
+        "标签": "RSL Light Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/light.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/rsl_surface.html",
+        "标签": "RSL Surface Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/surface.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/rsl_volume.html",
+        "标签": "RSL Volume Shader",
+        "字段": "<img src=\"../../icons/SHOP/vopfog.svg\" class=\"icon medium\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/cop2filter.html",
+        "标签": "VEX Compositing Filter",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/cop2filter.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/cop2gen.html",
+        "标签": "VEX Compositing Generator",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/cop2gen.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/displace.html",
+        "标签": "VEX Displacement Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/displace.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/fog.html",
+        "标签": "VEX Fog Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/fog.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/sop.html",
+        "标签": "VEX Geometry Operator",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/sop.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/image3d.html",
+        "标签": "VEX Image3D Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/image3d.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/light.html",
+        "标签": "VEX Light Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/light.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/chop.html",
+        "标签": "VEX Motion and Audio Operator",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/chop.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/pop.html",
+        "标签": "VEX Particle Operator",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/pop.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/photon.html",
+        "标签": "VEX Photon Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/photon.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/shadow.html",
+        "标签": "VEX Shadow Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/shadow.svg\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/subnet.html",
+        "标签": "VEX Subnetwork",
+        "字段": "<img src=\"../../icons/COMMON/subnet.svg\" class=\"icon medium\">"
+    },
+    {
+        "标签_链接": "http://127.0.0.1:48626/nodes/vex/surface.html",
+        "标签": "VEX Surface Shader",
+        "字段": "<img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=\" class=\"icon medium\" data-old-src=\"../../icons/VEX/surface.svg\">"
+    }
+]

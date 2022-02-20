@@ -3,7 +3,9 @@ from imp import reload
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
-from W_ScrollArea import W_ScrollArea
+from widget.W_ScrollArea import W_ScrollArea
+import pathjson.NodeIconPath
+reload(pathjson.NodeIconPath)
 import setWidget
 reload(setWidget)
 import os
@@ -58,7 +60,7 @@ class NodeWidget(QWidget):
     def initTextEdit(self):
         """初始化富文本"""
         try:
-            with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name[:-3] + "html", encoding="gbk") as file_obj:
+            with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", encoding="gbk") as file_obj:
                 contents = file_obj.read()
                 print(contents)
                 self.text_Edit.setHtml(contents)
@@ -67,8 +69,9 @@ class NodeWidget(QWidget):
     def saveTextEdit(self):
         """保存富文本"""
         data = self.text_Edit.toHtml()
-        print(data)
-        with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name[:-3] + "html", 'w', encoding="gbk") as file_obj:
+        if os.path.isdir(PATH + '/data/'+SORT+"/") == False:
+            os.makedirs(PATH + '/data/'+SORT+"/")
+        with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", 'w', encoding="gbk") as file_obj:
             file_obj.write(data)
         
 
@@ -81,13 +84,17 @@ class IconsWidget(QWidget):
         v_layout.setAlignment(Qt.AlignTop)
         v_layout.setContentsMargins(4,4,4,4)#layout边缘
         
-        self.icon_path = PATH+"/icons/"+SORT+"/"+str(i)
-        self.icon_name = i
+        self.icon_path = PATH+i[1][5:]
+        if self.icon_path[-3:] != 'svg':
+            self.icon_path = PATH+'/icons/OBJ/geo.svg'
+        if os.path.exists(self.icon_path) == False:
+            self.icon_path = PATH+'/icons/OBJ/geo.svg'
+        self.icon_name = i[0]#0是名字
         label = QLabel(self)
         label.setPixmap(QPixmap(self.icon_path).scaled(p.iconsize,p.iconsize,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
         label.setFixedSize(p.iconsize,p.iconsize)#图标尺寸默认48
         self.label_text = QLabel(self)
-        self.label_text.setText(str(i)[:-4])
+        self.label_text.setText(self.icon_name)
         self.label_text.setFont(QFont("Microsoft YaHei",p.iconfontsize,QFont.Bold))#文字尺寸默认10
         self.label_text.setStyleSheet("color: #a4a4a4 ")
         
@@ -105,46 +112,13 @@ class HoudiniHelp(QWidget):
         self.initBackground()
         self.initQss()
         self.initSize()
-        
+        self.initWidget()
         #self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         
-        self.h_layout = QHBoxLayout()#横向
-        self.h_layout.setSpacing(0)
-        self.h_layout.setContentsMargins(0,0,0,0)
-        self.h_layout.setAlignment(Qt.AlignLeft)
-        
-        self.setbutton = QPushButton("设置",self)
-        self.setbutton.setFixedSize(self.selectheight,self.selectheight)
-        self.setbutton.clicked.connect(self.clickSetButton)
-        
-        self.line_edit = QLineEdit(self)
-        self.line_edit.setFixedHeight(self.selectheight)
-        
-        self.selectbutton = QPushButton("搜索",self)
-        self.selectbutton.setFixedSize(self.selectheight,self.selectheight)
-        self.selectbutton.clicked.connect(self.selectNode)
-        
-        self.h_layout.addWidget(self.setbutton)
-        self.h_layout.addWidget(self.line_edit)
-        self.h_layout.addWidget(self.selectbutton)
-        
-        
-        self.v_layout = QVBoxLayout()
-        self.v_layout.setSpacing(0)
-        self.v_layout.setContentsMargins(0,0,0,0)
-        self.v_layout.setAlignment(Qt.AlignTop)
-        self.v_layout.addLayout(self.h_layout)
-        
-        
-        self.w = QWidget(self)
-        self.scrollArea = W_ScrollArea(self.w)
-        self.v_layout.addWidget(self.w)
-        self.setLayout(self.v_layout)
-        
-        icons = os.listdir(PATH+"/icons/"+SORT+"/")
+        self.nodeiconpath = pathjson.NodeIconPath.NodeIconPath(SORT)
         num_x = 0
         num_y = 0
-        for i in icons:
+        for i in self.nodeiconpath.paths:
             label_widget = IconsWidget(self,i)
             label_widget.click.connect(self.click)
             self.scrollArea.addItem(label_widget,num_x,num_y)
@@ -190,6 +164,41 @@ class HoudiniHelp(QWidget):
                 print("第一次运行请手动修改此处的图标zip路径并重新打开")
                 os.system(r'notepad '+__file__[:-12]+"config.ini")
     
+    def initWidget(self):
+        """初始化子控件"""
+        self.h_layout = QHBoxLayout()#横向
+        self.h_layout.setSpacing(0)
+        self.h_layout.setContentsMargins(0,0,0,0)
+        self.h_layout.setAlignment(Qt.AlignLeft)
+        
+        self.setbutton = QPushButton("设置",self)
+        self.setbutton.setFixedSize(self.selectheight,self.selectheight)
+        self.setbutton.clicked.connect(self.clickSetButton)
+        
+        self.line_edit = QLineEdit(self)
+        self.line_edit.setFixedHeight(self.selectheight)
+        
+        self.selectbutton = QPushButton("搜索",self)
+        self.selectbutton.setFixedSize(self.selectheight,self.selectheight)
+        self.selectbutton.clicked.connect(self.selectNode)
+        
+        self.h_layout.addWidget(self.setbutton)
+        self.h_layout.addWidget(self.line_edit)
+        self.h_layout.addWidget(self.selectbutton)
+        
+        
+        self.v_layout = QVBoxLayout()
+        self.v_layout.setSpacing(0)
+        self.v_layout.setContentsMargins(0,0,0,0)
+        self.v_layout.setAlignment(Qt.AlignTop)
+        self.v_layout.addLayout(self.h_layout)
+        
+        
+        self.w = QWidget(self)
+        self.scrollArea = W_ScrollArea(self.w)
+        self.v_layout.addWidget(self.w)
+        self.setLayout(self.v_layout)
+    
     def click(self,icon:IconsWidget):
         """点击"""
         print(icon.label_text.text())
@@ -204,12 +213,10 @@ class HoudiniHelp(QWidget):
     def selectNode(self):
         """点击搜索"""
         self.scrollArea.removeAllItem()
-        #self.scrollArea.setAutomaticSize(0, 0, self.width(), self.height()-50)
-        icons = os.listdir(PATH+"/icons/"+SORT+"/")
         num_x = 0
         num_y = 0
-        for i in icons:
-            if i.find(self.line_edit.text()) != -1:
+        for i in self.nodeiconpath.paths:
+            if i[0].find(self.line_edit.text()) != -1:
                 label_widget = IconsWidget(self,i)
                 label_widget.click.connect(self.click)
                 self.scrollArea.addItem(label_widget,num_x,num_y)

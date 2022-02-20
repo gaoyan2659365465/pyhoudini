@@ -21,7 +21,11 @@ class SetWidget(QWidget):
         self.h_layout2 = QHBoxLayout()
         self.label2 = QLabel("展示类型:")
         self.combo_box = QComboBox()
-        list01 = ["VOP","SOP"]
+        list01 = ["ChannelNodes","CompositingNodes",\
+                  "DynamicsNodes","GeometryNodes",\
+                  "LOPNodes","ObjectNodes",\
+                  "RenderNodes","TOPNodes",\
+                  "VEXNetworks","VOPNodes"]
         self.combo_box.addItems(list01)
         self.h_layout2.addWidget(self.label2)
         self.h_layout2.addWidget(self.combo_box)

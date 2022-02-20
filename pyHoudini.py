@@ -177,6 +177,7 @@ class HoudiniHelp(QWidget):
         
         self.line_edit = QLineEdit(self)
         self.line_edit.setFixedHeight(self.selectheight)
+        self.line_edit.returnPressed.connect(self.lineEdit_function)
         
         self.selectbutton = QPushButton("搜索",self)
         self.selectbutton.setFixedSize(self.selectheight,self.selectheight)
@@ -224,6 +225,10 @@ class HoudiniHelp(QWidget):
                 if num_y>6:
                     num_y = 0
                     num_x = num_x+1
+    
+    def lineEdit_function(self):
+        """搜索框按下回车"""
+        self.selectNode()
         
     def initQss(self):
         """初始化Qss"""

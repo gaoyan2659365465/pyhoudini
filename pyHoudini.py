@@ -104,6 +104,19 @@ class IconsWidget(QWidget):
     def mousePressEvent(self, a0: QMouseEvent):#鼠标按下
         self.click.emit(self)
 
+class CodeAC:
+    #代码自动补全功能
+    def __init__(self, input_line):
+        self.completer = QCompleter()
+        input_line.setCompleter(self.completer)
+        self.model = QStandardItemModel()
+            
+    def active_script(self,result):
+        for cmd in result:
+            item = QStandardItem(cmd)
+            self.model.insertRow(0, item)
+        self.completer.setModel(self.model)
+
 class HoudiniHelp(QWidget):
     def __init__(self):
         super().__init__()
@@ -126,6 +139,13 @@ class HoudiniHelp(QWidget):
             if num_y>6:
                 num_y = 0
                 num_x = num_x+1
+        
+        #代码补全-------------------------
+        name = []
+        for i in self.nodeiconpath.paths:
+            name.append(i[0])
+        self.extention.active_script(name)
+        #---------------------------------------
         
     
     def initIniFlie(self):
@@ -177,7 +197,10 @@ class HoudiniHelp(QWidget):
         
         self.line_edit = QLineEdit(self)
         self.line_edit.setFixedHeight(self.selectheight)
+        self.line_edit.setAttribute(Qt.WA_InputMethodEnabled, False)#屏蔽输入法
         self.line_edit.returnPressed.connect(self.lineEdit_function)
+        self.extention = CodeAC(self.line_edit)
+        
         
         self.selectbutton = QPushButton("搜索",self)
         self.selectbutton.setFixedSize(self.selectheight,self.selectheight)
@@ -264,3 +287,17 @@ if __name__ == "__main__":
 else:
     widget=HoudiniHelp()
     widget.show()
+
+
+"""
+1、快捷键呼出
+2、自动补全(已解决)(效果有待优化)
+3、节点上按快捷键,直接可以跳转到写笔记的界面
+4、搜索栏按回车搜索(已解决)
+5、收藏栏点爱心
+6、快捷键呼出悬浮小搜索栏直接快速查找
+7、笔记能创建例子,方便学习
+8、笔记框加图片
+9、加自动更新功能
+10、搜索框禁用中文输入法(已解决)
+"""

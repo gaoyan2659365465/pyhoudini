@@ -8,6 +8,7 @@ import pathjson.NodeIconPath
 reload(pathjson.NodeIconPath)
 import setWidget
 reload(setWidget)
+import HtmlView
 import os
 import zipfile
 import configparser#读取ini配置文件
@@ -26,7 +27,7 @@ class NodeWidget(QWidget):
         self.v_layout = QVBoxLayout(self)
         self.h_layout = QHBoxLayout(self)
         self.h_layout.setSpacing(0)
-        self.h_layout.setContentsMargins(50,0,0,0)#layout边缘
+        self.h_layout.setContentsMargins(10,0,0,0)#layout边缘
         self.v_layout.setContentsMargins(0,10,0,0)#layout边缘
         self.h_layout.setAlignment(Qt.AlignLeft)
         self.button = QPushButton("返回",self)
@@ -45,9 +46,16 @@ class NodeWidget(QWidget):
         self.v_layout.addLayout(self.h_layout)
         self.v_layout.setAlignment(Qt.AlignTop)
         
-        self.text_Edit = QTextEdit(self)
-        self.text_Edit.setGeometry(50,70,self.width()-100,self.height()-100)
-        self.initTextEdit()
+        #self.text_Edit = QTextEdit(self)
+        #self.text_Edit.setGeometry(50,70,self.width()-100,self.height()-100)
+        
+        self.htmljschannel = self.HtmlJsChannel(self)
+        self.htmlview = HtmlView.HtmlView(self)
+        path = "file:///"+PATH.replace("\\", "/")+"/widget/wangEditor.html"
+        url = QUrl(path)
+        self.htmlview.load(url)
+        self.htmlview.setGeometry(10,70,self.width()-20,self.height()-100)
+        self.htmlview.lower()
     
     def initBackground(self):
         """初始化背景颜色"""
@@ -55,24 +63,41 @@ class NodeWidget(QWidget):
         self.setPalette(QPalette(QColor('#3c3c3c'))) #着色区分背景
     
     def resizeEvent(self, a0: QResizeEvent):
-        self.text_Edit.setGeometry(50,70,self.width()-100,self.height()-100)
+        #self.text_Edit.setGeometry(50,70,self.width()-100,self.height()-100)
+        self.htmlview.setGeometry(10,70,self.width()-20,self.height()-100)
     
     def initTextEdit(self):
         """初始化富文本"""
         try:
-            with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", encoding="gbk") as file_obj:
+            with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", encoding="utf-8") as file_obj:
                 contents = file_obj.read()
                 print(contents)
-                self.text_Edit.setHtml(contents)
+                jscode = "editor.txt.html('"+contents+"');"
+                self.htmlview.page().runJavaScript(jscode)
         except:pass
     
     def saveTextEdit(self):
         """保存富文本"""
-        data = self.text_Edit.toHtml()
-        if os.path.isdir(PATH + '/data/'+SORT+"/") == False:
-            os.makedirs(PATH + '/data/'+SORT+"/")
-        with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", 'w', encoding="gbk") as file_obj:
-            file_obj.write(data)
+        jscode = "backend.foo(editor.txt.html());"
+        self.htmlview.page().runJavaScript(jscode)
+
+    class HtmlJsChannel(QObject):
+        def __init__(self, parent):
+            super().__init__(parent)
+            self.icon = parent.icon
+            
+        @Slot(str)
+        def foo(self,data):
+            print(data)
+            if os.path.isdir(PATH + '/data/'+SORT+"/") == False:
+                os.makedirs(PATH + '/data/'+SORT+"/")
+            with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", 'w', encoding="utf-8") as file_obj:
+                file_obj.write(data)
+                
+        @Slot()
+        def gethtml(self):
+            """html初始化时获取内容"""
+            self.parent().initTextEdit()
         
 
 class IconsWidget(QWidget):
@@ -108,6 +133,7 @@ class CodeAC:
     #代码自动补全功能
     def __init__(self, input_line):
         self.completer = QCompleter()
+        self.completer.setFilterMode(Qt.MatchContains)# Qt::MatchStartsWith只匹配开头
         input_line.setCompleter(self.completer)
         self.model = QStandardItemModel()
             
@@ -291,7 +317,7 @@ else:
 
 """
 1、快捷键呼出
-2、自动补全(已解决)(效果有待优化)
+2、自动补全(已解决)
 3、节点上按快捷键,直接可以跳转到写笔记的界面
 4、搜索栏按回车搜索(已解决)
 5、收藏栏点爱心

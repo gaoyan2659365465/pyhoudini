@@ -9,13 +9,19 @@
     <script src="./wangEditor.js" type="text/javascript" charset="utf-8"></script>
   </head>
   <body>
-    <div style=" margin-top:50px;" id="edit"></div>
+    <div style=" margin-top:0px;" id="edit"></div>
     <script type="text/javascript">
       const E = window.wangEditor
       const editor = new E("#edit")
       // 设置编辑区域高度为 500px
       //editor.config.height = 500
       //const editor = new E(document.getElementById('div1'))
+      editor.config.menuTooltipPosition = 'down'// 菜单栏提示为下标
+      // 配置菜单栏，设置不需要的菜单
+      // editor.config.excludeMenus = [
+      //   'emoticon',
+      //   'video'
+      // ]
       editor.create()
     </script>
 

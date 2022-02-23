@@ -71,14 +71,14 @@ class NodeWidget(QWidget):
         try:
             with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", encoding="utf-8") as file_obj:
                 contents = file_obj.read()
-                print(contents)
-                jscode = "editor.txt.html('"+contents+"');"
+                #print(contents)
+                jscode = "editor.dangerouslyInsertHtml('"+contents+"');"
                 self.htmlview.page().runJavaScript(jscode)
         except:pass
     
     def saveTextEdit(self):
         """保存富文本"""
-        jscode = "backend.foo(editor.txt.html());"
+        jscode = "backend.foo(editor.getHtml());"
         self.htmlview.page().runJavaScript(jscode)
 
     class HtmlJsChannel(QObject):
@@ -133,7 +133,7 @@ class CodeAC:
     #代码自动补全功能
     def __init__(self, input_line):
         self.completer = QCompleter()
-        self.completer.setFilterMode(Qt.MatchContains)# Qt::MatchStartsWith只匹配开头
+        self.completer.setFilterMode(Qt.MatchStartsWith)# Qt::MatchStartsWith只匹配开头Qt.MatchContains
         input_line.setCompleter(self.completer)
         self.model = QStandardItemModel()
             
@@ -251,7 +251,7 @@ class HoudiniHelp(QWidget):
     
     def click(self,icon:IconsWidget):
         """点击"""
-        print(icon.label_text.text())
+        #print(icon.label_text.text())
         self.nodewidget = NodeWidget(self.w,icon)
         self.nodewidget.show() 
 
@@ -313,17 +313,31 @@ if __name__ == "__main__":
 else:
     widget=HoudiniHelp()
     widget.show()
+    import hou
+    nodes = list(hou.selectedNodes())
+    if nodes:
+        print(nodes[0].type().name())
+        icon_path = PATH+'/icons/OBJ/geo1.svg'
+        icon_name = nodes[0].type().name()
+        class icon():
+            pass
+        icon.icon_path = icon_path
+        icon.icon_name = icon_name
+        widget.click(icon)
+        
+    
 
 
 """
-1、快捷键呼出
+1、快捷键呼出(已解决)
 2、自动补全(已解决)
-3、节点上按快捷键,直接可以跳转到写笔记的界面
+3、节点上按快捷键,直接可以跳转到写笔记的界面(已解决)
 4、搜索栏按回车搜索(已解决)
-5、收藏栏点爱心
+5、收藏栏点爱心、默认屏蔽无笔记节点
 6、快捷键呼出悬浮小搜索栏直接快速查找
 7、笔记能创建例子,方便学习
 8、笔记框加图片
 9、加自动更新功能
 10、搜索框禁用中文输入法(已解决)
+11、加载插件太慢
 """

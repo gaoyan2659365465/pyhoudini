@@ -4,25 +4,34 @@
     <meta charset="utf-8">
     <title>富文本编辑器</title>
 
+    <!-- 引入 css -->
+    <link href="./style.css" rel="stylesheet">
+
     <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
 
     <script src="./wangEditor.js" type="text/javascript" charset="utf-8"></script>
   </head>
-  <body>
-    <div style=" margin-top:0px;" id="edit"></div>
+  <body style="background-color: #3c3c3c;">
+
+    <div class="full-screen-container">
+      <div id="toolbar-container"></div>
+      <div id="editor-container"></div>
+    </div>
+    
     <script type="text/javascript">
-      const E = window.wangEditor
-      const editor = new E("#edit")
-      // 设置编辑区域高度为 500px
-      //editor.config.height = 500
-      //const editor = new E(document.getElementById('div1'))
-      editor.config.menuTooltipPosition = 'down'// 菜单栏提示为下标
-      // 配置菜单栏，设置不需要的菜单
-      // editor.config.excludeMenus = [
-      //   'emoticon',
-      //   'video'
-      // ]
-      editor.create()
+      const { createEditor, createToolbar } = window.wangEditor
+
+      // 创建编辑器
+      const editor = createEditor({
+        selector: '#editor-container',
+        mode: 'default' // 或 'simple' 参考下文
+      })
+      // 创建工具栏
+      const toolbar = createToolbar({
+        editor,
+        selector: '#toolbar-container',
+        mode: 'default' // 或 'simple' 参考下文
+      })
     </script>
 
     <script type="text/javascript">
@@ -34,11 +43,9 @@
       });
 
     </script>
+
     
   </body>
-
-  
-
 
 </html>
 

@@ -4,11 +4,11 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from widget.W_ScrollArea import W_ScrollArea
-import pathjson.NodeIconPath
-reload(pathjson.NodeIconPath)
+import widget.pathjson.NodeIconPath
+reload(widget.pathjson.NodeIconPath)
 import setWidget
 reload(setWidget)
-import HtmlView
+import widget.HtmlView as HtmlView
 import os
 import zipfile
 import configparser#读取ini配置文件
@@ -73,6 +73,10 @@ class NodeWidget(QWidget):
                 contents = file_obj.read()
                 #print(contents)
                 jscode = "editor.dangerouslyInsertHtml('"+contents+"');"
+                self.htmlview.page().runJavaScript(jscode)
+                
+                jscode = "var div = document.getElementById('editor-container');\
+                    div.setAttribute('style','height: 0px;');"
                 self.htmlview.page().runJavaScript(jscode)
         except:pass
     
@@ -154,7 +158,7 @@ class HoudiniHelp(QWidget):
         self.initWidget()
         #self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         
-        self.nodeiconpath = pathjson.NodeIconPath.NodeIconPath(SORT)
+        self.nodeiconpath = widget.pathjson.NodeIconPath.NodeIconPath(SORT)
         num_x = 0
         num_y = 0
         for i in self.nodeiconpath.paths:
@@ -287,7 +291,7 @@ class HoudiniHelp(QWidget):
             def readQss(style):
                 with open(style,'r',encoding='utf-8') as f:
                     return f.read()
-        styleFile = PATH+'/qss/style.qss'
+        styleFile = PATH+'/widget/qss/style.qss'
         self.qssStyle = CommonHelper.readQss(styleFile)
         QApplication.instance().setStyleSheet(self.qssStyle)
     
@@ -304,13 +308,17 @@ class HoudiniHelp(QWidget):
         except:pass
 
 import sys
+import server.Check.UpdateCheck
+reload(server.Check.UpdateCheck)
 
 if __name__ == "__main__":
+    server.Check.UpdateCheck.run()
     app=QApplication(sys.argv)
     widget=HoudiniHelp()
     widget.show()
     sys.exit(app.exec_())
 else:
+    server.Check.UpdateCheck.run()
     widget=HoudiniHelp()
     widget.show()
     import hou
@@ -336,7 +344,7 @@ else:
 5、收藏栏点爱心、默认屏蔽无笔记节点
 6、快捷键呼出悬浮小搜索栏直接快速查找
 7、笔记能创建例子,方便学习
-8、笔记框加图片
+8、笔记框加图片(不太好用,需要优化)
 9、加自动更新功能
 10、搜索框禁用中文输入法(已解决)
 11、加载插件太慢

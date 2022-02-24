@@ -26,12 +26,18 @@
         selector: '#editor-container',
         mode: 'default' // 或 'simple' 参考下文
       })
+      const toolbarConfig = {
+      excludeKeys: [
+        'fullScreen',// 排除菜单组，写菜单组 key 的值即可
+      ]}
       // 创建工具栏
       const toolbar = createToolbar({
         editor,
         selector: '#toolbar-container',
-        mode: 'default' // 或 'simple' 参考下文
+        mode: 'default', // 或 'simple' 参考下文
+        config: toolbarConfig
       })
+      editor.fullScreen()
     </script>
 
     <script type="text/javascript">

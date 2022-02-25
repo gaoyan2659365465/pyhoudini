@@ -12,6 +12,7 @@ import widget.HtmlView as HtmlView
 import os
 import zipfile
 import configparser#读取ini配置文件
+from threading import Thread
 
 PATH = ""
 SORT = ""
@@ -92,7 +93,7 @@ class NodeWidget(QWidget):
             
         @Slot(str)
         def foo(self,data):
-            print(data)
+            #print(data)
             if os.path.isdir(PATH + '/data/'+SORT+"/") == False:
                 os.makedirs(PATH + '/data/'+SORT+"/")
             with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", 'w', encoding="utf-8") as file_obj:
@@ -156,28 +157,42 @@ class HoudiniHelp(QWidget):
         self.initQss()
         self.initSize()
         self.initWidget()
-        #self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         
         self.nodeiconpath = widget.pathjson.NodeIconPath.NodeIconPath(SORT)
-        num_x = 0
-        num_y = 0
-        for i in self.nodeiconpath.paths:
-            label_widget = IconsWidget(self,i)
-            label_widget.click.connect(self.click)
-            self.scrollArea.addItem(label_widget,num_x,num_y)
-            num_y = num_y+1
-            if num_y>6:
-                num_y = 0
-                num_x = num_x+1
-        
+
+        self.num_x = 0
+        self.num_y = 0
+        self.num_ = 0
+        #初始化一个定时器
+        self.timer=QTimer()
+        self.timer.timeout.connect(self.initIconWidget)
+        #设置时间间隔并启动定时器
+        self.timer.start(10)
         #代码补全-------------------------
-        name = []
-        for i in self.nodeiconpath.paths:
-            name.append(i[0])
-        self.extention.active_script(name)
+        self.extention.active_script(self.nodeiconpath.names)
         #---------------------------------------
         
-    
+    def initIconWidget(self):
+        """用于生成图标"""
+        label_widget = IconsWidget(self,self.nodeiconpath.paths[self.num_])
+        label_widget.click.connect(self.click)
+        self.scrollArea.addItem(label_widget,self.num_x,self.num_y)
+        label_widget.show()
+        self.num_y = self.num_y+1
+        if self.num_y>6:
+            self.num_y = 0
+            self.num_x = self.num_x+1
+        self.scrollArea.toolBoxSizeEvent()
+        
+        if self.num_+1 == len(self.nodeiconpath.paths):
+            self.num_x = 0
+            self.num_y = 0
+            self.num_ = 0
+            self.timer.stop()
+        else:
+            self.num_ = self.num_+1
+                
     def initIniFlie(self):
         """初始化配置文件"""
         global SCRPATH
@@ -274,10 +289,14 @@ class HoudiniHelp(QWidget):
                 label_widget = IconsWidget(self,i)
                 label_widget.click.connect(self.click)
                 self.scrollArea.addItem(label_widget,num_x,num_y)
+                label_widget.show()
                 num_y = num_y+1
                 if num_y>6:
                     num_y = 0
                     num_x = num_x+1
+
+        self.scrollArea.toolBoxSizeEvent()
+        self.timer.stop()
     
     def lineEdit_function(self):
         """搜索框按下回车"""
@@ -311,14 +330,22 @@ import sys
 import server.Check.UpdateCheck
 reload(server.Check.UpdateCheck)
 
+
+    
+
 if __name__ == "__main__":
-    server.Check.UpdateCheck.run()
+    # 创建线程01，不指定参数
+    thread_01 = Thread(target=server.Check.UpdateCheck.run)
+    thread_01.start()
     app=QApplication(sys.argv)
     widget=HoudiniHelp()
     widget.show()
     sys.exit(app.exec_())
 else:
-    server.Check.UpdateCheck.run()
+    # 创建线程01，不指定参数
+    thread_01 = Thread(target=server.Check.UpdateCheck.run)
+    thread_01.start()
+    
     widget=HoudiniHelp()
     widget.show()
     import hou

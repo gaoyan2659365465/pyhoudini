@@ -1,7 +1,6 @@
 import requests
 import os
 import zipfile
-from pathlib import Path
 from os import startfile
 
 c_version = '1.5.2'

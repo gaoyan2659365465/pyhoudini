@@ -52,13 +52,13 @@ class W_ScrollArea(QWidget):
     def addItem(self,item,x,y):
         """添加子项"""
         self.g_layout.addWidget(item,x,y)
-        self.w_scroll_bar.raise_()      #置顶
-        try:
-            item.toolBoxSize.connect(self.toolBoxSizeEvent)#绑定子控件尺寸改变信号
-            item.paint.connect(self.toolBoxPaintEvent)
-        except:pass
-        widget = self.item_widget
-        widget.setGeometry(0,0,widget.width(), widget.height()+item.height())
+        #self.w_scroll_bar.raise_()      #置顶
+        # try:
+        #     item.toolBoxSize.connect(self.toolBoxSizeEvent)#绑定子控件尺寸改变信号
+        #     item.paint.connect(self.toolBoxPaintEvent)
+        # except:pass
+        #widget = self.item_widget
+        #widget.setGeometry(0,0,widget.width(), widget.height()+item.height())
     
     def removeAllItem(self):
         """删除所有子项"""
@@ -95,6 +95,7 @@ class W_ScrollArea(QWidget):
         self.w_scroll_bar.setGeometry(self.width()-15,0,10,ah-20)
         self.w_scroll_bar.setRange(0, widget.sizeHint().height()-ah+20)
         max_value = widget.sizeHint().height()-ah+20
+        #print(widget.sizeHint())
         if max_value<0:
             self.w_scroll_bar.hide()
         elif max_value>=0 and not self.w_scroll_bar.isVisible():

@@ -35,7 +35,7 @@ class NodeWidget(QWidget):
         self.v_layout.setContentsMargins(0,10,0,0)#layout边缘
         self.h_layout.setAlignment(Qt.AlignLeft)
         self.button = QPushButton("返回",self)
-        self.button.clicked.connect(self.close)
+        self.button.clicked.connect(self.p.nodeCloseEvent)
         
         self.button2 = QPushButton("保存",self)
         self.button2.clicked.connect(self.saveTextEdit)
@@ -274,8 +274,9 @@ class HoudiniHelp(QWidget):
     def click(self,icon:IconsWidget):
         """点击"""
         #print(icon.label_text.text())
-        self.nodewidget = NodeWidget(self.w,icon)
-        self.nodewidget.show() 
+        self.nodewidget = NodeWidget(self,icon)
+        self.nodewidget.show()
+        
 
     def clickSetButton(self):
         """点击设置按钮"""
@@ -329,8 +330,12 @@ class HoudiniHelp(QWidget):
             self.nodewidget.resize(self.width(), self.height())
         except:pass
 
-
-
+    def nodeCloseEvent(self):
+        """nodeWidget关闭事件"""
+        self.nodewidget.close()
+        a = self.size()
+        self.adjustSize()
+        self.resize(a)
 
     
 

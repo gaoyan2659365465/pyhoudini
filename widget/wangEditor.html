@@ -21,22 +21,38 @@
     <script type="text/javascript">
       const { createEditor, createToolbar } = window.wangEditor
 
+      const editorConfig = { MENU_CONF: {} }
+
+      editorConfig.MENU_CONF['fontSize'] = {
+          fontSizeList: ['80px', '100px', '160px', '180px']
+      }
+      
       // 创建编辑器
       const editor = createEditor({
         selector: '#editor-container',
-        mode: 'default' // 或 'simple' 参考下文
-      })
-      const toolbarConfig = {
-      excludeKeys: [
-        'fullScreen',// 排除菜单组，写菜单组 key 的值即可
-      ]}
-      // 创建工具栏
-      const toolbar = createToolbar({
-        editor,
-        selector: '#toolbar-container',
         mode: 'default', // 或 'simple' 参考下文
-        config: toolbarConfig
+        //config: editorConfig
+        content: [
+        {
+          type: 'paragraph',
+          children: [
+            { text: '', fontFamily: '黑体' ,fontSize:'40px'} // 设置字体
+          ]
+        },
+      ],
       })
+      // a = editor.getConfig()
+      // const toolbarConfig = {
+      // excludeKeys: [
+      //   'fullScreen',// 排除菜单组，写菜单组 key 的值即可
+      // ]}
+      // //创建工具栏
+      // const toolbar = createToolbar({
+      //   editor,
+      //   selector: '#toolbar-container',
+      //   mode: 'default', // 或 'simple' 参考下文
+      //   config: toolbarConfig
+      // })
       editor.fullScreen()
     </script>
 

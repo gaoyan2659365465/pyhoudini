@@ -13,6 +13,9 @@ import os
 import zipfile
 import configparser#读取ini配置文件
 from threading import Thread
+import sys
+import server.Check.UpdateCheck
+reload(server.Check.UpdateCheck)
 
 PATH = ""
 SORT = ""
@@ -326,9 +329,7 @@ class HoudiniHelp(QWidget):
             self.nodewidget.resize(self.width(), self.height())
         except:pass
 
-import sys
-import server.Check.UpdateCheck
-reload(server.Check.UpdateCheck)
+
 
 
     

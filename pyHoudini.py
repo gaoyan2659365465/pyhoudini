@@ -351,9 +351,11 @@ else:
     import hou
     nodes = list(hou.selectedNodes())
     if nodes:
-        print(nodes[0].type().name())
+        string = nodes[0].type().name()
         icon_path = PATH+'/icons/OBJ/geo1.svg'
-        icon_name = nodes[0].type().name()
+        string = ''.join(e for e in string if e.isalnum())
+        icon_name = ''.join([i for i in string if not i.isdigit()])
+        print(icon_name)
         class icon():
             pass
         icon.icon_path = icon_path

@@ -1,13 +1,13 @@
-from imp import reload
+from importlib import reload
 
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from widget.W_ScrollArea import W_ScrollArea
 import widget.pathjson.NodeIconPath
-reload(widget.pathjson.NodeIconPath)
+#reload(widget.pathjson.NodeIconPath)
 import setWidget
-reload(setWidget)
+#reload(setWidget)
 import widget.HtmlView as HtmlView
 import os
 import zipfile
@@ -15,7 +15,9 @@ import configparser#读取ini配置文件
 from threading import Thread
 import sys
 import server.Check.UpdateCheck
-reload(server.Check.UpdateCheck)
+#reload(server.Check.UpdateCheck)
+from widget.QHoudiniTextEdit import QHoudiniTextEdit
+
 
 PATH = ""
 SORT = ""
@@ -24,21 +26,29 @@ SCRPATH=""
 class NodeWidget(QWidget):
     def __init__(self,p,icon):
         super().__init__(p)
-        self.initBackground()
         self.resize(p.width(),p.height())
         self.p = p
         self.icon = icon
+        self._color_white_output = QColor("#282c34")
+        self._brush3 = QBrush(self._color_white_output)
         self.v_layout = QVBoxLayout(self)
         self.h_layout = QHBoxLayout(self)
-        self.h_layout.setSpacing(0)
+        self.h_layout.setSpacing(10)
         self.h_layout.setContentsMargins(10,0,0,0)#layout边缘
         self.v_layout.setContentsMargins(0,10,0,0)#layout边缘
         self.h_layout.setAlignment(Qt.AlignLeft)
+        
         self.button = QPushButton("返回",self)
         self.button.clicked.connect(self.p.nodeCloseEvent)
-        
+        self.button.setMinimumSize(QSize(100, 30))
+        self.button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.button.setStyleSheet(u"background-color: rgb(52, 59, 72);")
         self.button2 = QPushButton("保存",self)
         self.button2.clicked.connect(self.saveTextEdit)
+        self.button2.setMinimumSize(QSize(100, 30))
+        self.button2.setCursor(QCursor(Qt.PointingHandCursor))
+        self.button2.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        
         
         self.label = QLabel(self)
         self.label.setPixmap(QPixmap(icon.icon_path))
@@ -50,25 +60,21 @@ class NodeWidget(QWidget):
         self.v_layout.addLayout(self.h_layout)
         self.v_layout.setAlignment(Qt.AlignTop)
         
-        #self.text_Edit = QTextEdit(self)
-        #self.text_Edit.setGeometry(50,70,self.width()-100,self.height()-100)
+        self.text_Edit = QHoudiniTextEdit(self)#QPlainTextEdit QTextEdit
+        self.text_Edit.setGeometry(10,70,self.width()-20,self.height()-100)
         
-        self.htmljschannel = self.HtmlJsChannel(self)
-        self.htmlview = HtmlView.HtmlView(self)
-        path = "file:///"+PATH.replace("\\", "/")+"/widget/wangEditor.html"
-        url = QUrl(path)
-        self.htmlview.load(url)
-        self.htmlview.setGeometry(10,70,self.width()-20,self.height()-100)
-        self.htmlview.lower()
-    
-    def initBackground(self):
-        """初始化背景颜色"""
-        self.setAutoFillBackground(True) #自动填充背景
-        self.setPalette(QPalette(QColor('#3c3c3c'))) #着色区分背景
+        # self.htmljschannel = self.HtmlJsChannel(self)
+        # self.htmlview = HtmlView.HtmlView(self)
+        # path = "file:///"+PATH.replace("\\", "/")+"/widget/wangEditor.html"
+        # url = QUrl(path)
+        # self.htmlview.load(url)
+        # self.htmlview.setGeometry(10,70,self.width()-20,self.height()-100)
+        # self.htmlview.lower()
     
     def resizeEvent(self, a0: QResizeEvent):
-        #self.text_Edit.setGeometry(50,70,self.width()-100,self.height()-100)
-        self.htmlview.setGeometry(10,70,self.width()-20,self.height()-100)
+        if self.text_Edit:
+            self.text_Edit.setGeometry(10,70,self.width()-20,self.height()-100)
+        #self.htmlview.setGeometry(10,70,self.width()-20,self.height()-100)
     
     def initTextEdit(self):
         """初始化富文本"""
@@ -89,6 +95,13 @@ class NodeWidget(QWidget):
         jscode = "backend.foo(editor.getHtml());"
         self.htmlview.page().runJavaScript(jscode)
 
+    def paintEvent(self, event):
+        """重载-绘制"""
+        painter = QPainter(self)
+        painter.setBrush(self._brush3)
+        painter.setPen(Qt.NoPen)
+        painter.drawRect(0,0,self.width(),self.height())
+    
     class HtmlJsChannel(QObject):
         def __init__(self, parent):
             super().__init__(parent)
@@ -112,9 +125,11 @@ class IconsWidget(QWidget):
     click=Signal(object)#自定义点击信号
     def __init__(self,p,i):
         super().__init__(p)
+        self._color_white_output = QColor("#282c34")
+        self._brush3 = QBrush(self._color_white_output)
         v_layout = QVBoxLayout(self)
         v_layout.setSpacing(0)#各控件间距
-        v_layout.setAlignment(Qt.AlignTop)
+        #v_layout.setAlignment(Qt.AlignTop)
         v_layout.setContentsMargins(4,4,4,4)#layout边缘
         
         self.icon_path = PATH+i[1][5:]
@@ -131,11 +146,19 @@ class IconsWidget(QWidget):
         self.label_text.setFont(QFont("Microsoft YaHei",p.iconfontsize,QFont.Bold))#文字尺寸默认10
         self.label_text.setStyleSheet("color: #a4a4a4 ")
         
-        v_layout.addWidget(label)
-        v_layout.addWidget(self.label_text)
+        v_layout.addWidget(label,0,Qt.AlignHCenter)
+        v_layout.addWidget(self.label_text,0,Qt.AlignHCenter)
     
     def mousePressEvent(self, a0: QMouseEvent):#鼠标按下
         self.click.emit(self)
+    
+    def paintEvent(self, event):
+        """重载-绘制"""
+        painter = QPainter(self)
+        painter.setBrush(self._brush3)
+        painter.setPen(Qt.NoPen)
+        painter.drawRect(0,0,self.width(),self.height())
+    
 
 class CodeAC:
     #代码自动补全功能
@@ -157,10 +180,10 @@ class HoudiniHelp(QWidget):
         self.initIniFlie()
         self.initIconsDir()
         self.initBackground()
-        self.initQss()
+        #self.initQss()
         self.initSize()
         self.initWidget()
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
+        #self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         
         self.nodeiconpath = widget.pathjson.NodeIconPath.NodeIconPath(SORT)
 
@@ -242,6 +265,8 @@ class HoudiniHelp(QWidget):
         self.setbutton = QPushButton("设置",self)
         self.setbutton.setFixedSize(self.selectheight,self.selectheight)
         self.setbutton.clicked.connect(self.clickSetButton)
+        self.setbutton.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setbutton.setStyleSheet(u"background-color: rgb(52, 59, 72);")
         
         self.line_edit = QLineEdit(self)
         self.line_edit.setFixedHeight(self.selectheight)
@@ -253,6 +278,8 @@ class HoudiniHelp(QWidget):
         self.selectbutton = QPushButton("搜索",self)
         self.selectbutton.setFixedSize(self.selectheight,self.selectheight)
         self.selectbutton.clicked.connect(self.selectNode)
+        self.selectbutton.setCursor(QCursor(Qt.PointingHandCursor))
+        self.selectbutton.setStyleSheet(u"background-color: rgb(52, 59, 72);")
         
         self.h_layout.addWidget(self.setbutton)
         self.h_layout.addWidget(self.line_edit)
@@ -265,19 +292,17 @@ class HoudiniHelp(QWidget):
         self.v_layout.setAlignment(Qt.AlignTop)
         self.v_layout.addLayout(self.h_layout)
         
-        
         self.w = QWidget(self)
         self.scrollArea = W_ScrollArea(self.w)
         self.v_layout.addWidget(self.w)
         self.setLayout(self.v_layout)
-    
+        
     def click(self,icon:IconsWidget):
         """点击"""
         #print(icon.label_text.text())
         self.nodewidget = NodeWidget(self,icon)
         self.nodewidget.show()
         
-
     def clickSetButton(self):
         """点击设置按钮"""
         self.setwidget = setWidget.SetWidget()
@@ -344,29 +369,29 @@ if __name__ == "__main__":
     thread_01 = Thread(target=server.Check.UpdateCheck.run)
     thread_01.start()
     app=QApplication(sys.argv)
-    widget=HoudiniHelp()
-    widget.show()
+    pyhwidget=HoudiniHelp()
+    pyhwidget.show()
     sys.exit(app.exec_())
 else:
     # 创建线程01，不指定参数
     thread_01 = Thread(target=server.Check.UpdateCheck.run)
     thread_01.start()
+    #import hou
+    #a=HoudiniHelp()
+    #a.show()
     
-    widget=HoudiniHelp()
-    widget.show()
-    import hou
-    nodes = list(hou.selectedNodes())
-    if nodes:
-        string = nodes[0].type().name()
-        icon_path = PATH+'/icons/OBJ/geo1.svg'
-        string = ''.join(e for e in string if e.isalnum())
-        icon_name = ''.join([i for i in string if not i.isdigit()])
-        print(icon_name)
-        class icon():
-            pass
-        icon.icon_path = icon_path
-        icon.icon_name = icon_name
-        widget.click(icon)
+    # nodes = list(hou.selectedNodes())
+    # if nodes:
+    #     string = nodes[0].type().name()
+    #     icon_path = PATH+'/icons/OBJ/geo1.svg'
+    #     string = ''.join(e for e in string if e.isalnum())
+    #     icon_name = ''.join([i for i in string if not i.isdigit()])
+    #     print(icon_name)
+    #     class icon():
+    #         pass
+    #     icon.icon_path = icon_path
+    #     icon.icon_name = icon_name
+    #     a.click(icon)
         
     
 

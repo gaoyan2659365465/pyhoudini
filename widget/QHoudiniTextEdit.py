@@ -38,6 +38,10 @@ class QHoudiniTextEdit(QScrollArea):
         self.b = QPushButton("你好呀!",self.topFiller)
         self.b.setMinimumSize(50,30)
         self.b.setMaximumSize(50,30)
+        def runNodeData():
+            data = self.textedit.toPlainText()
+            exec(data)
+        self.b.clicked.connect(runNodeData)
         
         self.vlayout.addWidget(self.textedit)
         self.vlayout.addWidget(self.b)
@@ -57,16 +61,19 @@ class QHoudiniTextEdit(QScrollArea):
     def resizeEvent(self, a0: QResizeEvent):
         self.topFiller.setGeometry(0,0,self.width()-10,self.height())
     
-    def dragEnterEvent(self,e):
-        print("拖动成功1:")
-        print(e)
+    # def dragEnterEvent(self,e):
+    #     print("拖动成功1:")
+    #     print(e)
         
     def dropEvent(self, event):
         source = event.source()
         print("拖动成功:")
-        a = event.mimeData().data()
-        print(a)
-        #QMimeData()
-        print(event.mimeData().text())
         if source and source != self:
-            print(event.mimeData().text())
+            nodename = event.mimeData().text()
+            print(nodename)
+            import toolutils
+            data = toolutils.generateToolScriptForNode(nodename)
+            a = "kwargs = {'toolname': 'geo', 'panename': '', 'altclick': False, 'ctrlclick': False, 'shiftclick': False, 'cmdclick': False, 'pane': None, 'viewport': None, 'inputnodename': '', 'outputindex': -1, 'inputs': [], 'outputnodename': '', 'inputindex': -1, 'outputs': [], 'branch': False, 'autoplace': False, 'requestnew': False}"
+            b = "import hou"
+            self.textedit.setText(a+'\n'+b+'\n'+data)
+

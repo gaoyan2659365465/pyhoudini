@@ -1657,6 +1657,23 @@ p, li { white-space: pre-wrap; }
                  <number>0</number>
                 </property>
                 <item>
+                 <widget class="QPushButton" name="miniBtn">
+                  <property name="minimumSize">
+                   <size>
+                    <width>28</width>
+                    <height>28</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="resources.qrc">
+                    <normaloff>:/icons/images/icons/cil-pin.png</normaloff>:/icons/images/icons/cil-pin.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="settingsTopBtn">
                   <property name="minimumSize">
                    <size>
@@ -1893,7 +1910,7 @@ p, li { white-space: pre-wrap; }
                       <string notr="true">background: transparent;</string>
                      </property>
                      <property name="currentIndex">
-                      <number>3</number>
+                      <number>2</number>
                      </property>
                      <widget class="QWidget" name="home">
                       <property name="styleSheet">
@@ -2758,21 +2775,6 @@ background-repeat: no-repeat;</string>
                         </widget>
                        </item>
                       </layout>
-                     </widget>
-                     <widget class="QWidget" name="page">
-                      <widget class="QPushButton" name="pushButton_2">
-                       <property name="geometry">
-                        <rect>
-                         <x>30</x>
-                         <y>20</y>
-                         <width>221</width>
-                         <height>121</height>
-                        </rect>
-                       </property>
-                       <property name="text">
-                        <string>PushButton</string>
-                       </property>
-                      </widget>
                      </widget>
                     </widget>
                    </item>

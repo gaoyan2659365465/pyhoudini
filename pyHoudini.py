@@ -4,7 +4,7 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from widget.W_ScrollArea import W_ScrollArea
-import widget.pathjson.NodeIconPath
+import widget.pathjson.NodeIconPath as NodeIconPath
 #reload(widget.pathjson.NodeIconPath)
 import setWidget
 #reload(setWidget)
@@ -180,13 +180,11 @@ class HoudiniHelp(QWidget):
         self.initIniFlie()
         self.initIconsDir()
         self.initBackground()
-        #self.initQss()
         self.initSize()
+        self.nodeiconpath = NodeIconPath.NodeIconPath(SORT)
         self.initWidget()
         #self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         
-        self.nodeiconpath = widget.pathjson.NodeIconPath.NodeIconPath(SORT)
-
         self.num_x = 0
         self.num_y = 0
         self.num_ = 0
@@ -195,9 +193,7 @@ class HoudiniHelp(QWidget):
         self.timer.timeout.connect(self.initIconWidget)
         #设置时间间隔并启动定时器
         self.timer.start(10)
-        #代码补全-------------------------
-        self.extention.active_script(self.nodeiconpath.names)
-        #---------------------------------------
+        
         
     def initIconWidget(self):
         """用于生成图标"""
@@ -262,28 +258,54 @@ class HoudiniHelp(QWidget):
         self.h_layout.setContentsMargins(0,0,0,0)
         self.h_layout.setAlignment(Qt.AlignLeft)
         
-        self.setbutton = QPushButton("设置",self)
+        self.setbutton = QPushButton("",self)
         self.setbutton.setFixedSize(self.selectheight,self.selectheight)
         self.setbutton.clicked.connect(self.clickSetButton)
         self.setbutton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.setbutton.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.setbutton.setStyleSheet(u"QPushButton { background-color: rgba(255, 255, 255, 0); border: none;  border-radius: 5px; }\
+                                        QPushButton:hover { background-color: rgb(44, 49, 57); border-style: solid; border-radius: 4px; }\
+                                        QPushButton:pressed { background-color: rgb(23, 26, 30); border-style: solid; border-radius: 4px; }")
+        icon2 = QIcon()
+        icon2.addFile(u":/icons/images/icons/icon_settings.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.setbutton.setIcon(icon2)
+        self.setbutton.setIconSize(QSize(20, 20))
         
         self.line_edit = QLineEdit(self)
         self.line_edit.setFixedHeight(self.selectheight)
         self.line_edit.setAttribute(Qt.WA_InputMethodEnabled, False)#屏蔽输入法
+        self.line_edit.setStyleSheet(u"background-color: rgb(33, 37, 43);\
+                                     border-radius: 17px;")
+        self.line_edit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"搜索节点..", None))
         self.line_edit.returnPressed.connect(self.lineEdit_function)
         self.extention = CodeAC(self.line_edit)
-        
-        
-        self.selectbutton = QPushButton("搜索",self)
-        self.selectbutton.setFixedSize(self.selectheight,self.selectheight)
+        #代码补全-------------------------
+        self.extention.active_script(self.nodeiconpath.names)
+        #---------------------------------------
+
+        self.selectbutton = QPushButton("",self)
         self.selectbutton.clicked.connect(self.selectNode)
         self.selectbutton.setCursor(QCursor(Qt.PointingHandCursor))
-        self.selectbutton.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.selectbutton.setFixedSize(self.selectheight-4,self.selectheight-4)
+        self.selectbutton.setStyleSheet("border: none;border-radius: 15px;")
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/images/icons/cil-magnifying-glass.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.selectbutton.setIcon(icon1)
+        self.select_hlayout = QHBoxLayout()
+        self.select_hlayout.addStretch()
+        self.select_hlayout.addWidget(self.selectbutton)
+        self.select_hlayout.setSpacing(0)
+        self.select_hlayout.setContentsMargins(0, 0, 2, 0)
+        self.line_edit.setLayout(self.select_hlayout)
+        #icon1 = QIcon()
+        #icon1.addFile(u":/icons/images/icons/cil-magnifying-glass.png", QSize(50,50), QIcon.Normal, QIcon.Off)
+        
+        #new_action = QAction(self.line_edit)#创建对象
+        #new_action.setIcon(icon1)  #设置图标
+        #new_action.triggered.connect(self.selectNode)#点击信号
+        #self.line_edit.addAction(new_action,QLineEdit.TrailingPosition)
         
         self.h_layout.addWidget(self.setbutton)
         self.h_layout.addWidget(self.line_edit)
-        self.h_layout.addWidget(self.selectbutton)
         
         
         self.v_layout = QVBoxLayout()
@@ -299,7 +321,9 @@ class HoudiniHelp(QWidget):
         
     def click(self,icon:IconsWidget):
         """点击"""
-        #print(icon.label_text.text())
+        try:
+            self.nodeCloseEvent()#防止从节点直接进入页面的重叠bug
+        except:pass
         self.nodewidget = NodeWidget(self,icon)
         self.nodewidget.show()
         
@@ -330,18 +354,6 @@ class HoudiniHelp(QWidget):
     def lineEdit_function(self):
         """搜索框按下回车"""
         self.selectNode()
-        
-    def initQss(self):
-        """初始化Qss"""
-        class CommonHelper:
-            """加载样式"""
-            @staticmethod
-            def readQss(style):
-                with open(style,'r',encoding='utf-8') as f:
-                    return f.read()
-        styleFile = PATH+'/widget/qss/style.qss'
-        self.qssStyle = CommonHelper.readQss(styleFile)
-        QApplication.instance().setStyleSheet(self.qssStyle)
     
     def initBackground(self):
         """初始化背景颜色"""

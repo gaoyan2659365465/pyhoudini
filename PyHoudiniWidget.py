@@ -14,7 +14,6 @@ class PyHoudiniWidget(PyDracula.main.MainWindow):
         PyDracula.main.MainWindow.__init__(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
         self.houdinihelp=pyHoudini.HoudiniHelp()
-        #self.houdinihelp=QWidget()
         self.ui.stackedWidget.addWidget(self.houdinihelp)
     
     def buttonClick(self):
@@ -42,9 +41,6 @@ class PyHoudiniWidget(PyDracula.main.MainWindow):
 
         if btnName == "btn_save":
             print("Save BTN clicked!")
-            self.ui.stackedWidget.setCurrentWidget(self.ui.page)
-            PyDracula.main.UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(PyDracula.main.UIFunctions.selectMenu(btn.styleSheet()))
         
         if btnName == "btn_my":
             self.ui.stackedWidget.setCurrentWidget(self.houdinihelp)
@@ -63,3 +59,5 @@ if __name__ == "__main__":
 else:
     pyhwidget=PyHoudiniWidget()
     #pyhwidget.show()
+
+#vop节点无法显示

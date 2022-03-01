@@ -1,4 +1,19 @@
 import sys
-sys.path.append("C:/Users/26593/Desktop/pyhoudini/") 
+PATH = "C:/Users/26593/Desktop/pyhoudini/"
+sys.path.append(PATH) 
+
 import PyHoudiniWidget
 PyHoudiniWidget.pyhwidget.show()
+import hou
+nodes = list(hou.selectedNodes())
+if nodes:
+    string = nodes[0].type().name()
+    icon_path = PATH+'/icons/OBJ/geo1.svg'
+    string = ''.join(e for e in string if e.isalnum())
+    icon_name = ''.join([i for i in string if not i.isdigit()])
+    print(icon_name)
+    class icon():
+        pass
+    icon.icon_path = icon_path
+    icon.icon_name = icon_name
+    PyHoudiniWidget.pyhwidget.houdinihelp.click(icon)

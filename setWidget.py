@@ -9,7 +9,7 @@ import configparser#读取ini配置文件
 class SetWidget(QWidget):
     def __init__(self):
         super().__init__()
-        
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         self.v_layout = QVBoxLayout()
         
         self.h_layout3 = QHBoxLayout()

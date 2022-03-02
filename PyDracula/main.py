@@ -172,6 +172,7 @@ class MainWindow(QMainWindow):#QWidget  QMainWindow
             print('Mouse click: LEFT CLICK')
         if event.buttons() == Qt.RightButton:
             print('Mouse click: RIGHT CLICK')
+        super().mousePressEvent(event)
 
 
 

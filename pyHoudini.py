@@ -16,7 +16,7 @@ from threading import Thread
 import sys
 import server.Check.UpdateCheck
 #reload(server.Check.UpdateCheck)
-from widget.QHoudiniTextEdit import QHoudiniTextEdit
+from widget.QHoudiniEdit import QHoudiniEdit
 
 
 PATH = ""
@@ -60,7 +60,7 @@ class NodeWidget(QWidget):
         self.v_layout.addLayout(self.h_layout)
         self.v_layout.setAlignment(Qt.AlignTop)
         
-        self.text_Edit = QHoudiniTextEdit(self)#QPlainTextEdit QTextEdit
+        self.text_Edit = QHoudiniEdit(self)#QPlainTextEdit QTextEdit
         self.text_Edit.setGeometry(10,70,self.width()-20,self.height()-100)
         
         # self.htmljschannel = self.HtmlJsChannel(self)

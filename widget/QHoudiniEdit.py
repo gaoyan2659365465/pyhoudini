@@ -30,7 +30,6 @@ class QHWNode(QLabel):
                     exec(self.datatext)
                 except:pass
         
-
 class QHTWTextEdit(QTextEdit):
     resized = Signal()
     def __init__(self, parent=None):

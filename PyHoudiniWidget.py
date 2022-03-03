@@ -7,6 +7,7 @@ import PyDracula.main
 import pyHoudini
 #reload(pyHoudini)
 import sys
+import widget.miniWidget as mini
 
 
 class PyHoudiniWidget(PyDracula.main.MainWindow):
@@ -15,6 +16,27 @@ class PyHoudiniWidget(PyDracula.main.MainWindow):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
         self.houdinihelp=pyHoudini.HoudiniHelp()
         self.ui.stackedWidget.addWidget(self.houdinihelp)
+        
+        self.miniw = mini.MiniWidget()
+        self.isminiw = False#是否迷你模式
+        # MINI
+        def openMiniWidget():
+            self.miniw.show()
+            self.isminiw = True
+            self.miniw.setMaxWidget(self)
+            self.hide()
+        self.ui.miniBtn.clicked.connect(openMiniWidget)
+    
+    def show(self):
+        try:
+            if self.isminiw:
+                self.miniw.show()
+                self.miniw.setMaxWidget(self)
+                self.hide()
+                self.miniw.move(QCursor.pos())
+            else:
+                super().show()
+        except:pass
     
     def buttonClick(self):
         # GET BUTTON CLICKED
@@ -59,5 +81,3 @@ if __name__ == "__main__":
 else:
     pyhwidget=PyHoudiniWidget()
     #pyhwidget.show()
-
-#vop节点无法显示

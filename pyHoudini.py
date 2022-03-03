@@ -1,22 +1,19 @@
-from importlib import reload
-
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
-from widget.W_ScrollArea import W_ScrollArea
-import widget.pathjson.NodeIconPath as NodeIconPath
-#reload(widget.pathjson.NodeIconPath)
+from importlib import reload
 import setWidget
-#reload(setWidget)
-import widget.HtmlView as HtmlView
 import os
+import sys
 import zipfile
 import configparser#读取ini配置文件
 from threading import Thread
-import sys
 import server.Check.UpdateCheck
-#reload(server.Check.UpdateCheck)
+from widget.W_ScrollArea import W_ScrollArea
+import widget.pathjson.NodeIconPath as NodeIconPath
+import widget.HtmlView as HtmlView
 from widget.QHoudiniEdit import QHoudiniEdit
+from widget.CodeActive import CodeAC
 
 
 PATH = ""
@@ -120,7 +117,6 @@ class NodeWidget(QWidget):
             """html初始化时获取内容"""
             self.parent().initTextEdit()
         
-
 class IconsWidget(QWidget):
     click=Signal(object)#自定义点击信号
     def __init__(self,p,i):
@@ -159,21 +155,6 @@ class IconsWidget(QWidget):
         painter.setPen(Qt.NoPen)
         painter.drawRect(0,0,self.width(),self.height())
     
-
-class CodeAC:
-    #代码自动补全功能
-    def __init__(self, input_line):
-        self.completer = QCompleter()
-        self.completer.setFilterMode(Qt.MatchStartsWith)# Qt::MatchStartsWith只匹配开头Qt.MatchContains
-        input_line.setCompleter(self.completer)
-        self.model = QStandardItemModel()
-            
-    def active_script(self,result):
-        for cmd in result:
-            item = QStandardItem(cmd)
-            self.model.insertRow(0, item)
-        self.completer.setModel(self.model)
-
 class HoudiniHelp(QWidget):
     def __init__(self):
         super().__init__()
@@ -296,13 +277,6 @@ class HoudiniHelp(QWidget):
         self.select_hlayout.setSpacing(0)
         self.select_hlayout.setContentsMargins(0, 0, 2, 0)
         self.line_edit.setLayout(self.select_hlayout)
-        #icon1 = QIcon()
-        #icon1.addFile(u":/icons/images/icons/cil-magnifying-glass.png", QSize(50,50), QIcon.Normal, QIcon.Off)
-        
-        #new_action = QAction(self.line_edit)#创建对象
-        #new_action.setIcon(icon1)  #设置图标
-        #new_action.triggered.connect(self.selectNode)#点击信号
-        #self.line_edit.addAction(new_action,QLineEdit.TrailingPosition)
         
         self.h_layout.addWidget(self.setbutton)
         self.h_layout.addWidget(self.line_edit)
@@ -378,16 +352,17 @@ class HoudiniHelp(QWidget):
 
 if __name__ == "__main__":
     # 创建线程01，不指定参数
-    thread_01 = Thread(target=server.Check.UpdateCheck.run)
-    thread_01.start()
+    #thread_01 = Thread(target=server.Check.UpdateCheck.run)
+    #thread_01.start()
     app=QApplication(sys.argv)
     pyhwidget=HoudiniHelp()
     pyhwidget.show()
     sys.exit(app.exec_())
 else:
+    pass
     # 创建线程01，不指定参数
-    thread_01 = Thread(target=server.Check.UpdateCheck.run)
-    thread_01.start()
+    #thread_01 = Thread(target=server.Check.UpdateCheck.run)
+    #thread_01.start()
     #import hou
     #a=HoudiniHelp()
     #a.show()
@@ -413,11 +388,17 @@ else:
 2、自动补全(已解决)
 3、节点上按快捷键,直接可以跳转到写笔记的界面(已解决)
 4、搜索栏按回车搜索(已解决)
-5、收藏栏点爱心、默认屏蔽无笔记节点
-6、快捷键呼出悬浮小搜索栏直接快速查找
-7、笔记能创建例子,方便学习
-8、笔记框加图片(不太好用,需要优化)
-9、加自动更新功能
-10、搜索框禁用中文输入法(已解决)
-11、加载插件太慢
+5、笔记能创建例子,方便学习(已解决)
+6、加自动更新功能(待优化)
+7、搜索框禁用中文输入法(已解决)
+8、加载插件太慢(已解决)
+9、收藏栏点爱心、默认屏蔽无笔记节点
+10、快捷键呼出悬浮小搜索栏直接快速查找
+11、内容加入视频控件、图片控件
+12、全局搜索内容
+13、笔记的序列化保存
+14、能直接切换节点类型vop sop等
+15、内置vex代码段
+16、字太小
+17、
 """

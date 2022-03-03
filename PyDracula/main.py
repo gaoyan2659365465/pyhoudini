@@ -85,10 +85,7 @@ class MainWindow(QMainWindow):#QWidget  QMainWindow
             UIFunctions.toggleRightBox(self, True)
         widgets.settingsTopBtn.clicked.connect(openCloseRightBox)
         
-        # MINI
-        def openMiniWidget():
-            pass
-        widgets.miniBtn.clicked.connect(openMiniWidget)
+        
 
         # SHOW APP
         # ///////////////////////////////////////////////////////////////

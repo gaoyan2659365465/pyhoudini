@@ -5,14 +5,13 @@ from PySide2.QtGui import *
 from widget.CodeActive import CodeAC
 import widget.pathjson.NodeIconPath as NodeIconPath
 
-SORT = "GeometryNodes"
 
 class MiniWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None,p=None):
         super().__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
         self.setAttribute(Qt.WA_TranslucentBackground,True)#背景透明
-        
+        self.setMaxWidget(p)
         self.selectheight = 40
         
         self.line_edit = QLineEdit(self)
@@ -46,7 +45,7 @@ class MiniWidget(QWidget):
         self.line_edit.returnPressed.connect(selectNode)
         
         #代码补全-------------------------
-        self.nodeiconpath = NodeIconPath.NodeIconPath(SORT)
+        self.nodeiconpath = NodeIconPath.NodeIconPath(self.maxwidget.houdinihelp.sort)
         self.extention = CodeAC(self.line_edit)
         self.extention.active_script(self.nodeiconpath.names)
         #---------------------------------------
@@ -95,5 +94,9 @@ class MiniWidget(QWidget):
     def setMaxWidget(self,widget):
         """保存大窗体"""
         self.maxwidget = widget
-        
+    
+    def initNodeIconPath(self,name):
+        self.nodeiconpath = NodeIconPath.NodeIconPath(name)
+        self.extention = CodeAC(self.line_edit)
+        self.extention.active_script(self.nodeiconpath.names)
         

@@ -15,9 +15,11 @@ class PyHoudiniWidget(PyDracula.main.MainWindow):
         PyDracula.main.MainWindow.__init__(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
         self.houdinihelp=pyHoudini.HoudiniHelp()
+        self.houdinihelp.setWindows(self)#将自己发过去备用
         self.ui.stackedWidget.addWidget(self.houdinihelp)
         
-        self.miniw = mini.MiniWidget()
+        self.miniw = mini.MiniWidget(None,self)
+        self.miniw.setMaxWidget(self)
         self.isminiw = False#是否迷你模式
         # MINI
         def openMiniWidget():

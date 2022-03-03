@@ -7,8 +7,9 @@ import configparser#读取ini配置文件
 
 
 class SetWidget(QWidget):
-    def __init__(self):
+    def __init__(self,window):
         super().__init__()
+        self.parentwidget = window
         self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         self.v_layout = QVBoxLayout()
         
@@ -124,6 +125,9 @@ class SetWidget(QWidget):
         conf.write(open(__file__[:-12]+"config.ini", 'w'))
         
         print("已保存请重新打开插件^-^")
+        self.parentwidget.initNodeIconPath(self.combo_box.currentText())
+        self.parentwidget.selectNode()
+        self.parentwidget.pyhoudiniwidget.miniw.initNodeIconPath(self.combo_box.currentText())
     
     def updateEvent(self):
         """打开更新网页"""

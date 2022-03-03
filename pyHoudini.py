@@ -162,7 +162,8 @@ class HoudiniHelp(QWidget):
         self.initIconsDir()
         self.initBackground()
         self.initSize()
-        self.nodeiconpath = NodeIconPath.NodeIconPath(SORT)
+        self.sort = SORT
+        self.nodeiconpath = NodeIconPath.NodeIconPath(self.sort)
         self.initWidget()
         #self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         
@@ -175,6 +176,12 @@ class HoudiniHelp(QWidget):
         #设置时间间隔并启动定时器
         self.timer.start(10)
         
+    def initNodeIconPath(self,name):
+        """初始化图标路径"""
+        self.sort = name
+        self.nodeiconpath = NodeIconPath.NodeIconPath(name)
+        self.extention = CodeAC(self.line_edit)
+        self.extention.active_script(self.nodeiconpath.names)
         
     def initIconWidget(self):
         """用于生成图标"""
@@ -303,7 +310,7 @@ class HoudiniHelp(QWidget):
         
     def clickSetButton(self):
         """点击设置按钮"""
-        self.setwidget = setWidget.SetWidget()
+        self.setwidget = setWidget.SetWidget(self)
         self.setwidget.show()
     
     def selectNode(self):
@@ -348,6 +355,9 @@ class HoudiniHelp(QWidget):
         self.adjustSize()
         self.resize(a)
 
+    def setWindows(self,widget):
+        """保存主窗体的引用方便调用"""
+        self.pyhoudiniwidget = widget
     
 
 if __name__ == "__main__":
@@ -397,7 +407,7 @@ else:
 11、内容加入视频控件、图片控件(待优化)
 12、全局搜索内容
 13、笔记的序列化保存
-14、能直接切换节点类型vop sop等
+14、能直接切换节点类型vop sop等(已解决)
 15、内置vex代码段
 16、字太小
 17、

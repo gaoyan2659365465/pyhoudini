@@ -124,7 +124,7 @@ class SetWidget(QWidget):
         
         conf.write(open(__file__[:-12]+"config.ini", 'w'))
         
-        print("已保存请重新打开插件^-^")
+        print("已保存请重新打开Houdini^-^")
         self.parentwidget.initNodeIconPath(self.combo_box.currentText())
         self.parentwidget.selectNode()
         self.parentwidget.pyhoudiniwidget.miniw.initNodeIconPath(self.combo_box.currentText())

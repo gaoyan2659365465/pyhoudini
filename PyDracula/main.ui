@@ -2765,20 +2765,6 @@ background-repeat: no-repeat;</string>
                        </item>
                       </layout>
                      </widget>
-                     <widget class="QWidget" name="new_page">
-                      <layout class="QVBoxLayout" name="verticalLayout_20">
-                       <item>
-                        <widget class="QLabel" name="label">
-                         <property name="text">
-                          <string>NEW PAGE TEST</string>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
                     </widget>
                    </item>
                   </layout>

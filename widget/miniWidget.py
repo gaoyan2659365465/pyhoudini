@@ -50,15 +50,6 @@ class MiniWidget(QWidget):
         self.extention.active_script(self.nodeiconpath.names)
         #---------------------------------------
         
-        # self.selectbutton = QPushButton("",self)
-        # #self.selectbutton.clicked.connect(self.selectNode)
-        # self.selectbutton.setCursor(QCursor(Qt.PointingHandCursor))
-        # self.selectbutton.setFixedSize(self.selectheight-4,self.selectheight-4)
-        # self.selectbutton.setStyleSheet("border: none;border-radius: 15px;")
-        # icon1 = QIcon()
-        # icon1.addFile(u":/icons/images/icons/cil-magnifying-glass.png", QSize(), QIcon.Normal, QIcon.Off)
-        # self.selectbutton.setIcon(icon1)
-        
         self.maxbutton = QPushButton("",self)
         def maxshow():
             self.maxwidget.isminiw = False

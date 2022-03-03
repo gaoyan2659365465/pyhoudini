@@ -1,18 +1,16 @@
-from importlib import reload
+import sys
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
-import PyDracula.main
-#reload(PyDracula.main)
+
 import pyHoudini
-#reload(pyHoudini)
-import sys
+import PyDracula.main as main
 import widget.miniWidget as mini
 
 
-class PyHoudiniWidget(PyDracula.main.MainWindow):
+class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
-        PyDracula.main.MainWindow.__init__(self)
+        main.MainWindow.__init__(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
         self.houdinihelp=pyHoudini.HoudiniHelp()
         self.houdinihelp.setWindows(self)#将自己发过去备用
@@ -48,28 +46,26 @@ class PyHoudiniWidget(PyDracula.main.MainWindow):
         # SHOW HOME PAGE
         if btnName == "btn_home":
             self.ui.stackedWidget.setCurrentWidget(self.ui.home)
-            PyDracula.main.UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(PyDracula.main.UIFunctions.selectMenu(btn.styleSheet()))
+            main.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
 
         # SHOW WIDGETS PAGE
         if btnName == "btn_widgets":
             self.ui.stackedWidget.setCurrentWidget(self.ui.widgets)
-            PyDracula.main.UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(PyDracula.main.UIFunctions.selectMenu(btn.styleSheet()))
+            main.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
 
         # SHOW NEW PAGE
         if btnName == "btn_new":
-            self.ui.stackedWidget.setCurrentWidget(self.ui.new_page) # SET PAGE 
-            PyDracula.main.UIFunctions.resetStyle(self, btnName) # RESET ANOTHERS BUTTONS SELECTED
-            btn.setStyleSheet(PyDracula.main.UIFunctions.selectMenu(btn.styleSheet())) # SELECT MENU
+            print("")
 
         if btnName == "btn_save":
             print("Save BTN clicked!")
         
         if btnName == "btn_my":
             self.ui.stackedWidget.setCurrentWidget(self.houdinihelp)
-            PyDracula.main.UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(PyDracula.main.UIFunctions.selectMenu(btn.styleSheet()))
+            main.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
             
 
         # PRINT BTN NAME
@@ -82,4 +78,3 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
 else:
     pyhwidget=PyHoudiniWidget()
-    #pyhwidget.show()

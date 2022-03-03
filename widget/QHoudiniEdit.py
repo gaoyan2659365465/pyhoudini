@@ -1,4 +1,3 @@
-import imp
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
@@ -12,10 +11,9 @@ class QHWUrlWeb(QCommandLinkButton):
         super().__init__(parent)
         self.url = "http://www.baidu.com"
         #-----------------------------------
-        self.selectw = QWidget(self.parent().parent())
-        self.selectw.move(self.parent().x()+5,self.parent().y()+5)
-        self.selectw.resize(300,40)
-        self.selectw.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
+        self.selectw = QWidget()
+        self.selectw.resize(300,150)
+        self.selectw.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         self.selectw.setAttribute(Qt.WA_TranslucentBackground,True)#背景透明
         self.selectw.setStyleSheet(u'QWidget {color: rgb(221, 221, 221);\
 	                                font: 10pt "Segoe UI";}\
@@ -32,11 +30,15 @@ class QHWUrlWeb(QCommandLinkButton):
                                         border: 2px solid rgb(91, 101, 124);}')
         self.selectw_ = QWidget(self.selectw)
         self.selectw_.resize(self.selectw.size())
-        self.selectw_.setStyleSheet("background-color: rgb(255, 121, 198);border-radius: 5px;")
+        self.selectw_.setStyleSheet("background-color: rgb(33, 37, 43);border-radius: 5px;")
         h_layout = QHBoxLayout()
         h_layout.setSpacing(0)
         h_layout.setContentsMargins(5, 0, 5, 0)
-        self.selectw_.setLayout(h_layout)
+        v_layout = QVBoxLayout()
+        v_layout.setSpacing(0)
+        v_layout.setContentsMargins(0, 0, 0, 0)
+        v_layout.addLayout(h_layout)
+        self.selectw_.setLayout(v_layout)
         
         self.linew = QLineEdit(self.selectw_)
         self.linew.setText(self.url)
@@ -49,6 +51,14 @@ class QHWUrlWeb(QCommandLinkButton):
         buttonw.setIcon(icon1)
         h_layout.addWidget(self.linew)
         h_layout.addWidget(buttonw)
+        
+        self.linewA = QLineEdit(self.selectw_)
+        self.linewA.setText("Link Button")
+        self.linewB = QLineEdit(self.selectw_)
+        self.linewB.setText("Link description")
+        v_layout.addWidget(self.linewA)
+        v_layout.addWidget(self.linewB)
+        
         self.selectw.show()
         #-----------------------------------
         self.setObjectName(u"commandLinkButton")
@@ -67,6 +77,8 @@ class QHWUrlWeb(QCommandLinkButton):
         """保存url"""
         self.url = self.linew.text()
         self.selectw.close()
+        self.setText(QCoreApplication.translate("MainWindow", self.linewA.text(), None))
+        self.setDescription(QCoreApplication.translate("MainWindow", self.linewB.text(), None))
     
     def mousePressEvent(self, event: QMouseEvent):
         """鼠标按下"""

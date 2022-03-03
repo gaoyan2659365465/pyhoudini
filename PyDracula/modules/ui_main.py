@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainstXuil.ui'
+## Form generated from reading UI file 'mainttAuzF.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -1124,6 +1124,7 @@ class Ui_MainWindow(object):
         icon5 = QIcon()
         icon5.addFile(u":/icons/images/icons/cil-folder-open.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pushButton.setIcon(icon5)
+        self.pushButton.setFlat(False)
 
         self.gridLayout.addWidget(self.pushButton, 0, 1, 1, 1)
 
@@ -1399,17 +1400,6 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.row_3)
 
         self.stackedWidget.addWidget(self.widgets)
-        self.new_page = QWidget()
-        self.new_page.setObjectName(u"new_page")
-        self.verticalLayout_20 = QVBoxLayout(self.new_page)
-        self.verticalLayout_20.setObjectName(u"verticalLayout_20")
-        self.label = QLabel(self.new_page)
-        self.label.setObjectName(u"label")
-        self.label.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_20.addWidget(self.label)
-
-        self.stackedWidget.addWidget(self.new_page)
 
         self.verticalLayout_15.addWidget(self.stackedWidget)
 
@@ -1552,7 +1542,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1676,7 +1666,6 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem23.setText(QCoreApplication.translate("MainWindow", u"Line", None));
         self.tableWidget.setSortingEnabled(__sortingEnabled)
 
-        self.label.setText(QCoreApplication.translate("MainWindow", u"NEW PAGE TEST", None))
         self.btn_message.setText(QCoreApplication.translate("MainWindow", u"Message", None))
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
         self.btn_logout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))

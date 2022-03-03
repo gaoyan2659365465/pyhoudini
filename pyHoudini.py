@@ -1,13 +1,12 @@
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from importlib import reload
-import setWidget
 import os
-import sys
 import zipfile
 import configparser#读取ini配置文件
 from threading import Thread
+from PySide2.QtWidgets import *
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+
+import setWidget
 import server.Check.UpdateCheck
 from widget.W_ScrollArea import W_ScrollArea
 import widget.pathjson.NodeIconPath as NodeIconPath
@@ -360,35 +359,25 @@ class HoudiniHelp(QWidget):
         self.pyhoudiniwidget = widget
     
 
-if __name__ == "__main__":
-    # 创建线程01，不指定参数
-    #thread_01 = Thread(target=server.Check.UpdateCheck.run)
-    #thread_01.start()
-    app=QApplication(sys.argv)
-    pyhwidget=HoudiniHelp()
-    pyhwidget.show()
-    sys.exit(app.exec_())
-else:
-    pass
-    # 创建线程01，不指定参数
-    #thread_01 = Thread(target=server.Check.UpdateCheck.run)
-    #thread_01.start()
-    #import hou
-    #a=HoudiniHelp()
-    #a.show()
-    
-    # nodes = list(hou.selectedNodes())
-    # if nodes:
-    #     string = nodes[0].type().name()
-    #     icon_path = PATH+'/icons/OBJ/geo1.svg'
-    #     string = ''.join(e for e in string if e.isalnum())
-    #     icon_name = ''.join([i for i in string if not i.isdigit()])
-    #     print(icon_name)
-    #     class icon():
-    #         pass
-    #     icon.icon_path = icon_path
-    #     icon.icon_name = icon_name
-    #     a.click(icon)
+# 创建线程01，不指定参数
+#thread_01 = Thread(target=server.Check.UpdateCheck.run)
+#thread_01.start()
+#import hou
+#a=HoudiniHelp()
+#a.show()
+
+# nodes = list(hou.selectedNodes())
+# if nodes:
+#     string = nodes[0].type().name()
+#     icon_path = PATH+'/icons/OBJ/geo1.svg'
+#     string = ''.join(e for e in string if e.isalnum())
+#     icon_name = ''.join([i for i in string if not i.isdigit()])
+#     print(icon_name)
+#     class icon():
+#         pass
+#     icon.icon_path = icon_path
+#     icon.icon_name = icon_name
+#     a.click(icon)
         
     
 

@@ -1,6 +1,166 @@
+import imp
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
+import requests
+import webbrowser
+
+
+class QHWUrlWeb(QCommandLinkButton):
+    resized = Signal()
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.url = "http://www.baidu.com"
+        #-----------------------------------
+        self.selectw = QWidget(self.parent().parent())
+        self.selectw.move(self.parent().x()+5,self.parent().y()+5)
+        self.selectw.resize(300,40)
+        self.selectw.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
+        self.selectw.setAttribute(Qt.WA_TranslucentBackground,True)#背景透明
+        self.selectw.setStyleSheet(u'QWidget {color: rgb(221, 221, 221);\
+	                                font: 10pt "Segoe UI";}\
+                                    QLineEdit {\
+                                    background-color: rgb(33, 37, 43);\
+                                    border-radius: 5px;\
+                                    border: 2px solid rgb(33, 37, 43);\
+                                    padding-left: 10px;\
+                                    selection-color: rgb(255, 255, 255);\
+                                    selection-background-color: rgb(255, 121, 198);}\
+                                    QLineEdit:hover {\
+                                        border: 2px solid rgb(64, 71, 88);}\
+                                    QLineEdit:focus {\
+                                        border: 2px solid rgb(91, 101, 124);}')
+        self.selectw_ = QWidget(self.selectw)
+        self.selectw_.resize(self.selectw.size())
+        self.selectw_.setStyleSheet("background-color: rgb(255, 121, 198);border-radius: 5px;")
+        h_layout = QHBoxLayout()
+        h_layout.setSpacing(0)
+        h_layout.setContentsMargins(5, 0, 5, 0)
+        self.selectw_.setLayout(h_layout)
+        
+        self.linew = QLineEdit(self.selectw_)
+        self.linew.setText(self.url)
+        buttonw = QPushButton("",self.selectw_)
+        buttonw.clicked.connect(self.saveUrl)
+        buttonw.setCursor(QCursor(Qt.PointingHandCursor))
+        buttonw.setStyleSheet("border: none;border-radius: 15px;")
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/images/icons/cil-save.png", QSize(), QIcon.Normal, QIcon.Off)
+        buttonw.setIcon(icon1)
+        h_layout.addWidget(self.linew)
+        h_layout.addWidget(buttonw)
+        self.selectw.show()
+        #-----------------------------------
+        self.setObjectName(u"commandLinkButton")
+        self.setCursor(QCursor(Qt.PointingHandCursor))
+        icon6 = QIcon()
+        icon6.addFile(u":/icons/images/icons/cil-link.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.setIcon(icon6)
+        self.setText(QCoreApplication.translate("MainWindow", u"Link Button", None))
+        self.setDescription(QCoreApplication.translate("MainWindow", u"Link description", None))
+        self.resize(168,54)
+        
+    def resizeEvent(self, a0: QResizeEvent):
+        self.resized.emit()#把尺寸事件转发给包裹框
+    
+    def saveUrl(self):
+        """保存url"""
+        self.url = self.linew.text()
+        self.selectw.close()
+    
+    def mousePressEvent(self, event: QMouseEvent):
+        """鼠标按下"""
+        if event.buttons() == Qt.RightButton:
+            return
+        webbrowser.open(self.url)
+    
+    def close(self) -> bool:
+        try:
+            self.selectw.close()
+        except:pass
+        return super().close()
+
+class QHWUrlImage(QLabel):
+    """加载网络图片"""
+    resized = Signal()
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.url = "https://tse3-mm.cn.bing.net/th/id/OIP-C.Tq_jFLCrIeR5cIWDqWVArQHaLP?pid=ImgDet&rs=1"
+        res = requests.get(self.url)
+        img = QImage.fromData(res.content)
+        self.setPixmap(QPixmap.fromImage(img))
+        self.setScaledContents(True)
+        self.resize(img.width(),img.height())
+        
+        self.isshowselectw = False
+        
+    def resizeEvent(self, a0: QResizeEvent):
+        self.resized.emit()#把尺寸事件转发给包裹框
+    
+    def close(self) -> bool:
+        try:
+            self.selectw.close()
+        except:pass
+        return super().close()
+    
+    def mousePressEvent(self, event: QMouseEvent):
+        """鼠标按下"""
+        if event.buttons() == Qt.RightButton:
+            return
+        if self.isshowselectw:
+            self.selectw.close()
+            self.isshowselectw = False
+            return
+        self.selectw = QWidget(self.parent().parent())
+        self.selectw.move(self.parent().x()+5,self.parent().y()+5)
+        self.selectw.resize(300,40)
+        self.selectw.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
+        self.selectw.setAttribute(Qt.WA_TranslucentBackground,True)#背景透明
+        self.selectw.setStyleSheet(u'QWidget {color: rgb(221, 221, 221);\
+	                                font: 10pt "Segoe UI";}\
+                                    QLineEdit {\
+                                    background-color: rgb(33, 37, 43);\
+                                    border-radius: 5px;\
+                                    border: 2px solid rgb(33, 37, 43);\
+                                    padding-left: 10px;\
+                                    selection-color: rgb(255, 255, 255);\
+                                    selection-background-color: rgb(255, 121, 198);}\
+                                    QLineEdit:hover {\
+                                        border: 2px solid rgb(64, 71, 88);}\
+                                    QLineEdit:focus {\
+                                        border: 2px solid rgb(91, 101, 124);}')
+        self.selectw_ = QWidget(self.selectw)
+        self.selectw_.resize(self.selectw.size())
+        self.selectw_.setStyleSheet("background-color: rgb(255, 121, 198);border-radius: 5px;")
+        h_layout = QHBoxLayout()
+        h_layout.setSpacing(0)
+        h_layout.setContentsMargins(5, 0, 5, 0)
+        self.selectw_.setLayout(h_layout)
+        
+        self.linew = QLineEdit(self.selectw_)
+        self.linew.setText(self.url)
+        buttonw = QPushButton("",self.selectw_)
+        buttonw.clicked.connect(self.saveUrl)
+        buttonw.setCursor(QCursor(Qt.PointingHandCursor))
+        buttonw.setStyleSheet("border: none;border-radius: 15px;")
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/images/icons/cil-save.png", QSize(), QIcon.Normal, QIcon.Off)
+        buttonw.setIcon(icon1)
+        h_layout.addWidget(self.linew)
+        h_layout.addWidget(buttonw)
+        self.selectw.show()
+        self.isshowselectw = True
+            
+    def saveUrl(self):
+        """保存图片url"""
+        self.url = self.linew.text()
+        res = requests.get(self.url)
+        img = QImage.fromData(res.content)
+        self.setPixmap(QPixmap.fromImage(img))
+        self.setScaledContents(True)
+        self.resize(img.width(),img.height())
+        self.selectw.close()
+        self.isshowselectw = False
 
 class QHWNode(QLabel):
     resized = Signal()
@@ -110,6 +270,7 @@ class QHoudiniWidget(QWidget):
     
     def RightMenuEvent(self):
         """右键菜单点击事件"""
+        self.houdiniwidget.close()
         self.close()
 
     def leaveEvent(self, QEvent):
@@ -142,7 +303,7 @@ class QHoudiniEdit(QScrollArea):
     def createRightmenu(self):
         """创建右键菜单函数"""
         self.groupBox_menu = QMenu(self)
-        self.actionA = QAction(u'新建',self)#创建菜单选项对象
+        self.actionA = QAction(u'新建文本框',self)#创建菜单选项对象
         #self.actionA.setShortcut('Ctrl+S')#设置动作A的快捷键
         self.groupBox_menu.addAction(self.actionA)
         def RightMenuEvent():
@@ -152,15 +313,32 @@ class QHoudiniEdit(QScrollArea):
             houdiniwidget.addHoudiniWidget(textedit)
             self.vlayout.addWidget(houdiniwidget)
         self.actionA.triggered.connect(RightMenuEvent)
-        self.groupBox_menu.popup(QCursor.pos())#声明当鼠标在groupBox控件上右击时，在鼠标位置显示右键菜单   ,exec_,popup两个都可以，
+        
+        self.actionB = QAction(u'新建网络图片',self)#创建菜单选项对象
+        self.groupBox_menu.addAction(self.actionB)
+        def RightMenuBEvent():
+            """右键菜单点击事件"""
+            houdiniwidget = QHoudiniWidget(self.topFiller)
+            textedit = QHWUrlImage(houdiniwidget)
+            houdiniwidget.addHoudiniWidget(textedit)
+            self.vlayout.addWidget(houdiniwidget)
+        self.actionB.triggered.connect(RightMenuBEvent)
+        
+        self.actionC = QAction(u'新建网址链接',self)#创建菜单选项对象
+        self.groupBox_menu.addAction(self.actionC)
+        def RightMenuCEvent():
+            """右键菜单点击事件"""
+            houdiniwidget = QHoudiniWidget(self.topFiller)
+            textedit = QHWUrlWeb(houdiniwidget)
+            houdiniwidget.addHoudiniWidget(textedit)
+            self.vlayout.addWidget(houdiniwidget)
+        self.actionC.triggered.connect(RightMenuCEvent)
+        #声明当鼠标在groupBox控件上右击时，在鼠标位置显示右键菜单   ,exec_,popup两个都可以，
+        self.groupBox_menu.popup(QCursor.pos())
     
     def resizeEvent(self, a0: QResizeEvent):
         self.topFiller.setGeometry(0,0,self.width()-10,self.height())
     
-    # def dragEnterEvent(self,e):
-    #     print("拖动成功1:")
-    #     print(e)
-        
     def dropEvent(self, event):
         source = event.source()
         print("拖动成功:")

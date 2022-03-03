@@ -12,7 +12,6 @@ class MiniWidget(QWidget):
         super().__init__(parent)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
         self.setAttribute(Qt.WA_TranslucentBackground,True)#背景透明
-        self.setFocusPolicy(Qt.ClickFocus)
         
         self.selectheight = 40
         

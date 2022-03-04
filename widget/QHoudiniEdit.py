@@ -3,6 +3,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 import requests
 import webbrowser
+import sys
 
 
 class QHWUrlWeb(QCommandLinkButton):
@@ -43,7 +44,7 @@ class QHWUrlWeb(QCommandLinkButton):
         self.linew = QLineEdit(self.selectw_)
         self.linew.setText(self.url)
         buttonw = QPushButton("",self.selectw_)
-        buttonw.clicked.connect(self.saveUrl)
+        buttonw.clicked.connect(self.setWebUrl)
         buttonw.setCursor(QCursor(Qt.PointingHandCursor))
         buttonw.setStyleSheet("border: none;border-radius: 15px;")
         icon1 = QIcon()
@@ -73,7 +74,7 @@ class QHWUrlWeb(QCommandLinkButton):
     def resizeEvent(self, a0: QResizeEvent):
         self.resized.emit()#把尺寸事件转发给包裹框
     
-    def saveUrl(self):
+    def setWebUrl(self):
         """保存url"""
         self.url = self.linew.text()
         self.selectw.close()
@@ -92,20 +93,43 @@ class QHWUrlWeb(QCommandLinkButton):
         except:pass
         return super().close()
 
+    def saveWidget(self):
+        """序列化保存控件"""
+        list0 = []
+        list0.append(self.linewA.text())
+        list0.append(self.linewB.text())
+        list0.append(self.url)
+        data = {'QHWUrlWeb':list0}
+        return data
+    
+    def loadWidget(self,data):
+        """序列化加载控件"""
+        self.linewA.setText(data[0])
+        self.linewB.setText(data[1])
+        self.setText(QCoreApplication.translate("MainWindow", data[0], None))
+        self.setDescription(QCoreApplication.translate("MainWindow", data[1], None))
+        self.url = data[2]
+
 class QHWUrlImage(QLabel):
     """加载网络图片"""
     resized = Signal()
     def __init__(self, parent=None):
         super().__init__(parent)
         self.url = "https://tse3-mm.cn.bing.net/th/id/OIP-C.Tq_jFLCrIeR5cIWDqWVArQHaLP?pid=ImgDet&rs=1"
+        self.initImage()
+    
+    def initImage(self):
+        """初始化图片"""
         res = requests.get(self.url)
         img = QImage.fromData(res.content)
         self.setPixmap(QPixmap.fromImage(img))
         self.setScaledContents(True)
         self.resize(img.width(),img.height())
-        
+        try:
+            self.selectw.close()
+        except:pass
         self.isshowselectw = False
-        
+    
     def resizeEvent(self, a0: QResizeEvent):
         self.resized.emit()#把尺寸事件转发给包裹框
     
@@ -152,7 +176,7 @@ class QHWUrlImage(QLabel):
         self.linew = QLineEdit(self.selectw_)
         self.linew.setText(self.url)
         buttonw = QPushButton("",self.selectw_)
-        buttonw.clicked.connect(self.saveUrl)
+        buttonw.clicked.connect(self.setImageUrl)
         buttonw.setCursor(QCursor(Qt.PointingHandCursor))
         buttonw.setStyleSheet("border: none;border-radius: 15px;")
         icon1 = QIcon()
@@ -163,16 +187,20 @@ class QHWUrlImage(QLabel):
         self.selectw.show()
         self.isshowselectw = True
             
-    def saveUrl(self):
+    def setImageUrl(self):
         """保存图片url"""
         self.url = self.linew.text()
-        res = requests.get(self.url)
-        img = QImage.fromData(res.content)
-        self.setPixmap(QPixmap.fromImage(img))
-        self.setScaledContents(True)
-        self.resize(img.width(),img.height())
-        self.selectw.close()
-        self.isshowselectw = False
+        self.initImage()
+    
+    def saveWidget(self):
+        """序列化保存控件"""
+        data = {'QHWUrlImage':self.url}
+        return data
+    
+    def loadWidget(self,data):
+        """序列化加载控件"""
+        self.url = data
+        self.initImage()
 
 class QHWNode(QLabel):
     resized = Signal()
@@ -201,6 +229,15 @@ class QHWNode(QLabel):
                 try:
                     exec(self.datatext)
                 except:pass
+    
+    def saveWidget(self):
+        """序列化保存控件"""
+        data = {'QHWNode':self.datatext}
+        return data
+    
+    def loadWidget(self,data):
+        """序列化加载控件"""
+        self.datatext = data
         
 class QHTWTextEdit(QTextEdit):
     resized = Signal()
@@ -231,6 +268,15 @@ class QHTWTextEdit(QTextEdit):
         if newHeight != self.height():
             self.setFixedHeight(newHeight)
             self.setMaximumHeight(newHeight)
+    
+    def saveWidget(self):
+        """序列化保存控件"""
+        data = {'QHTWTextEdit':self.toHtml()}
+        return data
+    
+    def loadWidget(self,data):
+        """序列化加载控件"""
+        self.setHtml(data)
 
 class QHoudiniWidget(QWidget):
     def __init__(self, parent):
@@ -288,6 +334,14 @@ class QHoudiniWidget(QWidget):
     def leaveEvent(self, QEvent):
        """鼠标离开事件"""
        self.setStyleSheet(self.styledata)
+    
+    def saveWidget(self):
+        """序列化保存控件"""
+        return self.houdiniwidget.saveWidget()
+
+    def loadWidget(self,data):
+        """序列化加载控件"""
+        return self.houdiniwidget.loadWidget(data)
         
 class QHoudiniEdit(QScrollArea):
     """自定义框可以加自绘控件"""
@@ -370,3 +424,28 @@ class QHoudiniEdit(QScrollArea):
             houdiniwidget.addHoudiniWidget(node)
             self.vlayout.addWidget(houdiniwidget)
 
+    def saveWidget(self):
+        """序列化保存控件"""
+        items = []
+        for i in range(self.vlayout.count()):
+            item = self.vlayout.itemAt(i).widget()
+            items.append(item)
+        itemdata = []
+        for item in items:
+            if item.isVisible():
+                item:QHoudiniWidget
+                itemdata.append(item.saveWidget())#获取数据到列表
+        return itemdata
+    
+    def loadWidget(self,data):
+        """序列化加载控件"""
+        for key in data:
+            for key_name in key:
+                houdiniwidget = QHoudiniWidget(self.topFiller)
+                #print(key_name)
+                AClass = getattr(sys.modules[__name__],key_name)
+                textedit = AClass(houdiniwidget)
+                houdiniwidget.addHoudiniWidget(textedit)
+                self.vlayout.addWidget(houdiniwidget)
+                #print(key[key_name])
+                houdiniwidget.loadWidget(key[key_name])

@@ -51,9 +51,10 @@ class PyHoudiniWidget(main.MainWindow):
 
         # SHOW WIDGETS PAGE
         if btnName == "btn_widgets":
-            self.ui.stackedWidget.setCurrentWidget(self.ui.widgets)
-            main.UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
+            print("")
+            #self.ui.stackedWidget.setCurrentWidget(self.ui.widgets)
+            #main.UIFunctions.resetStyle(self, btnName)
+            #btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
 
         # SHOW NEW PAGE
         if btnName == "btn_new":
@@ -66,6 +67,9 @@ class PyHoudiniWidget(main.MainWindow):
             self.ui.stackedWidget.setCurrentWidget(self.houdinihelp)
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
+            #修复回到主界面不显示icon问题
+            self.houdinihelp.updateNodeWidget()
+            #--------------------------
             
 
         # PRINT BTN NAME

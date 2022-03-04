@@ -1,4 +1,5 @@
 import os
+import json
 import zipfile
 import configparser#读取ini配置文件
 from threading import Thread
@@ -45,7 +46,6 @@ class NodeWidget(QWidget):
         self.button2.setCursor(QCursor(Qt.PointingHandCursor))
         self.button2.setStyleSheet(u"background-color: rgb(52, 59, 72);")
         
-        
         self.label = QLabel(self)
         self.label.setPixmap(QPixmap(icon.icon_path))
         self.label.setFixedSize(48,48)
@@ -59,6 +59,7 @@ class NodeWidget(QWidget):
         self.text_Edit = QHoudiniEdit(self)#QPlainTextEdit QTextEdit
         self.text_Edit.setGeometry(10,70,self.width()-20,self.height()-100)
         
+        self.initTextEdit()
         # self.htmljschannel = self.HtmlJsChannel(self)
         # self.htmlview = HtmlView.HtmlView(self)
         # path = "file:///"+PATH.replace("\\", "/")+"/widget/wangEditor.html"
@@ -74,22 +75,40 @@ class NodeWidget(QWidget):
     
     def initTextEdit(self):
         """初始化富文本"""
-        try:
-            with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", encoding="utf-8") as file_obj:
-                contents = file_obj.read()
-                #print(contents)
-                jscode = "editor.dangerouslyInsertHtml('"+contents+"');"
-                self.htmlview.page().runJavaScript(jscode)
+        # try:
+        #     with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".html", encoding="utf-8") as file_obj:
+        #         contents = file_obj.read()
+        #         #print(contents)
+        #         jscode = "editor.dangerouslyInsertHtml('"+contents+"');"
+        #         self.htmlview.page().runJavaScript(jscode)
                 
-                jscode = "var div = document.getElementById('editor-container');\
-                    div.setAttribute('style','height: 0px;');"
-                self.htmlview.page().runJavaScript(jscode)
+        #         jscode = "var div = document.getElementById('editor-container');\
+        #             div.setAttribute('style','height: 0px;');"
+        #         self.htmlview.page().runJavaScript(jscode)
+        # except:pass
+        try:
+            with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".json", 'r') as json_file:
+                data = json_file.read()
+                try:
+                    result = json.loads(data)
+                except:
+                    print("出错")
+                    data.encode(encoding='gbk').decode(encoding='utf-8')
+                    result = json.loads(data)
+                self.text_Edit.loadWidget(result)
         except:pass
     
     def saveTextEdit(self):
         """保存富文本"""
-        jscode = "backend.foo(editor.getHtml());"
-        self.htmlview.page().runJavaScript(jscode)
+        data = self.text_Edit.saveWidget()
+        if os.path.isdir(PATH + '/data/'+SORT+"/") == False:
+            os.makedirs(PATH + '/data/'+SORT+"/")
+        # with open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".json", 'w', encoding="utf-8") as file_obj:
+        #     file_obj.write(str(data))
+        
+        json.dump(data, open(PATH + '/data/'+SORT+"/"+ self.icon.icon_name + ".json",'w'),ensure_ascii=False,indent=4)
+        #jscode = "backend.foo(editor.getHtml());"
+        #self.htmlview.page().runJavaScript(jscode)
 
     def paintEvent(self, event):
         """重载-绘制"""
@@ -330,6 +349,7 @@ class HoudiniHelp(QWidget):
 
         self.scrollArea.toolBoxSizeEvent()
         self.timer.stop()
+        self.updateNodeWidget()
     
     def lineEdit_function(self):
         """搜索框按下回车"""
@@ -350,10 +370,14 @@ class HoudiniHelp(QWidget):
     def nodeCloseEvent(self):
         """nodeWidget关闭事件"""
         self.nodewidget.close()
+        self.updateNodeWidget()
+
+    def updateNodeWidget(self):
+        """更新节点界面修复不显示BUG"""
         a = self.size()
         self.adjustSize()
         self.resize(a)
-
+    
     def setWindows(self,widget):
         """保存主窗体的引用方便调用"""
         self.pyhoudiniwidget = widget

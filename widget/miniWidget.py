@@ -55,6 +55,9 @@ class MiniWidget(QWidget):
             self.maxwidget.isminiw = False
             self.maxwidget.show()
             self.hide()
+            #修复回到主界面不显示icon问题
+            self.maxwidget.houdinihelp.updateNodeWidget()
+            #--------------------------
         self.maxbutton.clicked.connect(maxshow)
         self.maxbutton.setCursor(QCursor(Qt.PointingHandCursor))
         self.maxbutton.setFixedSize(self.selectheight-4,self.selectheight-4)

@@ -196,6 +196,8 @@ class HoudiniHelp(QWidget):
         
     def initNodeIconPath(self,name):
         """初始化图标路径"""
+        global SORT
+        SORT = name
         self.sort = name
         self.nodeiconpath = NodeIconPath.NodeIconPath(name)
         self.extention = CodeAC(self.line_edit)
@@ -419,9 +421,9 @@ class HoudiniHelp(QWidget):
 10、收藏栏点爱心、默认屏蔽无笔记节点
 11、内容加入视频控件、图片控件(待优化)
 12、全局搜索内容
-13、笔记的序列化保存
+13、笔记的序列化保存(已解决)
 14、能直接切换节点类型vop sop等(已解决)
 15、内置vex代码段
 16、字太小
-17、
+17、文本框适配md语法
 """

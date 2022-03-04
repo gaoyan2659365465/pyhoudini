@@ -879,154 +879,6 @@ Button */
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="btn_widgets">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>45</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Segoe UI</family>
-                    <pointsize>10</pointsize>
-                    <weight>50</weight>
-                    <italic>false</italic>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>PointingHandCursor</cursorShape>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background-image: url(:/icons/images/icons/cil-gamepad.png);</string>
-                  </property>
-                  <property name="text">
-                   <string>Widgets</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="btn_new">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>45</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Segoe UI</family>
-                    <pointsize>10</pointsize>
-                    <weight>50</weight>
-                    <italic>false</italic>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>PointingHandCursor</cursorShape>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background-image: url(:/icons/images/icons/cil-file.png);</string>
-                  </property>
-                  <property name="text">
-                   <string>New</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="btn_save">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>45</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Segoe UI</family>
-                    <pointsize>10</pointsize>
-                    <weight>50</weight>
-                    <italic>false</italic>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>PointingHandCursor</cursorShape>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background-image: url(:/icons/images/icons/cil-save.png);</string>
-                  </property>
-                  <property name="text">
-                   <string>Save</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="btn_exit">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>45</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Segoe UI</family>
-                    <pointsize>10</pointsize>
-                    <weight>50</weight>
-                    <italic>false</italic>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>PointingHandCursor</cursorShape>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background-image: url(:/icons/images/icons/cil-x.png);</string>
-                  </property>
-                  <property name="text">
-                   <string>Exit</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <widget class="QPushButton" name="btn_my">
                   <property name="minimumSize">
                    <size>
@@ -1037,11 +889,14 @@ Button */
                   <property name="cursor">
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
+                  <property name="toolTip">
+                   <string>节点文档</string>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">background-image: url(:/icons/images/icons/cil-file.png);</string>
                   </property>
                   <property name="text">
-                   <string>PushButton</string>
+                   <string>node</string>
                   </property>
                  </widget>
                 </item>
@@ -1664,12 +1519,30 @@ p, li { white-space: pre-wrap; }
                     <height>28</height>
                    </size>
                   </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>28</width>
+                    <height>28</height>
+                   </size>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="toolTip">
+                   <string>迷你模式</string>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
                   <property name="icon">
                    <iconset resource="resources.qrc">
                     <normaloff>:/icons/images/icons/cil-pin.png</normaloff>:/icons/images/icons/cil-pin.png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
                   </property>
                  </widget>
                 </item>
@@ -1691,7 +1564,7 @@ p, li { white-space: pre-wrap; }
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="toolTip">
-                   <string>Settings</string>
+                   <string>设置</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -1726,7 +1599,7 @@ p, li { white-space: pre-wrap; }
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="toolTip">
-                   <string>Minimize</string>
+                   <string>最小化</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -1771,7 +1644,7 @@ p, li { white-space: pre-wrap; }
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="toolTip">
-                   <string>Maximize</string>
+                   <string>最大化</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -1806,7 +1679,7 @@ p, li { white-space: pre-wrap; }
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="toolTip">
-                   <string>Close</string>
+                   <string>关闭</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -1910,7 +1783,7 @@ p, li { white-space: pre-wrap; }
                       <string notr="true">background: transparent;</string>
                      </property>
                      <property name="currentIndex">
-                      <number>1</number>
+                      <number>0</number>
                      </property>
                      <widget class="QWidget" name="home">
                       <property name="styleSheet">
@@ -2148,6 +2021,100 @@ background-repeat: no-repeat;</string>
                          <layout class="QVBoxLayout" name="verticalLayout_19">
                           <item>
                            <layout class="QGridLayout" name="gridLayout_2">
+                            <item row="0" column="1">
+                             <widget class="QRadioButton" name="radioButton">
+                              <property name="styleSheet">
+                               <string notr="true"/>
+                              </property>
+                              <property name="text">
+                               <string>RadioButton</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="0" colspan="2">
+                             <widget class="QComboBox" name="comboBox">
+                              <property name="font">
+                               <font>
+                                <family>Segoe UI</family>
+                                <pointsize>10</pointsize>
+                                <weight>50</weight>
+                                <italic>false</italic>
+                                <bold>false</bold>
+                               </font>
+                              </property>
+                              <property name="autoFillBackground">
+                               <bool>false</bool>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true">background-color: rgb(33, 37, 43);</string>
+                              </property>
+                              <property name="iconSize">
+                               <size>
+                                <width>16</width>
+                                <height>16</height>
+                               </size>
+                              </property>
+                              <property name="frame">
+                               <bool>true</bool>
+                              </property>
+                              <item>
+                               <property name="text">
+                                <string>Test 1</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Test 2</string>
+                               </property>
+                              </item>
+                              <item>
+                               <property name="text">
+                                <string>Test 3</string>
+                               </property>
+                              </item>
+                             </widget>
+                            </item>
+                            <item row="2" column="0" colspan="2">
+                             <widget class="QSlider" name="horizontalSlider">
+                              <property name="styleSheet">
+                               <string notr="true"/>
+                              </property>
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="0" column="4" rowspan="3">
+                             <widget class="QScrollBar" name="verticalScrollBar">
+                              <property name="styleSheet">
+                               <string notr="true"> QScrollBar:vertical { background: rgb(52, 59, 72); }
+ QScrollBar:horizontal { background: rgb(52, 59, 72); }</string>
+                              </property>
+                              <property name="orientation">
+                               <enum>Qt::Vertical</enum>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="6">
+                             <widget class="QCommandLinkButton" name="commandLinkButton">
+                              <property name="cursor">
+                               <cursorShape>PointingHandCursor</cursorShape>
+                              </property>
+                              <property name="styleSheet">
+                               <string notr="true"/>
+                              </property>
+                              <property name="text">
+                               <string>Link Button</string>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="resources.qrc">
+                                <normaloff>:/icons/images/icons/cil-link.png</normaloff>:/icons/images/icons/cil-link.png</iconset>
+                              </property>
+                              <property name="description">
+                               <string>Link description</string>
+                              </property>
+                             </widget>
+                            </item>
                             <item row="0" column="0">
                              <widget class="QCheckBox" name="checkBox">
                               <property name="autoFillBackground">
@@ -2161,34 +2128,20 @@ background-repeat: no-repeat;</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="0" column="1">
-                             <widget class="QRadioButton" name="radioButton">
-                              <property name="styleSheet">
-                               <string notr="true"/>
+                            <item row="1" column="3">
+                             <widget class="QScrollBar" name="horizontalScrollBar">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
                               </property>
-                              <property name="text">
-                               <string>RadioButton</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="2" rowspan="3">
-                             <widget class="QSlider" name="verticalSlider">
-                              <property name="styleSheet">
-                               <string notr="true"/>
-                              </property>
-                              <property name="orientation">
-                               <enum>Qt::Vertical</enum>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="4" rowspan="3">
-                             <widget class="QScrollBar" name="verticalScrollBar">
                               <property name="styleSheet">
                                <string notr="true"> QScrollBar:vertical { background: rgb(52, 59, 72); }
  QScrollBar:horizontal { background: rgb(52, 59, 72); }</string>
                               </property>
                               <property name="orientation">
-                               <enum>Qt::Vertical</enum>
+                               <enum>Qt::Horizontal</enum>
                               </property>
                              </widget>
                             </item>
@@ -2250,93 +2203,13 @@ background-repeat: no-repeat;</string>
                               </widget>
                              </widget>
                             </item>
-                            <item row="1" column="0" colspan="2">
-                             <widget class="QComboBox" name="comboBox">
-                              <property name="font">
-                               <font>
-                                <family>Segoe UI</family>
-                                <pointsize>10</pointsize>
-                                <weight>50</weight>
-                                <italic>false</italic>
-                                <bold>false</bold>
-                               </font>
-                              </property>
-                              <property name="autoFillBackground">
-                               <bool>false</bool>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true">background-color: rgb(33, 37, 43);</string>
-                              </property>
-                              <property name="iconSize">
-                               <size>
-                                <width>16</width>
-                                <height>16</height>
-                               </size>
-                              </property>
-                              <property name="frame">
-                               <bool>true</bool>
-                              </property>
-                              <item>
-                               <property name="text">
-                                <string>Test 1</string>
-                               </property>
-                              </item>
-                              <item>
-                               <property name="text">
-                                <string>Test 2</string>
-                               </property>
-                              </item>
-                              <item>
-                               <property name="text">
-                                <string>Test 3</string>
-                               </property>
-                              </item>
-                             </widget>
-                            </item>
-                            <item row="1" column="3">
-                             <widget class="QScrollBar" name="horizontalScrollBar">
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true"> QScrollBar:vertical { background: rgb(52, 59, 72); }
- QScrollBar:horizontal { background: rgb(52, 59, 72); }</string>
-                              </property>
-                              <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="6">
-                             <widget class="QCommandLinkButton" name="commandLinkButton">
-                              <property name="cursor">
-                               <cursorShape>PointingHandCursor</cursorShape>
-                              </property>
-                              <property name="styleSheet">
-                               <string notr="true"/>
-                              </property>
-                              <property name="text">
-                               <string>Link Button</string>
-                              </property>
-                              <property name="icon">
-                               <iconset resource="resources.qrc">
-                                <normaloff>:/icons/images/icons/cil-link.png</normaloff>:/icons/images/icons/cil-link.png</iconset>
-                              </property>
-                              <property name="description">
-                               <string>Link description</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="0" colspan="2">
-                             <widget class="QSlider" name="horizontalSlider">
+                            <item row="0" column="2" rowspan="3">
+                             <widget class="QSlider" name="verticalSlider">
                               <property name="styleSheet">
                                <string notr="true"/>
                               </property>
                               <property name="orientation">
-                               <enum>Qt::Horizontal</enum>
+                               <enum>Qt::Vertical</enum>
                               </property>
                              </widget>
                             </item>

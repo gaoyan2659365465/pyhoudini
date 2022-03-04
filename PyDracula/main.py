@@ -54,7 +54,8 @@ class MainWindow(QMainWindow):#QWidget  QMainWindow
 
         # TOGGLE MENU
         # ///////////////////////////////////////////////////////////////
-        widgets.toggleButton.clicked.connect(lambda: UIFunctions.toggleMenu(self, True))
+        #widgets.toggleButton.clicked.connect(lambda: UIFunctions.toggleMenu(self, True))
+        #此处先屏蔽掉左边拓展栏，等需要的时候再加
 
         # SET UI DEFINITIONS
         # ///////////////////////////////////////////////////////////////
@@ -69,21 +70,23 @@ class MainWindow(QMainWindow):#QWidget  QMainWindow
 
         # LEFT MENUS
         widgets.btn_home.clicked.connect(self.buttonClick)
-        widgets.btn_widgets.clicked.connect(self.buttonClick)
-        widgets.btn_new.clicked.connect(self.buttonClick)
-        widgets.btn_save.clicked.connect(self.buttonClick)
+        #widgets.btn_widgets.clicked.connect(self.buttonClick)
+        #widgets.btn_new.clicked.connect(self.buttonClick)
+        #widgets.btn_save.clicked.connect(self.buttonClick)
         widgets.btn_my.clicked.connect(self.buttonClick)
 
         # EXTRA LEFT BOX
         def openCloseLeftBox():
             UIFunctions.toggleLeftBox(self, True)
-        widgets.toggleLeftBox.clicked.connect(openCloseLeftBox)
+        #widgets.toggleLeftBox.clicked.connect(openCloseLeftBox)
+        #此处屏蔽左下设置按钮，等需要时再启用
         widgets.extraCloseColumnBtn.clicked.connect(openCloseLeftBox)
 
         # EXTRA RIGHT BOX
         def openCloseRightBox():
             UIFunctions.toggleRightBox(self, True)
-        widgets.settingsTopBtn.clicked.connect(openCloseRightBox)
+        #widgets.settingsTopBtn.clicked.connect(openCloseRightBox)
+        #此处屏蔽右上设置按钮，等需要时再启用
         
         
 

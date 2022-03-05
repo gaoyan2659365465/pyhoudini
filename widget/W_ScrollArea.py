@@ -1,3 +1,5 @@
+#coding=utf-8
+
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
@@ -89,7 +91,7 @@ class W_ScrollArea(QWidget):
     
     def setAutomaticSize(self,ax: int, ay: int, aw: int, ah: int):
         """自动设置节点所需要的尺寸"""
-        self.setGeometry(ax,ay,aw, ah)
+        self.setGeometry(ax,ay,aw,ah)
         widget = self.item_widget
         widget.setGeometry(ax,ay,aw, widget.sizeHint().height())
         self.w_scroll_bar.setGeometry(self.width()-15,0,10,ah-20)

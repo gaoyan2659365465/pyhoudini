@@ -1,3 +1,5 @@
+#coding=utf-8
+
 import sys
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
@@ -70,10 +72,6 @@ class PyHoudiniWidget(main.MainWindow):
             #修复回到主界面不显示icon问题
             self.houdinihelp.updateNodeWidget()
             #--------------------------
-            
-
-        # PRINT BTN NAME
-        print(f'Button "{btnName}" pressed!')
 
 if __name__ == "__main__":
     app=QApplication(sys.argv)

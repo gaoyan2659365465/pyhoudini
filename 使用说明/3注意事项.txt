@@ -1,3 +1,10 @@
 第一次运行会弹出一个配置文件，需要手动更改为自己Houdini的相应路径
 
-这个是图标文件的路径
+比如C:/Program Files/Side Effects Software/Houdini 19.0.383/houdini/config/Icons/icons.zip
+这个是图标文件的路径,你也要找到你的houdini的这个zip文件路径,填入config.ini里面，重新打开软件
+
+如果你是houdini18版本很遗憾无法使用本插件
+因为houdini18与19差别巨大，我也做出了努力但无济于事，所以推荐使用houdini19来安装此插件。
+
+
+点击保存以后，数据会存储到插件目录的data文件夹内，可以进行手动迁移到其他电脑或安装同步软件

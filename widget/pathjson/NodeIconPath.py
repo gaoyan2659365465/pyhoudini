@@ -1,3 +1,5 @@
+#coding=utf-8
+
 #用于从json文件里面查找图标的路径
 import json
 
@@ -5,7 +7,7 @@ import json
 
 
 class NodeIconPath():
-    def __init__(self,SORT) -> None:
+    def __init__(self,SORT):
         self.paths = []
         self.names = []
         with open(__file__[:-15]+SORT+".json", 'r',encoding='utf-8') as json_file:

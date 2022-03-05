@@ -1,7 +1,9 @@
+#coding=utf-8
+
 import os
 import json
 import zipfile
-import configparser#读取ini配置文件
+import configparser#读取ini配置文件   #此处如果错误就改成ConfigParser
 from threading import Thread
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
@@ -68,7 +70,7 @@ class NodeWidget(QWidget):
         # self.htmlview.setGeometry(10,70,self.width()-20,self.height()-100)
         # self.htmlview.lower()
     
-    def resizeEvent(self, a0: QResizeEvent):
+    def resizeEvent(self, a0):
         if self.text_Edit:
             self.text_Edit.setGeometry(10,70,self.width()-20,self.height()-100)
         #self.htmlview.setGeometry(10,70,self.width()-20,self.height()-100)
@@ -163,7 +165,7 @@ class IconsWidget(QWidget):
         v_layout.addWidget(label,0,Qt.AlignHCenter)
         v_layout.addWidget(self.label_text,0,Qt.AlignHCenter)
     
-    def mousePressEvent(self, a0: QMouseEvent):#鼠标按下
+    def mousePressEvent(self, a0):
         self.click.emit(self)
     
     def paintEvent(self, event):
@@ -362,7 +364,7 @@ class HoudiniHelp(QWidget):
         self.setAutoFillBackground(True) #自动填充背景
         self.setPalette(QPalette(QColor('#ffffff'))) #着色区分背景
     
-    def resizeEvent(self, a0: QResizeEvent):
+    def resizeEvent(self, a0):
         self.w.setGeometry(0, self.selectheight, self.width(), self.height()-self.selectheight)
         self.scrollArea.setAutomaticSize(0, 0, self.width(), self.height()-self.selectheight)
         try:

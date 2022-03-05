@@ -87,7 +87,7 @@ class QHWUrlWeb(QCommandLinkButton):
             return
         webbrowser.open(self.url)
     
-    def close(self) -> bool:
+    def close(self):
         try:
             self.selectw.close()
         except:pass

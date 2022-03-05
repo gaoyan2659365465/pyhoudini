@@ -1,12 +1,9 @@
 import sys
+#这里填入插件的路径,注意反斜杠/
 PATH = "C:/Users/26593/Desktop/pyhoudini/"
 sys.path.append(PATH) 
-#from imp import reload
-#import pyHoudini
-#reload(pyHoudini)
 
 import PyHoudiniWidget
-#reload(PyHoudiniWidget)
 
 import hou
 nodes = list(hou.selectedNodes())

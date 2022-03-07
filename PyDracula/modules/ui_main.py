@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainTrwFkR.ui'
+## Form generated from reading UI file 'mainYzsHwR.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -674,6 +674,16 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_8.addWidget(self.btn_my)
 
+        self.btn_translation = QPushButton(self.topMenu)
+        self.btn_translation.setObjectName(u"btn_translation")
+        sizePolicy.setHeightForWidth(self.btn_translation.sizePolicy().hasHeightForWidth())
+        self.btn_translation.setSizePolicy(sizePolicy)
+        self.btn_translation.setMinimumSize(QSize(0, 45))
+        self.btn_translation.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_translation.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-text.png);")
+
+        self.verticalLayout_8.addWidget(self.btn_translation)
+
 
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
 
@@ -1187,7 +1197,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 274, 218))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 218, 218))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -1513,6 +1523,7 @@ class Ui_MainWindow(object):
         self.btn_my.setToolTip(QCoreApplication.translate("MainWindow", u"\u8282\u70b9\u6587\u6863", None))
 #endif // QT_CONFIG(tooltip)
         self.btn_my.setText(QCoreApplication.translate("MainWindow", u"node", None))
+        self.btn_translation.setText(QCoreApplication.translate("MainWindow", u"translation", None))
         self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
 #if QT_CONFIG(tooltip)

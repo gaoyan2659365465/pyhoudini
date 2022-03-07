@@ -8,6 +8,7 @@ from PySide2.QtGui import *
 import pyHoudini
 import PyDracula.main as main
 import widget.miniWidget as mini
+import widget.translation as tran
 
 
 class PyHoudiniWidget(main.MainWindow):
@@ -28,6 +29,9 @@ class PyHoudiniWidget(main.MainWindow):
             self.miniw.setMaxWidget(self)
             self.hide()
         self.ui.miniBtn.clicked.connect(openMiniWidget)
+        
+        self.translation = tran.TranslationWidget()
+        self.ui.stackedWidget.addWidget(self.translation)
     
     def show(self):
         try:
@@ -72,6 +76,11 @@ class PyHoudiniWidget(main.MainWindow):
             #修复回到主界面不显示icon问题
             self.houdinihelp.updateNodeWidget()
             #--------------------------
+        
+        if btnName == "btn_translation":
+            self.ui.stackedWidget.setCurrentWidget(self.translation)
+            main.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
 
 if __name__ == "__main__":
     app=QApplication(sys.argv)

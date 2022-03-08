@@ -75,14 +75,35 @@ class TranslationWidget(QWidget):
         h_layout_text.addWidget(buttonB,0,Qt.AlignBottom)
         #v_layout.addWidget(button)
         
+        #-----------
+        self.labelB = QLabel("翻译结果已经复制",self.texteditB)
+        self.labelB.setStyleSheet("color: rgb(111, 111, 111);")
+        h_layout_textB = QHBoxLayout()
+        self.texteditB.setLayout(h_layout_textB)
+        h_layout_textB.addStretch()
+        h_layout_textB.addWidget(self.labelB,0,Qt.AlignBottom)
+        self.labelB.hide()
+        #-----------
+        
         self.search_result = google_translator(timeout=10)#翻译类
     
     def startTranslation(self):
         """开始翻译"""
         sample1 = self.textedit.toPlainText()
-        print(sample1)
         data =  self.search_result.translate(sample1, lang_tgt='zh-cn')
         self.texteditB.setText(data)
+        clipboard = QApplication.clipboard()
+        clipboard.setText(data)
+        self.labelB.show()
+        self.timer=QTimer()
+        self.timer.timeout.connect(self.initLabelB)
+        #设置时间间隔并启动定时器
+        self.timer.start(2000)
+    
+    def initLabelB(self):
+        """隐藏文字"""
+        self.labelB.hide()
+        self.timer.stop()
     
     def removeText(self):
         """删除文本"""

@@ -44,9 +44,6 @@ g = w.children()[0]
 h = g.itemAt(0).widget()
 h1 = h.children()[0]#整体
 
-def aaaaa():
-    print("aaaaa")
-w.mousePressEvent = aaaaa
 #print(a.children()[1].move(100,0))
 #print(w.children()[1].children()[0])
 #a = QPushButton("你好",w)

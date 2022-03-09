@@ -20,6 +20,6 @@ if nodes:
     icon.icon_name = icon_name
     PyHoudiniWidget.pyhwidget.isminiw = False
     PyHoudiniWidget.pyhwidget.show()
-    PyHoudiniWidget.pyhwidget.houdinihelp.click(icon)
+    PyHoudiniWidget.pyhwidget.houdinihelp.iconClickedEvent(icon)
 else:
     PyHoudiniWidget.pyhwidget.show()

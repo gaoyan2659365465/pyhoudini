@@ -5,18 +5,17 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 
-import pyHoudini
+from widget.pyHoudini import HoudiniHelp
 import PyDracula.main as main
-import widget.miniWidget as mini
-import widget.translation as tran
+import widget.MiniWidget as mini
+import widget.Translation as tran
 
 
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
         main.MainWindow.__init__(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
-        self.houdinihelp=pyHoudini.HoudiniHelp()
-        self.houdinihelp.setWindows(self)#将自己发过去备用
+        self.houdinihelp=HoudiniHelp(self)
         self.ui.stackedWidget.addWidget(self.houdinihelp)
         
         self.miniw = mini.MiniWidget(None,self)
@@ -73,9 +72,6 @@ class PyHoudiniWidget(main.MainWindow):
             self.ui.stackedWidget.setCurrentWidget(self.houdinihelp)
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
-            #修复回到主界面不显示icon问题
-            self.houdinihelp.updateNodeWidget()
-            #--------------------------
         
         if btnName == "btn_translation":
             self.ui.stackedWidget.setCurrentWidget(self.translation)

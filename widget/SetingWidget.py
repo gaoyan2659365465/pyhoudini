@@ -2,24 +2,20 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import configparser#读取ini配置文件
+from widget.StyleTool import *
 
 #设置界面
 
 
-class SetWidget(QWidget):
-    def __init__(self,window):
+class SetingWidget(QWidget):
+    save = Signal(object)
+    def __init__(self):
         super().__init__()
-        self.parentwidget = window
         self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
-        self.v_layout = QVBoxLayout()
         
-        self.h_layout3 = QHBoxLayout()
         self.label3 = QLabel("图标目录:")
         self.line_edit3 = QLineEdit()
-        self.h_layout3.addWidget(self.label3)
-        self.h_layout3.addWidget(self.line_edit3)
         
-        self.h_layout2 = QHBoxLayout()
         self.label2 = QLabel("展示类型:")
         self.combo_box = QComboBox()
         list01 = ["ChannelNodes","CompositingNodes",\
@@ -28,32 +24,49 @@ class SetWidget(QWidget):
                   "RenderNodes","TOPNodes",\
                   "VEXNetworks","VOPNodes"]
         self.combo_box.addItems(list01)
+        
+        self.label4 = QLabel("默认尺寸:")
+        self.line_edit4_1 = QLineEdit()
+        self.line_edit4_2 = QLineEdit()
+        
+        self.label5 = QLabel("图标尺寸:")
+        self.line_edit5 = QLineEdit()
+        
+        self.label6 = QLabel("文字尺寸:")
+        self.line_edit6 = QLineEdit()
+        
+        self.label7 = QLabel("搜索栏尺寸:")
+        self.line_edit7 = QLineEdit()
+        
+        self.updatebutton = QPushButton("打印最新版网址",self)
+        self.updatebutton.clicked.connect(self.updateEvent)
+        self.savebutton = QPushButton("保存",self)
+        self.savebutton.clicked.connect(self.saveEvent)
+        
+        self.v_layout = QVBoxLayout()
+        
+        self.h_layout3 = QHBoxLayout()
+        self.h_layout3.addWidget(self.label3)
+        self.h_layout3.addWidget(self.line_edit3)
+        
+        self.h_layout2 = QHBoxLayout()
         self.h_layout2.addWidget(self.label2)
         self.h_layout2.addWidget(self.combo_box)
         
         self.h_layout4 = QHBoxLayout()
-        self.label4 = QLabel("默认尺寸:")
-        self.line_edit4_1 = QLineEdit()
-        self.line_edit4_2 = QLineEdit()
         self.h_layout4.addWidget(self.label4)
         self.h_layout4.addWidget(self.line_edit4_1)
         self.h_layout4.addWidget(self.line_edit4_2)
         
         self.h_layout5 = QHBoxLayout()
-        self.label5 = QLabel("图标尺寸:")
-        self.line_edit5 = QLineEdit()
         self.h_layout5.addWidget(self.label5)
         self.h_layout5.addWidget(self.line_edit5)
         
         self.h_layout6 = QHBoxLayout()
-        self.label6 = QLabel("文字尺寸:")
-        self.line_edit6 = QLineEdit()
         self.h_layout6.addWidget(self.label6)
         self.h_layout6.addWidget(self.line_edit6)
         
         self.h_layout7 = QHBoxLayout()
-        self.label7 = QLabel("搜索栏尺寸:")
-        self.line_edit7 = QLineEdit()
         self.h_layout7.addWidget(self.label7)
         self.h_layout7.addWidget(self.line_edit7)
         
@@ -63,23 +76,18 @@ class SetWidget(QWidget):
         self.v_layout.addLayout(self.h_layout5)
         self.v_layout.addLayout(self.h_layout6)
         self.v_layout.addLayout(self.h_layout7)
-        
-        self.updatebutton = QPushButton("打印最新版网址",self)
-        self.updatebutton.clicked.connect(self.updateEvent)
         self.v_layout.addWidget(self.updatebutton)
-        
-        self.savebutton = QPushButton("保存",self)
-        self.savebutton.clicked.connect(self.saveEvent)
         self.v_layout.addWidget(self.savebutton)
         self.setLayout(self.v_layout)
         
+        self.path = FilePath
         self.initIniFlie()
     
     def initIniFlie(self):
         """初始化配置文件"""
         conf = configparser.ConfigParser()
         # 读取.ini文件
-        conf.read(__file__[:-12]+"config.ini")
+        conf.read(self.path+"config.ini")
         # get()函数读取section里的参数值
         SCRPATH  = conf.get("config","SCRPATH")
         self.line_edit3.setText(SCRPATH)
@@ -106,7 +114,7 @@ class SetWidget(QWidget):
     def saveEvent(self):
         """点击保存按钮"""
         conf = configparser.ConfigParser()
-        conf.read(__file__[:-12]+"config.ini")
+        conf.read(self.path+"config.ini")
         
         conf.set('config', 'SCRPATH', self.line_edit3.text())
         
@@ -122,12 +130,11 @@ class SetWidget(QWidget):
         
         conf.set('config', 'selectheight', self.line_edit7.text())
         
-        conf.write(open(__file__[:-12]+"config.ini", 'w'))
+        conf.write(open(self.path+"config.ini", 'w'))
         
         print("已保存请重新打开Houdini^-^")
-        self.parentwidget.initNodeIconPath(self.combo_box.currentText())
-        self.parentwidget.selectNode()
-        self.parentwidget.pyhoudiniwidget.miniw.initNodeIconPath(self.combo_box.currentText())
+        name = self.combo_box.currentText()
+        self.save.emit(name)
     
     def updateEvent(self):
         """打开更新网页"""

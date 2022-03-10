@@ -5,6 +5,9 @@ import requests
 import webbrowser
 import sys
 
+from widget.StyleTool import *
+from widget.FlowLayout import FlowLayout
+
 
 class QHWUrlWeb(QCommandLinkButton):
     resized = Signal()
@@ -16,19 +19,7 @@ class QHWUrlWeb(QCommandLinkButton):
         self.selectw.resize(300,150)
         self.selectw.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         self.selectw.setAttribute(Qt.WA_TranslucentBackground,True)#背景透明
-        self.selectw.setStyleSheet(u'QWidget {color: rgb(221, 221, 221);\
-	                                font: 10pt "Segoe UI";}\
-                                    QLineEdit {\
-                                    background-color: rgb(33, 37, 43);\
-                                    border-radius: 5px;\
-                                    border: 2px solid rgb(33, 37, 43);\
-                                    padding-left: 10px;\
-                                    selection-color: rgb(255, 255, 255);\
-                                    selection-background-color: rgb(255, 121, 198);}\
-                                    QLineEdit:hover {\
-                                        border: 2px solid rgb(64, 71, 88);}\
-                                    QLineEdit:focus {\
-                                        border: 2px solid rgb(91, 101, 124);}')
+        self.selectw.setStyleSheet(QHWUrlWebselectw)
         self.selectw_ = QWidget(self.selectw)
         self.selectw_.resize(self.selectw.size())
         self.selectw_.setStyleSheet("background-color: rgb(33, 37, 43);border-radius: 5px;")
@@ -47,9 +38,7 @@ class QHWUrlWeb(QCommandLinkButton):
         buttonw.clicked.connect(self.setWebUrl)
         buttonw.setCursor(QCursor(Qt.PointingHandCursor))
         buttonw.setStyleSheet("border: none;border-radius: 15px;")
-        icon1 = QIcon()
-        icon1.addFile(u":/icons/images/icons/cil-save.png", QSize(), QIcon.Normal, QIcon.Off)
-        buttonw.setIcon(icon1)
+        addStyleIcon(buttonw,"cil-save.png")
         h_layout.addWidget(self.linew)
         h_layout.addWidget(buttonw)
         
@@ -64,9 +53,7 @@ class QHWUrlWeb(QCommandLinkButton):
         #-----------------------------------
         self.setObjectName(u"commandLinkButton")
         self.setCursor(QCursor(Qt.PointingHandCursor))
-        icon6 = QIcon()
-        icon6.addFile(u":/icons/images/icons/cil-link.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.setIcon(icon6)
+        addStyleIcon(self,"cil-link.png")
         self.setText(QCoreApplication.translate("MainWindow", u"Link Button", None))
         self.setDescription(QCoreApplication.translate("MainWindow", u"Link description", None))
         self.resize(168,54)
@@ -179,9 +166,7 @@ class QHWUrlImage(QLabel):
         buttonw.clicked.connect(self.setImageUrl)
         buttonw.setCursor(QCursor(Qt.PointingHandCursor))
         buttonw.setStyleSheet("border: none;border-radius: 15px;")
-        icon1 = QIcon()
-        icon1.addFile(u":/icons/images/icons/cil-save.png", QSize(), QIcon.Normal, QIcon.Off)
-        buttonw.setIcon(icon1)
+        addStyleIcon(buttonw,"cil-save.png")
         h_layout.addWidget(self.linew)
         h_layout.addWidget(buttonw)
         self.selectw.show()
@@ -213,7 +198,7 @@ class QHWNode(QLabel):
         self.setScaledContents(True)
         self.resize(100,50)
         
-        self.datatext = ""#用于保持节点代码
+        self.datatext = ""#用于保存节点代码
     
     def setDataText(self,text):
         """设置节点代码"""
@@ -282,8 +267,7 @@ class QHoudiniWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.setObjectName("QHoudiniWidget")
-        self.styledata = u"#QHoudiniWidget { background-color: rgb(44, 49, 57); border: none;  border-radius: 5px; }\
-                             #QHoudiniWidget:hover { background-color: rgb(44, 49, 57); border: 2px solid rgb(52, 59, 72); border-radius: 4px; }"
+        self.styledata = QHoudiniWidgetStyle
         self.setStyleSheet(self.styledata)
         self.setFixedSize(50,50)
         
@@ -362,7 +346,8 @@ class QHoudiniEdit(QScrollArea):
         #self.topFiller.setCursor(QCursor(Qt.IBeamCursor))
         self.setWidget(self.topFiller)
         
-        self.vlayout = QVBoxLayout(self.topFiller)
+        #self.vlayout = QVBoxLayout(self.topFiller)
+        self.vlayout = FlowLayout(self.topFiller)
         self.topFiller.setLayout(self.vlayout)
         self.vlayout.setAlignment(Qt.AlignTop)
     

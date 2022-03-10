@@ -94,14 +94,16 @@ class NodeWidget(QWidget):
         path = PATH[:-7] + '/data/'+SORT+"/"+ self.icon.icon_name + ".json"
         if os.path.exists(path) == False:
             return
-        with open(path, 'r') as json_file:
-            data = json_file.read()
-            try:
+        try:
+            with open(path, 'r',encoding='utf-8') as json_file:
+                data = json_file.read()
                 result = json.loads(data)
-            except:
-                data.encode(encoding='gbk').decode(encoding='utf-8')
+                self.text_Edit.loadWidget(result)
+        except:
+            with open(path, 'r',encoding='gbk') as json_file:
+                data = json_file.read()
                 result = json.loads(data)
-            self.text_Edit.loadWidget(result)
+                self.text_Edit.loadWidget(result)
     
     def saveTextEdit(self):
         """保存富文本"""

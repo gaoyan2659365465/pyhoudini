@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainYzsHwR.ui'
+## Form generated from reading UI file 'mainKwmLhL.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -934,7 +934,7 @@ class Ui_MainWindow(object):
         self.settingsTopBtn.setMaximumSize(QSize(28, 28))
         self.settingsTopBtn.setCursor(QCursor(Qt.PointingHandCursor))
         icon2 = QIcon()
-        icon2.addFile(u":/icons/images/icons/icon_settings.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon2.addFile(u":/icons/images/icons/cil-people.png", QSize(), QIcon.Normal, QIcon.Off)
         self.settingsTopBtn.setIcon(icon2)
         self.settingsTopBtn.setIconSize(QSize(20, 20))
 
@@ -1553,7 +1553,7 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.miniBtn.setText("")
 #if QT_CONFIG(tooltip)
-        self.settingsTopBtn.setToolTip(QCoreApplication.translate("MainWindow", u"\u8bbe\u7f6e", None))
+        self.settingsTopBtn.setToolTip(QCoreApplication.translate("MainWindow", u"\u8d26\u53f7", None))
 #endif // QT_CONFIG(tooltip)
         self.settingsTopBtn.setText("")
 #if QT_CONFIG(tooltip)

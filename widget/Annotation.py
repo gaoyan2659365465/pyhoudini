@@ -99,6 +99,7 @@
 15、内置vex代码段
 16、字太小
 17、文本框适配md语法
+18、取消所有的print模式
 """
 # self._color_white_output = QColor("#282c34")
 # self._brush3 = QBrush(self._color_white_output)

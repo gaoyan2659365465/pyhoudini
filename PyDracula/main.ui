@@ -1589,14 +1589,14 @@ p, li { white-space: pre-wrap; }
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
                   <property name="toolTip">
-                   <string>设置</string>
+                   <string>账号</string>
                   </property>
                   <property name="text">
                    <string/>
                   </property>
                   <property name="icon">
                    <iconset resource="resources.qrc">
-                    <normaloff>:/icons/images/icons/icon_settings.png</normaloff>:/icons/images/icons/icon_settings.png</iconset>
+                    <normaloff>:/icons/images/icons/cil-people.png</normaloff>:/icons/images/icons/cil-people.png</iconset>
                   </property>
                   <property name="iconSize">
                    <size>

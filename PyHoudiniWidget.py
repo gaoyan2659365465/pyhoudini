@@ -7,9 +7,9 @@ from PySide2.QtGui import *
 
 from widget.pyHoudini import HoudiniHelp
 import PyDracula.main as main
-import widget.MiniWidget as mini
-import widget.Translation as tran
-
+import widget.MiniWidget1 as mini
+import widget.Translation1 as tran
+from widget.Sign.Sign import HtmlView,isLogin
 
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
@@ -31,7 +31,22 @@ class PyHoudiniWidget(main.MainWindow):
         
         self.translation = tran.TranslationWidget()
         self.ui.stackedWidget.addWidget(self.translation)
+
+        self.ui.settingsTopBtn.clicked.connect(self.htmlShow)
     
+    def htmlShow(self):
+        """创建网页登录"""
+        if not isLogin():
+            try:
+                if self.htmlwidget.isVisible:
+                    #self.htmlwidget.close()
+                    #del self.htmlwidget
+                    return
+            except:pass
+            self.htmlwidget = HtmlView(self.ui.stackedWidget)
+            self.htmlwidget.resize(self.ui.stackedWidget.sizeHint())
+            self.htmlwidget.show()
+        
     def show(self):
         try:
             if self.isminiw:
@@ -44,6 +59,11 @@ class PyHoudiniWidget(main.MainWindow):
         except:pass
     
     def buttonClick(self):
+        try:
+            if self.htmlwidget.isVisible:
+                self.htmlwidget.close()
+                del self.htmlwidget
+        except:pass
         # GET BUTTON CLICKED
         btn = self.sender()
         btnName = btn.objectName()

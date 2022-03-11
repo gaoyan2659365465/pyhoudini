@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainKwmLhL.ui'
+## Form generated from reading UI file 'mainrGsbLn.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -683,6 +683,14 @@ class Ui_MainWindow(object):
         self.btn_translation.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-text.png);")
 
         self.verticalLayout_8.addWidget(self.btn_translation)
+
+        self.btn_store = QPushButton(self.topMenu)
+        self.btn_store.setObjectName(u"btn_store")
+        self.btn_store.setMinimumSize(QSize(0, 45))
+        self.btn_store.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_store.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-cloud-upload.png);")
+
+        self.verticalLayout_8.addWidget(self.btn_store)
 
 
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
@@ -1524,6 +1532,7 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.btn_my.setText(QCoreApplication.translate("MainWindow", u"node", None))
         self.btn_translation.setText(QCoreApplication.translate("MainWindow", u"translation", None))
+        self.btn_store.setText(QCoreApplication.translate("MainWindow", u"PushButton", None))
         self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
 #if QT_CONFIG(tooltip)

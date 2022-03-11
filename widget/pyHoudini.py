@@ -51,7 +51,7 @@ class NodeWidget(QWidget):
         self.button3.setCursor(QCursor(Qt.PointingHandCursor))
         self.button3.setStyleSheet(NodeWidgetButtonStyle)
         icon2 = QIcon()
-        icon2.addFile(FilePath + "image/xin.png", QSize(48,48), QIcon.Normal, QIcon.Off)
+        icon2.addFile(FilePath + "image/xin.png", QSize(40,40), QIcon.Normal, QIcon.Off)
         self.button3.setIcon(icon2)
         #------------------------------
         self.addLayout()
@@ -82,7 +82,7 @@ class NodeWidget(QWidget):
     def hoardingClickedEvent(self):
         """收藏点击按钮"""
         icon2 = QIcon()
-        icon2.addFile(FilePath + "image/xin-1.png", QSize(48,48), QIcon.Normal, QIcon.Off)
+        icon2.addFile(FilePath + "image/xin-1.png", QSize(40,40), QIcon.Normal, QIcon.Off)
         self.button3.setIcon(icon2)
     
     def resizeEvent(self, a0):
@@ -167,8 +167,36 @@ class HoudiniHelp(QWidget):
         self.nodeiconpath = NodeIconPath(self.sort)
         self.initWidget()
         
-        self.selectNode()
+        self.num_x = 0
+        self.num_y = 0
+        self.num_ = 0
+        #初始化一个定时器
+        self.timer=QTimer()
+        self.timer.timeout.connect(self.initIconWidget)
+        #设置时间间隔并启动定时器
+        self.timer.start(10)
+        #self.selectNode()
+    
+    def initIconWidget(self):
+        """用于生成图标"""
+        label_widget = IconsWidget(self,self.nodeiconpath.paths[self.num_])
+        label_widget.click.connect(self.iconClickedEvent)
+        self.scrollArea.addItem(label_widget,self.num_x,self.num_y)
+        label_widget.show()
+        self.num_y = self.num_y+1
+        if self.num_y>6:
+            self.num_y = 0
+            self.num_x = self.num_x+1
+        self.scrollArea.updateAutomaticSize()
         
+        if self.num_+1 == len(self.nodeiconpath.paths):
+            self.num_x = 0
+            self.num_y = 0
+            self.num_ = 0
+            self.timer.stop()
+        else:
+            self.num_ = self.num_+1
+    
     def initNodeIconPath(self,name):
         """初始化图标路径"""
         global SORT
@@ -298,6 +326,7 @@ class HoudiniHelp(QWidget):
                     num_x = num_x+1
 
         self.scrollArea.updateAutomaticSize()
+        self.timer.stop()
         
     def resizeEvent(self, a0):
         self.scrollArea.updateAutomaticSize()

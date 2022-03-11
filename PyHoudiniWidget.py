@@ -10,6 +10,7 @@ import PyDracula.main as main
 import widget.MiniWidget as mini
 import widget.Translation as tran
 from widget.Sign.Sign import HtmlView,isLogin
+from widget.store.HoudiniStore import HoudiniStoreScrollArea
 
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
@@ -33,6 +34,9 @@ class PyHoudiniWidget(main.MainWindow):
         self.ui.stackedWidget.addWidget(self.translation)
 
         self.ui.settingsTopBtn.clicked.connect(self.htmlShow)
+        
+        self.storewidget = HoudiniStoreScrollArea()#商店界面
+        self.ui.stackedWidget.addWidget(self.storewidget)
     
     def htmlShow(self):
         """创建网页登录"""
@@ -95,6 +99,11 @@ class PyHoudiniWidget(main.MainWindow):
         
         if btnName == "btn_translation":
             self.ui.stackedWidget.setCurrentWidget(self.translation)
+            main.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
+        
+        if btnName == "btn_store":
+            self.ui.stackedWidget.setCurrentWidget(self.storewidget)
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
 

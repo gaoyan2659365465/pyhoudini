@@ -75,6 +75,7 @@ class MainWindow(QMainWindow):#QWidget  QMainWindow
         #widgets.btn_save.clicked.connect(self.buttonClick)
         widgets.btn_my.clicked.connect(self.buttonClick)
         widgets.btn_translation.clicked.connect(self.buttonClick)
+        widgets.btn_store.clicked.connect(self.buttonClick)
         
 
         # EXTRA LEFT BOX

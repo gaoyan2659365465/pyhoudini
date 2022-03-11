@@ -140,3 +140,13 @@ QHWUrlWebselectw = 'QWidget {color: rgb(221, 221, 221);\
 
 QHoudiniWidgetStyle = "#QHoudiniWidget { background-color: rgb(44, 49, 57); border: none;  border-radius: 5px; }\
                              #QHoudiniWidget:hover { background-color: rgb(44, 49, 57); border: 2px solid rgb(52, 59, 72); border-radius: 4px; }"
+
+HoudiniStoreScrollAreaStyle = "#HoudiniStoreScrollArea {background-color: rgb(33, 37, 43);}"
+
+HoudiniStoreAssetWidgetStyle = "#HoudiniStoreAssetWidget {background-color: rgb(38, 38, 38);\
+    padding-left: 10px;\
+    border: 10px solid rgb(33, 37, 43);}"
+
+HoudiniStoreAssetShoppingTrolleyWidgetButton = "QPushButton { background-color: #dca100; border: none;color: #000000;font-size: 12px;padding-left: 6px;padding-right: 6px;}\
+                                        QPushButton:hover { background-color: #ffbb00; border-style: solid;color: #000000;font-size: 12px;padding-left: 6px;padding-right: 6px;}\
+                                        QPushButton:pressed { background-color: #dca100; border-style: solid;color: #000000;font-size: 12px;padding-left: 6px;padding-right: 6px;}"

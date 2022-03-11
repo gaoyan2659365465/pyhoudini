@@ -7,8 +7,8 @@ from PySide2.QtGui import *
 
 from widget.pyHoudini import HoudiniHelp
 import PyDracula.main as main
-import widget.MiniWidget1 as mini
-import widget.Translation1 as tran
+import widget.MiniWidget as mini
+import widget.Translation as tran
 from widget.Sign.Sign import HtmlView,isLogin
 
 class PyHoudiniWidget(main.MainWindow):

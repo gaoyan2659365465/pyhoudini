@@ -150,3 +150,11 @@ HoudiniStoreAssetWidgetStyle = "#HoudiniStoreAssetWidget {background-color: rgb(
 HoudiniStoreAssetShoppingTrolleyWidgetButton = "QPushButton { background-color: #dca100; border: none;color: #000000;font-size: 12px;padding-left: 6px;padding-right: 6px;}\
                                         QPushButton:hover { background-color: #ffbb00; border-style: solid;color: #000000;font-size: 12px;padding-left: 6px;padding-right: 6px;}\
                                         QPushButton:pressed { background-color: #dca100; border-style: solid;color: #000000;font-size: 12px;padding-left: 6px;padding-right: 6px;}"
+
+HoudiniStoreTopWidgetButton = "QPushButton { background-color: #00000000; border: none;color: #f3f3f3;font-size: 16px;padding-left: 9.6px;padding-right: 9.6px;padding-top: 16px;padding-bottom: 16px;}\
+                                        QPushButton:hover { background-color: rgb(44, 49, 57); border: none;color: #f3f3f3;font-size: 16px;padding-left: 9.6px;padding-right: 9.6px;padding-top: 16px;padding-bottom: 16px;}\
+                                        QPushButton:pressed { background-color: rgb(44, 49, 57); border: none;color: #f3f3f3;font-size: 16px;padding-left: 9.6px;padding-right: 9.6px;padding-top: 16px;padding-bottom: 16px;}"
+
+HoudiniStoreTopWidget_edit = "#HoudiniStoreTopWidgetLineEdit {background-color: rgb(33, 37, 43);\
+                                    border: 2px solid rgb(44, 49, 57);\
+                                    color: #f3f3f3;font-size: 16px;}"

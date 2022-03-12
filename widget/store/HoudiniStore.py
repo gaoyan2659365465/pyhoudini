@@ -6,6 +6,97 @@ from widget.StyleTool import *
 from widget.FlowLayout import FlowLayout
 import requests
 
+class HoudiniStoreTopWidget(QWidget):
+    """Houdini商店顶部控件"""
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        
+        self.v_layout = QVBoxLayout()
+        self.v_layout.setContentsMargins(0,0,0,0)
+        self.setLayout(self.v_layout)
+        
+        self.imagelabel = QLabel()#顶部广告图片
+        res = requests.get("https://cdn2.unrealengine.com/unreal-engine-marketplace-sale-march-2022-banner-1340x180-8b684d14c9b4.png")
+        img = QImage.fromData(res.content)
+        self.imagelabel.setPixmap(QPixmap.fromImage(img))
+        self.imagelabel.setMinimumWidth(900)
+        self.imagelabel.setMaximumWidth(1300)
+        self.v_layout.addWidget(self.imagelabel)
+        
+        self.h_layout = QHBoxLayout()
+        self.v_layout.addLayout(self.h_layout)
+        
+        self.textA = QLabel("Houdini商城")
+        self.textA.setFont(QFont("Lucida Console"))
+        self.textA.setStyleSheet("color: #f3f3f3;font-size: 28px;")
+        self.h_layout.addWidget(self.textA)
+        self.h_layout.addStretch()
+        
+        self.buttonA = QPushButton("首页")
+        self.buttonA.setStyleSheet(HoudiniStoreTopWidgetButton)
+        self.h_layout.addWidget(self.buttonA)
+        
+        self.buttonB = QPushButton("浏览")
+        self.buttonB.setStyleSheet(HoudiniStoreTopWidgetButton)
+        self.h_layout.addWidget(self.buttonB)
+        
+        self.buttonC = QPushButton("行业")
+        self.buttonC.setStyleSheet(HoudiniStoreTopWidgetButton)
+        self.h_layout.addWidget(self.buttonC)
+        
+        self.buttonD = QPushButton("免费")
+        self.buttonD.setStyleSheet(HoudiniStoreTopWidgetButton)
+        self.h_layout.addWidget(self.buttonD)
+        
+        self.buttonE = QPushButton("特价")
+        self.buttonE.setStyleSheet(HoudiniStoreTopWidgetButton)
+        self.h_layout.addWidget(self.buttonE)
+        
+        self.buttonF = QPushButton("3月特卖")
+        self.buttonF.setStyleSheet(HoudiniStoreTopWidgetButton)
+        self.h_layout.addWidget(self.buttonF)
+        
+        self.buttonG = QPushButton("保管库")
+        self.buttonG.setStyleSheet(HoudiniStoreTopWidgetButton)
+        self.h_layout.addWidget(self.buttonG)
+        
+        self.buttonH = QPushButton("帮助")
+        self.buttonH.setStyleSheet(HoudiniStoreTopWidgetButton)
+        self.h_layout.addWidget(self.buttonH)
+        
+        self.select_layout = QHBoxLayout()
+        self.select_layout.setContentsMargins(0,8,0,0)
+        self.h_layout.addLayout(self.select_layout)
+        
+        self.line_edit = QLineEdit()
+        self.line_edit.setObjectName("HoudiniStoreTopWidgetLineEdit")
+        self.line_edit.setFixedHeight(38)
+        self.line_edit.setStyleSheet(HoudiniStoreTopWidget_edit)
+        self.line_edit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"搜索内容...", None))
+        #self.line_edit.returnPressed.connect(self.selectNode)
+        self.selectbutton = QPushButton("")
+        #self.selectbutton.clicked.connect(self.selectNode)
+        self.selectbutton.setCursor(QCursor(Qt.PointingHandCursor))
+        #self.selectbutton.setFixedSize(self.selectheight-4,self.selectheight-4)
+        self.selectbutton.setStyleSheet(HoudiniHelpselectbutton)
+        addStyleIcon(self.selectbutton,"cil-magnifying-glass.png")
+        self.select_hlayout = QHBoxLayout()
+        self.select_hlayout.setSpacing(0)
+        self.select_hlayout.setContentsMargins(0,0,5,0)
+        self.select_hlayout.addStretch()
+        self.select_hlayout.addWidget(self.selectbutton)
+        self.line_edit.setLayout(self.select_hlayout)
+        
+        self.select_layout.addWidget(self.line_edit)
+        
+        
+        
+        self.linelable = QLabel(self)
+        self.linelable.setFixedSize(1300,1)
+        self.linelable.setStyleSheet("background-color: #3b3c3d;")
+        self.v_layout.addWidget(self.linelable)
+        
+
 class HoudiniStoreAssetShoppingTrolleyWidget(QWidget):
     """Houdini商店显示商品控件——的购物车控件"""
     def __init__(self, parent=None):
@@ -46,7 +137,6 @@ class HoudiniStoreAssetShoppingTrolleyWidget(QWidget):
         self.buttonB.setIcon(icon2)
         self.h_layout.addWidget(self.buttonB)
         
-
 class HoudiniStoreAssetPriceWidget(QWidget):
     """Houdini商店显示商品控件——的价格控件"""
     def __init__(self, parent=None):
@@ -140,6 +230,7 @@ class HoudiniStoreAssetWidget(QWidget):
         self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
         
 class HoudiniStoreAssetsBlockWidget(QWidget):
+    """Houdini商店显示商品分区"""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setMinimumWidth(900)
@@ -149,6 +240,9 @@ class HoudiniStoreAssetsBlockWidget(QWidget):
         self.v_layout.setContentsMargins(30,32,30,0)
         self.v_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         self.setLayout(self.v_layout)
+        
+        self.topwidget = HoudiniStoreTopWidget()
+        self.v_layout.addWidget(self.topwidget)
         
         self.name_layout = QHBoxLayout()
         self.v_layout.addLayout(self.name_layout)
@@ -183,6 +277,7 @@ class HoudiniStoreAssetsBlockWidget(QWidget):
             self.addAssetWidget(saw,0,i)
 
 class HoudiniStoreScrollArea(QScrollArea):
+    """Houdini商店滚动区域"""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFrameShape(QFrame.NoFrame)#无边框

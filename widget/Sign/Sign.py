@@ -56,7 +56,10 @@ class HtmlJsChannel(QObject):
 def isLogin():
     """判断是否登录"""
     url = "http://127.0.0.1:8000/isLogin/"
-    res = mysession.get(url=url)
+    try:
+        res = mysession.get(url=url)
+    except:
+        return False
     print(res.text)
     if res.text == '已登录':
         return True

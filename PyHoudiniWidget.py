@@ -11,7 +11,7 @@ import widget.MiniWidget as mini
 import widget.Translation as tran
 from widget.Sign.Sign import HtmlView,isLogin
 from widget.store.HoudiniStore import HoudiniStoreScrollArea
-#from widget.CopyHoudiniNodeData import getNodeData
+from widget.CopyHoudiniNodeData import getNodeData
 
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
@@ -38,19 +38,24 @@ class PyHoudiniWidget(main.MainWindow):
         
         self.storewidget = HoudiniStoreScrollArea()#商店界面
         self.ui.stackedWidget.addWidget(self.storewidget)
+        
+        self.htmlwidget = HtmlView()
+        #self.htmlwidget.resize(self.ui.stackedWidget.sizeHint())
+        self.ui.stackedWidget.addWidget(self.htmlwidget)
+        
+        #点击按钮，将选中的节点输出到json文件，用来给UE5生成场景
+        self.ui.ue5Btn.clicked.connect(getNodeData)
     
     def htmlShow(self):
         """创建网页登录"""
-        if not isLogin():
-            try:
-                if self.htmlwidget.isVisible:
-                    #self.htmlwidget.close()
-                    #del self.htmlwidget
-                    return
-            except:pass
-            self.htmlwidget = HtmlView(self.ui.stackedWidget)
-            self.htmlwidget.resize(self.ui.stackedWidget.sizeHint())
-            self.htmlwidget.show()
+        # if not isLogin():
+        #     try:
+        #         if self.htmlwidget.isVisible:
+        #             self.htmlwidget.close()
+        #             del self.htmlwidget
+        #             return
+        #     except:pass
+        self.ui.stackedWidget.setCurrentWidget(self.htmlwidget)
         
     def show(self):
         try:
@@ -64,11 +69,6 @@ class PyHoudiniWidget(main.MainWindow):
         except:pass
     
     def buttonClick(self):
-        try:
-            if self.htmlwidget.isVisible:
-                self.htmlwidget.close()
-                del self.htmlwidget
-        except:pass
         # GET BUTTON CLICKED
         btn = self.sender()
         btnName = btn.objectName()
@@ -78,8 +78,7 @@ class PyHoudiniWidget(main.MainWindow):
             self.ui.stackedWidget.setCurrentWidget(self.ui.home)
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
-            #getNodeData()
-
+            
         # SHOW WIDGETS PAGE
         if btnName == "btn_widgets":
             print("")

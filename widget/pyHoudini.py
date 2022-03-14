@@ -233,7 +233,8 @@ class HoudiniHelp(QWidget):
     def initIconsDir(self):
         """判断图标文件夹是否存在"""
         if os.path.isdir(PATH + "/icons") == True:
-            print("存在icons目录")
+            #print("存在icons目录")
+            pass
         else:
             print("不存在icons目录,正在解压...")
             try:

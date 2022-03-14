@@ -5,6 +5,8 @@ from PySide2.QtGui import *
 from PySide2.QtWebEngineWidgets import *
 from PySide2.QtWebChannel import QWebChannel
 from widget.StyleTool import *
+import json
+
 import requests
 import http.cookiejar as cookielib
 mysession = requests.session()
@@ -14,7 +16,7 @@ class HtmlView(QWebEngineView):
     def __init__(self, *args, **kwargs):
         QWebEngineView.__init__(self, *args, **kwargs)
         self.setAttribute(Qt.WA_TranslucentBackground)#背景透明
-        
+
         self.htmljs = HtmlJsChannel(self)
         self.channel = QWebChannel()
         self.channel.registerObject('pyjs', self.htmljs)
@@ -65,3 +67,14 @@ def isLogin():
         return True
     else:
         return False
+
+def getStoreAssetData():
+    """获取商城商品数据"""
+    url = "http://127.0.0.1:8000/getStoreAssetData/"
+    try:
+        res = mysession.get(url=url)
+    except:
+        return
+    data = json.loads(res.text)
+    return data
+    

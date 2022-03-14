@@ -1,8 +1,8 @@
 #复制节点数据表
 import hou
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+import json
+import os
+from widget.StyleTool import FilePath
 
 def getNodeData():
     list1 = {}
@@ -19,5 +19,8 @@ def getNodeData():
             print(n.name())
             list1[n.name()] = list(list2)
     
-    clipboard = QApplication.clipboard()
-    clipboard.setText(str(list1))
+    path = FilePath + 'UE5/'
+    path_json = path + "HoudiniNodeData.json"
+    if not os.path.isdir(path):
+        os.makedirs(path)
+    json.dump(list1, open(path_json,'w'),ensure_ascii=False,indent=4)

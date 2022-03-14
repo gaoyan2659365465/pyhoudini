@@ -3,7 +3,7 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 
-FilePath = __file__[:-12]
+FilePath = __file__[:-12]#带斜杠
 
 NodeWidgetStyle = "background-color: #282c34;"
 

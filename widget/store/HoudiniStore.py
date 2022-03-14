@@ -5,6 +5,7 @@ from PySide2.QtGui import *
 from widget.StyleTool import *
 from widget.FlowLayout import FlowLayout
 import requests
+from widget.Sign.Sign import getStoreAssetData
 
 class HoudiniStoreTopWidget(QWidget):
     """Houdini商店顶部控件"""
@@ -96,6 +97,7 @@ class HoudiniStoreTopWidget(QWidget):
         self.linelable.setStyleSheet("background-color: #3b3c3d;")
         self.v_layout.addWidget(self.linelable)
         
+        self.setMaximumWidth(1300)
 
 class HoudiniStoreAssetShoppingTrolleyWidget(QWidget):
     """Houdini商店显示商品控件——的购物车控件"""
@@ -159,6 +161,10 @@ class HoudiniStoreAssetPriceWidget(QWidget):
         self.price.setFont(QFont("Microsoft YaHei",16))
         self.price.setStyleSheet("color: #ffffff;font-size: 16px;")
         self.h_layout.addWidget(self.price)
+    
+    def setPriceText(self,data):
+        """设置价格标签文字"""
+        self.price.setText(data)
 
 class HoudiniStoreAssetScoreWidget(QWidget):
     """Houdini商店显示商品控件——的评分星星控件"""
@@ -176,6 +182,12 @@ class HoudiniStoreAssetScoreWidget(QWidget):
         self.scorestr.setStyleSheet("color: #ffffff;font-size: 16px;")
         self.scorestr.setFixedSize(232,24)
         self.h_layout.addWidget(self.scorestr)
+    
+    def setScoreText(self,data):
+        """设置评分标签文字"""
+        if data == '0':
+            return
+        self.scorestr.setText(data)
 
 class HoudiniStoreAssetWidget(QWidget):
     """Houdini商店显示商品控件"""
@@ -216,8 +228,8 @@ class HoudiniStoreAssetWidget(QWidget):
         self.assetprice = HoudiniStoreAssetPriceWidget()#价格控件
         self.v_layout_info.addWidget(self.assetprice)
         
-        self.assetprice = HoudiniStoreAssetShoppingTrolleyWidget()#购物车控件
-        self.v_layout_info.addWidget(self.assetprice)
+        self.assetshopping = HoudiniStoreAssetShoppingTrolleyWidget()#购物车控件
+        self.v_layout_info.addWidget(self.assetshopping)
         
         self.setObjectName("HoudiniStoreAssetWidget")
         self.setStyleSheet(HoudiniStoreAssetWidgetStyle)
@@ -228,6 +240,23 @@ class HoudiniStoreAssetWidget(QWidget):
         opt.initFrom(self)
         painter = QPainter(self)
         self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
+    
+    def initWidget(self,data):
+        """初始化商品控件"""
+        for n in data['fields']:
+            if n == 'assetName':
+                self.assetname.setText(str(data['fields'][n]))
+            elif n == 'authorName':
+                self.assetauthor.setText(str(data['fields'][n]))
+            elif n == 'assetPrice':
+                self.assetprice.setPriceText('$'+str(data['fields'][n]))
+            elif n == 'assetScore':
+                self.assetscore.setScoreText(str(data['fields'][n]))
+            elif n == 'imagePath':
+                res = requests.get(str(data['fields'][n]))
+                img = QImage.fromData(res.content)
+                self.imagelabel.setPixmap(QPixmap.fromImage(img)\
+                    .scaled(248,248,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
         
 class HoudiniStoreAssetsBlockWidget(QWidget):
     """Houdini商店显示商品分区"""
@@ -241,9 +270,6 @@ class HoudiniStoreAssetsBlockWidget(QWidget):
         self.v_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         self.setLayout(self.v_layout)
         
-        self.topwidget = HoudiniStoreTopWidget()
-        self.v_layout.addWidget(self.topwidget)
-        
         self.name_layout = QHBoxLayout()
         self.v_layout.addLayout(self.name_layout)
         
@@ -256,25 +282,29 @@ class HoudiniStoreAssetsBlockWidget(QWidget):
         self.nametitleB.setStyleSheet("color: #dca100;font-size: 16px;")
         self.name_layout.addWidget(self.nametitleB)
         
-        #self.g_layout = QGridLayout()
         self.g_layout = FlowLayout()
-        #self.g_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
-        
         self.v_layout.addLayout(self.g_layout)
         
-        
-        self.demo()
-        
-    def addAssetWidget(self,widget:HoudiniStoreAssetWidget,x,y):
+    def addAssetWidget(self,widget:HoudiniStoreAssetWidget):
         """添加商品展示控件"""
-        #self.g_layout.addWidget(widget,x,y)
         self.g_layout.addWidget(widget)
 
     def demo(self):
         """测试"""
         for i in range(5):
             saw = HoudiniStoreAssetWidget()
-            self.addAssetWidget(saw,0,i)
+            self.addAssetWidget(saw)
+    
+    def addAssetForData(self,data):
+        """根据数据添加商品"""
+        if not data:
+            self.demo()
+            return#没服务器就获取不到数据
+        for i in data:
+            saw = HoudiniStoreAssetWidget()
+            self.addAssetWidget(saw)
+            saw.initWidget(i)
+            
 
 class HoudiniStoreScrollArea(QScrollArea):
     """Houdini商店滚动区域"""
@@ -292,11 +322,21 @@ class HoudiniStoreScrollArea(QScrollArea):
         self.v_layout.setContentsMargins(2,0,10,0)
         self.v_layout.setSpacing(0)
         
+        self.topwidget = HoudiniStoreTopWidget()
+        self.v_layout.addWidget(self.topwidget)
+        
         self.assetswidgetA = HoudiniStoreAssetsBlockWidget()
         self.v_layout.addWidget(self.assetswidgetA)
         self.assetswidgetA.show()
         
         self.nodeswidget.setStyleSheet(HoudiniStoreScrollAreaStyle)
+        self.addAssetForData()#网络加载资源
 
     def resizeEvent(self, e):
         self.nodeswidget.resize(self.width(),self.nodeswidget.sizeHint().height())
+    
+    def addAssetForData(self):
+        """根据数据添加商品"""
+        data = getStoreAssetData()
+        self.assetswidgetA.addAssetForData(data)
+        

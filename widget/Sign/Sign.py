@@ -12,6 +12,8 @@ import http.cookiejar as cookielib
 mysession = requests.session()
 mysession.cookies = cookielib.LWPCookieJar(filename = "mysession.txt")
 
+URL = 'http://yanyan.pythonanywhere.com/'
+
 class HtmlView(QWebEngineView):
     def __init__(self, *args, **kwargs):
         QWebEngineView.__init__(self, *args, **kwargs)
@@ -34,7 +36,7 @@ class HtmlJsChannel(QObject):
         super().__init__(parent)
     @Slot(str,str)
     def formsignInBtn(self,Email,Password):
-        url = "http://127.0.0.1:8000/signIn/"
+        url = URL + "signIn/"
         data = {"Email":Email,
                 "Password":Password}
         res = mysession.post(url=url,data=data)
@@ -45,7 +47,7 @@ class HtmlJsChannel(QObject):
         
     @Slot(str,str,str)
     def formsignUpBtn(self,User,Email,Password):
-        url = "http://127.0.0.1:8000/signUp/"
+        url = URL + "signUp/"
         data = {"User":User,
                 "Email":Email,
                 "Password":Password}
@@ -57,7 +59,7 @@ class HtmlJsChannel(QObject):
 
 def isLogin():
     """判断是否登录"""
-    url = "http://127.0.0.1:8000/isLogin/"
+    url = URL + "isLogin/"
     try:
         res = mysession.get(url=url)
     except:
@@ -70,7 +72,7 @@ def isLogin():
 
 def getStoreAssetData():
     """获取商城商品数据"""
-    url = "http://127.0.0.1:8000/getStoreAssetData/"
+    url = URL + "getStoreAssetData/"
     try:
         res = mysession.get(url=url)
     except:

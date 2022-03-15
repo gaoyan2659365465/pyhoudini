@@ -11,7 +11,9 @@ import widget.MiniWidget as mini
 import widget.Translation as tran
 from widget.Sign.Sign import HtmlView,isLogin
 from widget.store.HoudiniStore import HoudiniStoreScrollArea
-from widget.CopyHoudiniNodeData import getNodeData
+try:
+    from widget.CopyHoudiniNodeData import getNodeData
+except:pass
 
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
@@ -43,8 +45,10 @@ class PyHoudiniWidget(main.MainWindow):
         #self.htmlwidget.resize(self.ui.stackedWidget.sizeHint())
         self.ui.stackedWidget.addWidget(self.htmlwidget)
         
-        #点击按钮，将选中的节点输出到json文件，用来给UE5生成场景
-        self.ui.ue5Btn.clicked.connect(getNodeData)
+        try:
+            #点击按钮，将选中的节点输出到json文件，用来给UE5生成场景
+            self.ui.ue5Btn.clicked.connect(getNodeData)
+        except:pass
     
     def htmlShow(self):
         """创建网页登录"""

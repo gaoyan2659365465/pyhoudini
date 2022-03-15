@@ -7,6 +7,7 @@ import sys
 
 from widget.StyleTool import *
 from widget.FlowLayout import FlowLayout
+from widget.Translation import ActionText
 
 
 class QHWUrlWeb(QCommandLinkButton):
@@ -223,7 +224,77 @@ class QHWNode(QLabel):
     def loadWidget(self,data):
         """序列化加载控件"""
         self.datatext = data
+
+class QHTWMarkdown(ActionText):
+    """支持markdown语法的文本框"""
+    resized = Signal()
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFrameShape(QFrame.NoFrame)
+        self.setStyleSheet(u"background-color: rgb(44, 49, 57);")
+        self.setMinimumSize(400,150)
+        self.setMaximumSize(400,150)
+        self.document_ = self.document()
+        self.document_.contentsChanged.connect(self.textAreaChanged)
+        self.markdowncore = ''
+        self.setLineWrapMode(QTextEdit.NoWrap)#不自动换行
+        self.setContextMenuPolicy(Qt.CustomContextMenu)#右键菜单
         
+        self.parent().createRightmenu = self.createRightmenu
+        
+        
+    def resizeEvent(self, a0: QResizeEvent):
+        self.resized.emit()#把尺寸事件转发给包裹框
+    
+    def textAreaChanged(self):
+        """文本框内容自适应尺寸"""
+        self.document_.adjustSize()
+        newWidth = self.document_.size().width() + 10
+        newHeight = self.document_.size().height() + 20
+        if newWidth != self.width():
+            self.setFixedWidth(newWidth)
+            self.setMaximumWidth(newWidth)
+        if newHeight != self.height():
+            self.setFixedHeight(newHeight)
+            self.setMaximumHeight(newHeight)
+    
+    def toTextEditEvent(self):
+        self.setText(self.toMarkdown())
+        self.markdowncore = self.toMarkdown()#记录一下代码
+    
+    def toMarkdownEvent(self):
+        if self.markdowncore == "":
+            self.markdowncore = self.toPlainText()#记录一下代码
+        self.setMarkdown(self.markdowncore)
+    
+    def createRightmenu(self):
+        """创建右键菜单函数"""
+        parent = self.parent()
+        parent.groupBox_menu = QMenu(parent)
+        
+        parent.actionA = QAction(u'Markdown代码',parent)#创建菜单选项对象
+        parent.groupBox_menu.addAction(parent.actionA)
+        parent.actionA.triggered.connect(self.toTextEditEvent)
+        
+        parent.actionB = QAction(u'最终效果',parent)#创建菜单选项对象
+        parent.groupBox_menu.addAction(parent.actionB)
+        parent.actionB.triggered.connect(self.toMarkdownEvent)
+        
+        parent.actionC = QAction(u'删除',parent)#创建菜单选项对象
+        parent.groupBox_menu.addAction(parent.actionC)
+        parent.actionC.triggered.connect(parent.RightMenuEvent)
+        
+        parent.groupBox_menu.popup(QCursor.pos())
+            
+    def saveWidget(self):
+        """序列化保存控件"""
+        data = {'QHTWMarkdown':self.toHtml()}
+        return data
+    
+    def loadWidget(self,data):
+        """序列化加载控件"""
+        self.setHtml(data)
+
 class QHTWTextEdit(QTextEdit):
     resized = Signal()
     def __init__(self, parent=None):
@@ -236,7 +307,7 @@ class QHTWTextEdit(QTextEdit):
         self.textedit_height = 42
         self.document_ = self.document()
         self.document_.contentsChanged.connect(self.textAreaChanged)
-        self.setLineWrapMode(QTextEdit.NoWrap)
+        self.setLineWrapMode(QTextEdit.NoWrap)#不自动换行
         self.setContextMenuPolicy(Qt.CustomContextMenu)#右键菜单
     
     def resizeEvent(self, a0: QResizeEvent):
@@ -384,6 +455,16 @@ class QHoudiniEdit(QScrollArea):
             houdiniwidget.addHoudiniWidget(textedit)
             self.vlayout.addWidget(houdiniwidget)
         self.actionC.triggered.connect(RightMenuCEvent)
+        
+        self.actionD = QAction(u'新建Markdown',self)#创建菜单选项对象
+        self.groupBox_menu.addAction(self.actionD)
+        def RightMenuDEvent():
+            """右键菜单点击事件"""
+            houdiniwidget = QHoudiniWidget(self.topFiller)
+            textedit = QHTWMarkdown(houdiniwidget)
+            houdiniwidget.addHoudiniWidget(textedit)
+            self.vlayout.addWidget(houdiniwidget)
+        self.actionD.triggered.connect(RightMenuDEvent)
         #声明当鼠标在groupBox控件上右击时，在鼠标位置显示右键菜单   ,exec_,popup两个都可以，
         self.groupBox_menu.popup(QCursor.pos())
     

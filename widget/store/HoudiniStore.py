@@ -198,13 +198,16 @@ class HoudiniStoreAssetWidget(QWidget):
         self.v_layout.setContentsMargins(10,0,10,16)
         self.setLayout(self.v_layout)
         
+        self.imagelayout = QHBoxLayout()
+        self.imagelayout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         self.imagelabel = QLabel()#商品展示图片
         res = requests.get("https://cdn1.epicgames.com/ue/product/Thumbnail/RetroPlantsandTreespack_thumb-284x284-14cd1044a384d8c2b493482bd8db6341.png?resize=1&w=300")
         img = QImage.fromData(res.content)
         self.imagelabel.setPixmap(QPixmap.fromImage(img)\
             .scaled(248,248,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
         self.imagelabel.setFixedSize(248,248)
-        self.v_layout.addWidget(self.imagelabel)
+        self.imagelayout.addWidget(self.imagelabel)
+        self.v_layout.addLayout(self.imagelayout)
         
         self.v_layout_info = QVBoxLayout()#商品大致信息
         self.v_layout_info.setContentsMargins(8,8,8,0)
@@ -304,7 +307,11 @@ class HoudiniStoreAssetsBlockWidget(QWidget):
             saw = HoudiniStoreAssetWidget()
             self.addAssetWidget(saw)
             saw.initWidget(i)
-            
+    
+    def resizeEvent(self, e):
+        h = self.name_layout.sizeHint().height()
+        self.setMinimumHeight(self.g_layout.flowheight+h+60)
+        self.resize(self.width(),self.g_layout.flowheight+h+60)
 
 class HoudiniStoreScrollArea(QScrollArea):
     """Houdini商店滚动区域"""

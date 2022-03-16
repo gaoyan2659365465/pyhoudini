@@ -14,6 +14,8 @@ class FlowLayout(QLayout):
         self.setSpacing(spacing)
 
         self.itemList = []
+        
+        self.flowheight = 0
 
     def __del__(self):
         item = self.takeAt(0)
@@ -50,7 +52,7 @@ class FlowLayout(QLayout):
 
     def setGeometry(self, rect):
         super(FlowLayout, self).setGeometry(rect)
-        self.doLayout(rect, False)
+        self.flowheight = self.doLayout(rect, False)
 
     def sizeHint(self):
         return self.minimumSize()
@@ -89,6 +91,5 @@ class FlowLayout(QLayout):
 
             x = nextX
             lineHeight = max(lineHeight, item.sizeHint().height())
-
         return y + lineHeight - rect.y()
 

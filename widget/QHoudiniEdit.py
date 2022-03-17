@@ -15,6 +15,56 @@ class QHWUrlWeb(QCommandLinkButton):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.url = "http://www.baidu.com"
+        
+        #-----------------------------------
+        self.setObjectName(u"commandLinkButton")
+        self.setCursor(QCursor(Qt.PointingHandCursor))
+        addStyleIcon(self,"cil-link.png")
+        self.setText(QCoreApplication.translate("MainWindow", u"Link Button", None))
+        self.setDescription(QCoreApplication.translate("MainWindow", u"Link description", None))
+        self.resize(168,54)
+        
+        self.parent().createRightmenu = self.createRightmenu
+        
+    def resizeEvent(self, a0: QResizeEvent):
+        self.resized.emit()#把尺寸事件转发给包裹框
+    
+    def setWebUrl(self):
+        """保存url"""
+        self.url = self.linew.text()
+        self.selectw.close()
+        self.setText(QCoreApplication.translate("MainWindow", self.linewA.text(), None))
+        self.setDescription(QCoreApplication.translate("MainWindow", self.linewB.text(), None))
+    
+    def mousePressEvent(self, event: QMouseEvent):
+        """鼠标按下"""
+        if event.buttons() == Qt.RightButton:
+            return
+        webbrowser.open(self.url)
+    
+    def close(self):
+        try:
+            self.selectw.close()
+        except:pass
+        return super().close()
+
+    def saveWidget(self):
+        """序列化保存控件"""
+        list0 = []
+        list0.append(self.text())
+        list0.append(self.description())
+        list0.append(self.url)
+        data = {'QHWUrlWeb':list0}
+        return data
+    
+    def loadWidget(self,data):
+        """序列化加载控件"""
+        self.setText(QCoreApplication.translate("MainWindow", data[0], None))
+        self.setDescription(QCoreApplication.translate("MainWindow", data[1], None))
+        self.url = data[2]
+    
+    def openURLWidget(self):
+        """打开设置界面"""
         #-----------------------------------
         self.selectw = QWidget()
         self.selectw.resize(300,150)
@@ -44,59 +94,28 @@ class QHWUrlWeb(QCommandLinkButton):
         h_layout.addWidget(buttonw)
         
         self.linewA = QLineEdit(self.selectw_)
-        self.linewA.setText("Link Button")
+        self.linewA.setText(self.text())
         self.linewB = QLineEdit(self.selectw_)
-        self.linewB.setText("Link description")
+        self.linewB.setText(self.description())
         v_layout.addWidget(self.linewA)
         v_layout.addWidget(self.linewB)
         
         self.selectw.show()
-        #-----------------------------------
-        self.setObjectName(u"commandLinkButton")
-        self.setCursor(QCursor(Qt.PointingHandCursor))
-        addStyleIcon(self,"cil-link.png")
-        self.setText(QCoreApplication.translate("MainWindow", u"Link Button", None))
-        self.setDescription(QCoreApplication.translate("MainWindow", u"Link description", None))
-        self.resize(168,54)
+    
+    def createRightmenu(self):
+        """创建右键菜单函数"""
+        parent = self.parent()
+        parent.groupBox_menu = QMenu(parent)
         
-    def resizeEvent(self, a0: QResizeEvent):
-        self.resized.emit()#把尺寸事件转发给包裹框
-    
-    def setWebUrl(self):
-        """保存url"""
-        self.url = self.linew.text()
-        self.selectw.close()
-        self.setText(QCoreApplication.translate("MainWindow", self.linewA.text(), None))
-        self.setDescription(QCoreApplication.translate("MainWindow", self.linewB.text(), None))
-    
-    def mousePressEvent(self, event: QMouseEvent):
-        """鼠标按下"""
-        if event.buttons() == Qt.RightButton:
-            return
-        webbrowser.open(self.url)
-    
-    def close(self):
-        try:
-            self.selectw.close()
-        except:pass
-        return super().close()
-
-    def saveWidget(self):
-        """序列化保存控件"""
-        list0 = []
-        list0.append(self.linewA.text())
-        list0.append(self.linewB.text())
-        list0.append(self.url)
-        data = {'QHWUrlWeb':list0}
-        return data
-    
-    def loadWidget(self,data):
-        """序列化加载控件"""
-        self.linewA.setText(data[0])
-        self.linewB.setText(data[1])
-        self.setText(QCoreApplication.translate("MainWindow", data[0], None))
-        self.setDescription(QCoreApplication.translate("MainWindow", data[1], None))
-        self.url = data[2]
+        parent.actionA = QAction(u'更换连接',parent)#创建菜单选项对象
+        parent.groupBox_menu.addAction(parent.actionA)
+        parent.actionA.triggered.connect(self.openURLWidget)
+        
+        parent.actionC = QAction(u'删除',parent)#创建菜单选项对象
+        parent.groupBox_menu.addAction(parent.actionC)
+        parent.actionC.triggered.connect(parent.RightMenuEvent)
+        
+        parent.groupBox_menu.popup(QCursor.pos())
 
 class QHWUrlImage(QLabel):
     """加载网络图片"""
@@ -105,6 +124,7 @@ class QHWUrlImage(QLabel):
         super().__init__(parent)
         self.url = "https://tse3-mm.cn.bing.net/th/id/OIP-C.Tq_jFLCrIeR5cIWDqWVArQHaLP?pid=ImgDet&rs=1"
         self.initImage()
+        self.parent().createRightmenu = self.createRightmenu
     
     def initImage(self):
         """初始化图片"""
@@ -113,10 +133,6 @@ class QHWUrlImage(QLabel):
         self.setPixmap(QPixmap.fromImage(img))
         self.setScaledContents(True)
         self.resize(img.width(),img.height())
-        try:
-            self.selectw.close()
-        except:pass
-        self.isshowselectw = False
     
     def resizeEvent(self, a0: QResizeEvent):
         self.resized.emit()#把尺寸事件转发给包裹框
@@ -127,19 +143,10 @@ class QHWUrlImage(QLabel):
         except:pass
         return super().close()
     
-    def mousePressEvent(self, event: QMouseEvent):
-        """鼠标按下"""
-        if event.buttons() == Qt.RightButton:
-            return
-        if self.isshowselectw:
-            self.selectw.close()
-            self.isshowselectw = False
-            return
-        self.selectw = QWidget(self.parent().parent())
-        self.selectw.move(self.parent().x()+5,self.parent().y()+5)
+    def setImage(self):
+        self.selectw = QWidget()
         self.selectw.resize(300,40)
-        self.selectw.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
-        self.selectw.setAttribute(Qt.WA_TranslucentBackground,True)#背景透明
+        self.selectw.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         self.selectw.setStyleSheet(u'QWidget {color: rgb(221, 221, 221);\
 	                                font: 10pt "Segoe UI";}\
                                     QLineEdit {\
@@ -155,9 +162,9 @@ class QHWUrlImage(QLabel):
                                         border: 2px solid rgb(91, 101, 124);}')
         self.selectw_ = QWidget(self.selectw)
         self.selectw_.resize(self.selectw.size())
-        self.selectw_.setStyleSheet("background-color: rgb(255, 121, 198);border-radius: 5px;")
+        self.selectw_.setStyleSheet("background-color: rgb(33, 37, 43);border-radius: 5px;")
         h_layout = QHBoxLayout()
-        h_layout.setSpacing(0)
+        h_layout.setSpacing(5)
         h_layout.setContentsMargins(5, 0, 5, 0)
         self.selectw_.setLayout(h_layout)
         
@@ -171,12 +178,12 @@ class QHWUrlImage(QLabel):
         h_layout.addWidget(self.linew)
         h_layout.addWidget(buttonw)
         self.selectw.show()
-        self.isshowselectw = True
             
     def setImageUrl(self):
         """保存图片url"""
         self.url = self.linew.text()
         self.initImage()
+        self.selectw.close()
     
     def saveWidget(self):
         """序列化保存控件"""
@@ -187,6 +194,21 @@ class QHWUrlImage(QLabel):
         """序列化加载控件"""
         self.url = data
         self.initImage()
+    
+    def createRightmenu(self):
+        """创建右键菜单函数"""
+        parent = self.parent()
+        parent.groupBox_menu = QMenu(parent)
+        
+        parent.actionA = QAction(u'更换图片',parent)#创建菜单选项对象
+        parent.groupBox_menu.addAction(parent.actionA)
+        parent.actionA.triggered.connect(self.setImage)
+        
+        parent.actionC = QAction(u'删除',parent)#创建菜单选项对象
+        parent.groupBox_menu.addAction(parent.actionC)
+        parent.actionC.triggered.connect(parent.RightMenuEvent)
+        
+        parent.groupBox_menu.popup(QCursor.pos())
 
 class QHWNode(QLabel):
     resized = Signal()

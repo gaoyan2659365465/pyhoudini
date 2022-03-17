@@ -52,13 +52,6 @@ class PyHoudiniWidget(main.MainWindow):
     
     def htmlShow(self):
         """创建网页登录"""
-        # if not isLogin():
-        #     try:
-        #         if self.htmlwidget.isVisible:
-        #             self.htmlwidget.close()
-        #             del self.htmlwidget
-        #             return
-        #     except:pass
         self.ui.stackedWidget.setCurrentWidget(self.htmlwidget)
         
     def show(self):

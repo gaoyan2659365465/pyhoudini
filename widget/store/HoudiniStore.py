@@ -6,6 +6,7 @@ from widget.StyleTool import *
 from widget.FlowLayout import FlowLayout
 import requests
 from widget.Sign.Sign import getStoreAssetData
+from widget.ThreadReadImage import ReadWebImages
 
 class HoudiniStoreTopWidget(QWidget):
     """Houdini商店顶部控件"""
@@ -17,9 +18,12 @@ class HoudiniStoreTopWidget(QWidget):
         self.setLayout(self.v_layout)
         
         self.imagelabel = QLabel()#顶部广告图片
-        res = requests.get("https://cdn2.unrealengine.com/unreal-engine-marketplace-sale-march-2022-banner-1340x180-8b684d14c9b4.png")
-        img = QImage.fromData(res.content)
-        self.imagelabel.setPixmap(QPixmap.fromImage(img))
+        self.thread_1 = ReadWebImages()  # 创建线程
+        self.thread_1.image_url = "https://cdn2.unrealengine.com/unreal-engine-marketplace-sale-march-2022-banner-1340x180-8b684d14c9b4.png"
+        self.thread_1.imagelabel = self.imagelabel
+        self.thread_1.mode = 1#不缩放图片
+        self.thread_1.start()  # 开始线程
+        
         self.imagelabel.setMinimumWidth(900)
         self.imagelabel.setMaximumWidth(1300)
         self.v_layout.addWidget(self.imagelabel)
@@ -201,10 +205,6 @@ class HoudiniStoreAssetWidget(QWidget):
         self.imagelayout = QHBoxLayout()
         self.imagelayout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
         self.imagelabel = QLabel()#商品展示图片
-        res = requests.get("https://cdn1.epicgames.com/ue/product/Thumbnail/RetroPlantsandTreespack_thumb-284x284-14cd1044a384d8c2b493482bd8db6341.png?resize=1&w=300")
-        img = QImage.fromData(res.content)
-        self.imagelabel.setPixmap(QPixmap.fromImage(img)\
-            .scaled(248,248,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
         self.imagelabel.setFixedSize(248,248)
         self.imagelayout.addWidget(self.imagelabel)
         self.v_layout.addLayout(self.imagelayout)
@@ -256,10 +256,10 @@ class HoudiniStoreAssetWidget(QWidget):
             elif n == 'assetScore':
                 self.assetscore.setScoreText(str(data['fields'][n]))
             elif n == 'imagePath':
-                res = requests.get(str(data['fields'][n]))
-                img = QImage.fromData(res.content)
-                self.imagelabel.setPixmap(QPixmap.fromImage(img)\
-                    .scaled(248,248,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
+                self.thread_1 = ReadWebImages()  # 创建线程
+                self.thread_1.image_url = str(data['fields'][n])
+                self.thread_1.imagelabel = self.imagelabel
+                self.thread_1.start()  # 开始线程
         
 class HoudiniStoreAssetsBlockWidget(QWidget):
     """Houdini商店显示商品分区"""
@@ -307,6 +307,7 @@ class HoudiniStoreAssetsBlockWidget(QWidget):
             saw = HoudiniStoreAssetWidget()
             self.addAssetWidget(saw)
             saw.initWidget(i)
+            self.demo()
     
     def resizeEvent(self, e):
         h = self.name_layout.sizeHint().height()

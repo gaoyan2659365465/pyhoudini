@@ -33,17 +33,7 @@ class PyHoudiniWidget(main.MainWindow):
             self.hide()
         self.ui.miniBtn.clicked.connect(openMiniWidget)
         
-        self.translation = tran.TranslationWidget()
-        self.ui.stackedWidget.addWidget(self.translation)
-
         self.ui.settingsTopBtn.clicked.connect(self.htmlShow)
-        
-        self.storewidget = HoudiniStoreScrollArea()#商店界面
-        self.ui.stackedWidget.addWidget(self.storewidget)
-        
-        self.htmlwidget = HtmlView()
-        #self.htmlwidget.resize(self.ui.stackedWidget.sizeHint())
-        self.ui.stackedWidget.addWidget(self.htmlwidget)
         
         try:
             #点击按钮，将选中的节点输出到json文件，用来给UE5生成场景
@@ -52,7 +42,12 @@ class PyHoudiniWidget(main.MainWindow):
     
     def htmlShow(self):
         """创建网页登录"""
-        self.ui.stackedWidget.setCurrentWidget(self.htmlwidget)
+        try:
+            self.ui.stackedWidget.setCurrentWidget(self.htmlwidget)
+        except:
+            self.htmlwidget = HtmlView()
+            #self.htmlwidget.resize(self.ui.stackedWidget.sizeHint())
+            self.ui.stackedWidget.addWidget(self.htmlwidget)
         
     def show(self):
         try:
@@ -96,12 +91,22 @@ class PyHoudiniWidget(main.MainWindow):
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
         
         if btnName == "btn_translation":
-            self.ui.stackedWidget.setCurrentWidget(self.translation)
+            try:
+                self.ui.stackedWidget.setCurrentWidget(self.translation)
+            except:
+                self.translation = tran.TranslationWidget()
+                self.ui.stackedWidget.addWidget(self.translation)
+                self.ui.stackedWidget.setCurrentWidget(self.translation)
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
         
         if btnName == "btn_store":
-            self.ui.stackedWidget.setCurrentWidget(self.storewidget)
+            try:
+                self.ui.stackedWidget.setCurrentWidget(self.storewidget)
+            except:
+                self.storewidget = HoudiniStoreScrollArea()#商店界面
+                self.ui.stackedWidget.addWidget(self.storewidget)
+                self.ui.stackedWidget.setCurrentWidget(self.storewidget)
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
 

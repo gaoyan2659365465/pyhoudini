@@ -307,7 +307,6 @@ class HoudiniStoreAssetsBlockWidget(QWidget):
             saw = HoudiniStoreAssetWidget()
             self.addAssetWidget(saw)
             saw.initWidget(i)
-            self.demo()
     
     def resizeEvent(self, e):
         h = self.name_layout.sizeHint().height()

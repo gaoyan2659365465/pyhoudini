@@ -434,6 +434,7 @@ class QHoudiniEdit(QScrollArea):
         self.topFiller.setAcceptDrops(True)
         self.topFiller.setMinimumSize(250, 2000)#设置滚动条的尺寸
         self.topFiller.setStyleSheet(u"#QHoudiniEdit{background-color: rgb(33, 37, 43);}")
+        self.topFiller.setContentsMargins(7, 7, 7, 7)
         self.topFiller.dragEnterEvent = self.dragEnterEvent#拖拽事件
         self.topFiller.dropEvent = self.dropEvent#拖拽事件
         #self.topFiller.setCursor(QCursor(Qt.IBeamCursor))

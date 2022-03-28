@@ -28,36 +28,36 @@ class NodeWidget(QWidget):
         self.icon = icon
         self.button = QPushButton("",self)
         self.button.clicked.connect(self.close)
-        self.button.setMinimumSize(QSize(40, 40))
+        self.button.setMinimumSize(QSize(30, 30))
         self.button.setCursor(QCursor(Qt.PointingHandCursor))
         self.button.setStyleSheet(NodeWidgetButtonStyle)
         addStyleIcon(self.button,"cil-chevron-circle-left-alt.png")
         
         self.button2 = QPushButton("",self)
         self.button2.clicked.connect(self.saveTextEdit)
-        self.button2.setMinimumSize(QSize(40, 40))
+        self.button2.setMinimumSize(QSize(30, 30))
         self.button2.setCursor(QCursor(Qt.PointingHandCursor))
         self.button2.setStyleSheet(NodeWidgetButtonStyle)
         addStyleIcon(self.button2,"cil-save.png")
         
         self.label = QLabel(self)
-        self.label.setPixmap(QPixmap(icon.icon_path))
-        self.label.setFixedSize(48,48)
+        self.label.setPixmap(QPixmap(icon.icon_path).scaled(30,30,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
+        self.label.setFixedSize(30,30)
         
         #----------收藏按钮------------
         self.button3 = QPushButton("",self)
         self.button3.clicked.connect(self.hoardingClickedEvent)
-        self.button3.setMinimumSize(QSize(40, 40))
+        self.button3.setMinimumSize(QSize(30, 30))
         self.button3.setCursor(QCursor(Qt.PointingHandCursor))
         self.button3.setStyleSheet(NodeWidgetButtonStyle)
         icon2 = QIcon()
-        icon2.addFile(FilePath + "image/xin.png", QSize(40,40), QIcon.Normal, QIcon.Off)
+        icon2.addFile(FilePath + "image/xin.png", QSize(30,30), QIcon.Normal, QIcon.Off)
         self.button3.setIcon(icon2)
         #------------------------------
         self.addLayout()
         
         self.text_Edit = QHoudiniEdit(self)#QPlainTextEdit QTextEdit
-        self.text_Edit.setGeometry(10,70,self.width()-20,self.height()-100)
+        self.text_Edit.setGeometry(5,40,self.width()-5,self.height()-40)
         
         self.initTextEdit()
         self.setStyleSheet(NodeWidgetStyle)
@@ -66,12 +66,12 @@ class NodeWidget(QWidget):
         """添加各种Layout"""
         self.h_layout = QHBoxLayout()
         self.v_layout = QVBoxLayout()
-        self.h_layout.setSpacing(10)
+        self.h_layout.setSpacing(7)
         self.v_layout.setSpacing(0)
-        self.h_layout.setAlignment(Qt.AlignLeft)
+        self.h_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         self.v_layout.setAlignment(Qt.AlignTop)
         self.h_layout.setContentsMargins(10,0,0,0)#layout边缘
-        self.v_layout.setContentsMargins(0,10,0,0)#layout边缘
+        self.v_layout.setContentsMargins(0,0,0,0)#layout边缘
         self.h_layout.addWidget(self.button)
         self.h_layout.addWidget(self.button2)
         self.h_layout.addWidget(self.button3)
@@ -82,12 +82,12 @@ class NodeWidget(QWidget):
     def hoardingClickedEvent(self):
         """收藏点击按钮"""
         icon2 = QIcon()
-        icon2.addFile(FilePath + "image/xin-1.png", QSize(40,40), QIcon.Normal, QIcon.Off)
+        icon2.addFile(FilePath + "image/xin-1.png", QSize(30,30), QIcon.Normal, QIcon.Off)
         self.button3.setIcon(icon2)
     
     def resizeEvent(self, a0):
         if self.text_Edit:
-            self.text_Edit.setGeometry(10,70,self.width()-20,self.height()-100)
+            self.text_Edit.setGeometry(5,40,self.width()-5,self.height()-40)
     
     def initTextEdit(self):
         """初始化富文本"""

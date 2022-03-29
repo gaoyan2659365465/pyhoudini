@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainZfjQbt.ui'
+## Form generated from reading UI file 'mainvAKnjH.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -691,6 +691,14 @@ class Ui_MainWindow(object):
         self.btn_store.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-cloud-upload.png);")
 
         self.verticalLayout_8.addWidget(self.btn_store)
+
+        self.btn_browser = QPushButton(self.topMenu)
+        self.btn_browser.setObjectName(u"btn_browser")
+        self.btn_browser.setMinimumSize(QSize(0, 45))
+        self.btn_browser.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_browser.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-folder-open.png);")
+
+        self.verticalLayout_8.addWidget(self.btn_browser)
 
 
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
@@ -1546,6 +1554,10 @@ class Ui_MainWindow(object):
         self.btn_store.setToolTip(QCoreApplication.translate("MainWindow", u"\u5546\u57ce", None))
 #endif // QT_CONFIG(tooltip)
         self.btn_store.setText(QCoreApplication.translate("MainWindow", u"PushButton", None))
+#if QT_CONFIG(tooltip)
+        self.btn_browser.setToolTip(QCoreApplication.translate("MainWindow", u"\u5185\u5bb9\u6d4f\u89c8\u5668", None))
+#endif // QT_CONFIG(tooltip)
+        self.btn_browser.setText(QCoreApplication.translate("MainWindow", u"ContentBrowser", None))
         self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
 #if QT_CONFIG(tooltip)

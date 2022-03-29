@@ -14,6 +14,7 @@ from widget.store.HoudiniStore import HoudiniStoreScrollArea
 try:
     from widget.CopyHoudiniNodeData import getNodeData
 except:pass
+from widget.ContentBrowser.QContentBrowser import QContentBrowserWidget
 
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
@@ -39,6 +40,8 @@ class PyHoudiniWidget(main.MainWindow):
             #点击按钮，将选中的节点输出到json文件，用来给UE5生成场景
             self.ui.ue5Btn.clicked.connect(getNodeData)
         except:pass
+        
+        
     
     def htmlShow(self):
         """创建网页登录"""
@@ -107,6 +110,16 @@ class PyHoudiniWidget(main.MainWindow):
                 self.storewidget = HoudiniStoreScrollArea()#商店界面
                 self.ui.stackedWidget.addWidget(self.storewidget)
                 self.ui.stackedWidget.setCurrentWidget(self.storewidget)
+            main.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
+        
+        if btnName == "btn_browser":
+            try:
+                self.ui.stackedWidget.setCurrentWidget(self.contentBrowser)
+            except:
+                self.contentBrowser = QContentBrowserWidget()#商店界面
+                self.ui.stackedWidget.addWidget(self.contentBrowser)
+                self.ui.stackedWidget.setCurrentWidget(self.contentBrowser)
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
 

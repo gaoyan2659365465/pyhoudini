@@ -947,6 +947,28 @@ Button */
                   </property>
                  </widget>
                 </item>
+                <item>
+                 <widget class="QPushButton" name="btn_browser">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>45</height>
+                   </size>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="toolTip">
+                   <string>内容浏览器</string>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-image: url(:/icons/images/icons/cil-folder-open.png);</string>
+                  </property>
+                  <property name="text">
+                   <string>ContentBrowser</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </widget>
              </item>

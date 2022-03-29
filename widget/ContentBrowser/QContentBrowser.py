@@ -12,7 +12,8 @@ class QFolderWidget(QWidget):
     """内容浏览器的文件夹"""
     def __init__(self, parent = None):
         super().__init__(parent)
-        self.folderPath = ContentBrowserFilePath + "/新建文件夹"
+        self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.folderPath = ""
         
         label = QLabel(self)
         imagescale = 2.5
@@ -32,25 +33,28 @@ class QFolderWidget(QWidget):
         self.setContextMenuPolicy(Qt.CustomContextMenu)#右键菜单
         self.customContextMenuRequested.connect(self.createRightmenu)  # 连接到菜单显示函数
     
-    def setFolderName(self,name):
+    def setFolderName(self,name,path):
         """设置文件夹名字"""
         self.label_text.setText(name)
-        self.folderPath = ContentBrowserFilePath + "/" + name
-    
+        print(path)
+        self.folderPath = path
     
     def focusOutEvent(self, arg__1):
         """失去焦点"""
-        try:
-            name = self.label_text.text()
-            newname = self.lineedit.text()
-            self.label_text.setText(newname)
-            self.label_text.show()
-            self.lineedit.close()
-            
-            os.rename(self.folderPath,self.folderPath[:-len(name)]+newname)
-            self.folderPath = self.folderPath[:-len(name)]+newname
-        except:
-            pass
+        name = self.label_text.text()
+        newname = self.lineedit.text()
+        self.label_text.setText(newname)
+        self.label_text.show()
+        self.lineedit.close()
+        
+        #print("name:" + name)
+        #print("newname:" + newname)
+        #print("folderPath:" + self.folderPath)
+        #print("folderPath[:-len(name)]:" + self.folderPath[:-len(name)])
+        #print(-len(name))
+        #print(self.folderPath[:-len(name)]+newname)
+        os.rename(self.folderPath,self.folderPath[:-len(name)]+newname)#修改文件夹名
+        self.folderPath = self.folderPath[:-len(name)]+newname
     
     def RightMenuEvent(self):
         """右键重命名点击事件"""
@@ -82,13 +86,36 @@ class QFolderWidget(QWidget):
         self.actionB.triggered.connect(RightMenuBEvent)
         #声明当鼠标在groupBox控件上右击时，在鼠标位置显示右键菜单   ,exec_,popup两个都可以，
         self.groupBox_menu.popup(QCursor.pos())
+    
+    def mousePressEvent(self, event):
+        """鼠标点击事件"""
+        if event.buttons() == Qt.LeftButton:
+            #把路径传递给父控件
+            self.parent().openFolder(self.folderPath)
+        super().mousePressEvent(event)
 
 class QContentBrowserWidget(QWidget):
     def __init__(self, parent = None):
         super().__init__(parent)
         
+        self.v_layout = QVBoxLayout()
+        self.v_layout.setSpacing(0)
+        self.v_layout.setContentsMargins(0,0,0,0)#layout边缘
+        self.v_layout.setAlignment(Qt.AlignTop)
+        self.h_layout = QHBoxLayout()
+        self.button = QPushButton("",self)
+        self.button.clicked.connect(self.previous)
+        self.button.setMinimumSize(QSize(30, 30))
+        self.button.setCursor(QCursor(Qt.PointingHandCursor))
+        self.button.setStyleSheet(NodeWidgetButtonStyle)
+        addStyleIcon(self.button,"cil-chevron-circle-left-alt.png")
+        
+        self.h_layout.addWidget(self.button)
+        self.h_layout.addStretch()
         self.g_layout = FlowLayout()
-        self.setLayout(self.g_layout)
+        self.v_layout.addLayout(self.h_layout)
+        self.v_layout.addLayout(self.g_layout)
+        self.setLayout(self.v_layout)
         
         self.setContextMenuPolicy(Qt.CustomContextMenu)#右键菜单
         self.customContextMenuRequested.connect(self.createRightmenu)  # 连接到菜单显示函数
@@ -114,14 +141,18 @@ class QContentBrowserWidget(QWidget):
     def initWidgets(self):
         """初始化所有子控件"""
         self.removeAllItem()
-        if os.path.isdir(ContentBrowserFilePath) == True:
-            for root,dirs,files in os.walk(ContentBrowserFilePath):
-                for dir in dirs:
+        path = ContentBrowserFilePath + self.BrowserPath
+        
+        if os.path.isdir(path) == True:
+            for dir in os.listdir(path):#获取路径下所有文件名/文件夹名
+                if os.path.isdir(path+"/"+dir):
                     folderWidget = QFolderWidget(self)
-                    folderWidget.setFolderName(dir)
+                    folderWidget.setFolderName(dir,path+"/"+dir)
                     self.addWidget(folderWidget)
+                elif os.path.isfile(path+"/"+dir):
+                    pass
         else:
-            os.makedirs(ContentBrowserFilePath)
+            os.makedirs(path)
             
     def createRightmenu(self):
         """创建右键菜单函数"""
@@ -131,22 +162,20 @@ class QContentBrowserWidget(QWidget):
         def RightMenuEvent():
             """右键新建文件夹点击事件"""
             FolderName = "新建文件夹"
-            self.BrowserPath = self.BrowserPath+"/"+FolderName
+            path_ = self.BrowserPath+"/"+FolderName
             num = 2
             while True:
-                if os.path.isdir(ContentBrowserFilePath + self.BrowserPath) == True:
+                if os.path.isdir(ContentBrowserFilePath + path_) == True:
                     #如果目录存在
-                    self.BrowserPath = self.BrowserPath[:-(len(FolderName)+1)]
-                    print(self.BrowserPath)
+                    path_ = self.BrowserPath[:-(len(FolderName)+1)]
                     FolderName = "新建文件夹" + " (" + str(num) + ")"
-                    self.BrowserPath = self.BrowserPath+"/"+FolderName
+                    path_ = self.BrowserPath+"/"+FolderName
                     num = num + 1
                 else:
-                    os.makedirs(ContentBrowserFilePath + self.BrowserPath)
-                    self.BrowserPath = self.BrowserPath[:-(len(FolderName)+1)]
+                    os.makedirs(ContentBrowserFilePath + path_)
                     break
             folderWidget = QFolderWidget(self)
-            folderWidget.setFolderName(FolderName)
+            folderWidget.setFolderName(FolderName,ContentBrowserFilePath + path_)
             self.addWidget(folderWidget)
         self.actionA.triggered.connect(RightMenuEvent)
         
@@ -171,3 +200,19 @@ class QContentBrowserWidget(QWidget):
         """鼠标点击事件"""
         self.setFocus()#焦点
         super().mousePressEvent(event)
+    
+    def openFolder(self,path):
+        """打开文件夹"""
+        self.BrowserPath = path[len(ContentBrowserFilePath):]
+        self.initWidgets()#初始化
+    
+    def previous(self):
+        """上一步"""
+        path = ""
+        list0 = self.BrowserPath.split("/")
+        if len(list0)>0:
+            for i in range(len(list0)-1):
+                if list0[i] != "":
+                    path = path +"/"+ list0[i]
+        self.BrowserPath = path
+        self.initWidgets()#初始化

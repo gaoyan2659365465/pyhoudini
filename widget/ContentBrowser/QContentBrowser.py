@@ -23,11 +23,11 @@ class QFolderWidget(QWidget):
         self.label_text.setText("新建文件夹")
         self.label_text.setFont(QFont("Microsoft YaHei",15,QFont.Bold))#文字尺寸默认10
         self.label_text.setStyleSheet("color: #a4a4a4 ")
-        v_layout = QVBoxLayout(self)
-        v_layout.setSpacing(0)#各控件间距
-        v_layout.setContentsMargins(4,4,4,4)#layout边缘
-        v_layout.addWidget(label,0,Qt.AlignHCenter)
-        v_layout.addWidget(self.label_text,0,Qt.AlignHCenter)
+        self.v_layout = QVBoxLayout(self)
+        self.v_layout.setSpacing(0)#各控件间距
+        self.v_layout.setContentsMargins(4,4,4,4)#layout边缘
+        self.v_layout.addWidget(label,0,Qt.AlignHCenter)
+        self.v_layout.addWidget(self.label_text,0,Qt.AlignHCenter)
         
         self.setContextMenuPolicy(Qt.CustomContextMenu)#右键菜单
         self.customContextMenuRequested.connect(self.createRightmenu)  # 连接到菜单显示函数
@@ -37,15 +37,36 @@ class QFolderWidget(QWidget):
         self.label_text.setText(name)
         self.folderPath = ContentBrowserFilePath + "/" + name
     
+    
+    def focusOutEvent(self, arg__1):
+        """失去焦点"""
+        try:
+            name = self.label_text.text()
+            newname = self.lineedit.text()
+            self.label_text.setText(newname)
+            self.label_text.show()
+            self.lineedit.close()
+            
+            os.rename(self.folderPath,self.folderPath[:-len(name)]+newname)
+            self.folderPath = self.folderPath[:-len(name)]+newname
+        except:
+            pass
+    
+    def RightMenuEvent(self):
+        """右键重命名点击事件"""
+        self.lineedit = QLineEdit(self)
+        self.lineedit.focusOutEvent = self.focusOutEvent
+        self.lineedit.setText(self.label_text.text())
+        self.lineedit.setFocus()#焦点
+        self.v_layout.addWidget(self.lineedit)
+        self.label_text.hide()
+        
     def createRightmenu(self):
         """创建右键菜单函数"""
         self.groupBox_menu = QMenu(self)
         self.actionA = QAction(u'重命名',self)#创建菜单选项对象
         self.groupBox_menu.addAction(self.actionA)
-        def RightMenuEvent():
-            """右键重命名点击事件"""
-            pass
-        self.actionA.triggered.connect(RightMenuEvent)
+        self.actionA.triggered.connect(self.RightMenuEvent)
         
         self.actionB = QAction(u'删除',self)#创建菜单选项对象
         self.groupBox_menu.addAction(self.actionB)
@@ -145,3 +166,8 @@ class QContentBrowserWidget(QWidget):
         
         #声明当鼠标在groupBox控件上右击时，在鼠标位置显示右键菜单   ,exec_,popup两个都可以，
         self.groupBox_menu.popup(QCursor.pos())
+    
+    def mousePressEvent(self, event):
+        """鼠标点击事件"""
+        self.setFocus()#焦点
+        super().mousePressEvent(event)

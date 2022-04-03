@@ -346,4 +346,4 @@ class HoudiniStoreScrollArea(QScrollArea):
         """根据数据添加商品"""
         data = getStoreAssetData()
         self.assetswidgetA.addAssetForData(data)
-        
+    

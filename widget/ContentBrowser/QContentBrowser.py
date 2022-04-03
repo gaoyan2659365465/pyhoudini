@@ -1,6 +1,7 @@
 #Houdini内容浏览器可以显示文件夹和笔记
 import os
 import json
+import textwrap
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
@@ -9,40 +10,83 @@ from widget.StyleTool import *
 
 ContentBrowserFilePath = FilePath[:-7] + "data/ContentBrowser"
 
-class QHoudiniNodeWidget(QWidget):
-    """内容浏览器的节点"""
+def getJsonData(path):
+    """获取json文件"""
+    try:
+        with open(path, 'r',encoding='utf-8') as json_file:
+            data = json_file.read()
+            result = json.loads(data)
+    except:
+        with open(path, 'r',encoding='gbk') as json_file:
+            data = json_file.read()
+            result = json.loads(data)
+    return result
+
+class QBrowserItemBase(QWidget):
+    """内容浏览器图片的基类"""
     def __init__(self, parent = None):
         super().__init__(parent)
+        #鼠标变成小手形状
         self.setCursor(QCursor(Qt.PointingHandCursor))
         self.folderPath = ""
-        
-        label = QLabel(self)
-        imagescale = 2.5
-        label.setPixmap(QPixmap(FilePath + "image/Houdini3D_icon.png")\
-            .scaled(177/imagescale,177/imagescale,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
-        label.setFixedSize(177/imagescale,177/imagescale)
-        self.setMinimumWidth(264/imagescale)
-        self.label_text = QLabel(self)
-        self.label_text.setText("新建节点")
-        self.label_text.setFont(QFont("Microsoft YaHei",15,QFont.Bold))#文字尺寸默认10
-        self.label_text.setStyleSheet("color: #a4a4a4 ")
-        self.v_layout = QVBoxLayout(self)
-        self.v_layout.setAlignment(Qt.AlignHCenter)
-        self.v_layout.setSpacing(0)#各控件间距
-        self.v_layout.setContentsMargins(4,4,4,4)#layout边缘
-        h_layout = QHBoxLayout()
-        h_layout.setAlignment(Qt.AlignHCenter)
-        h_layout.addWidget(label,0,Qt.AlignHCenter)
-        self.v_layout.addLayout(h_layout)
-        self.v_layout.addWidget(self.label_text,0,Qt.AlignHCenter)
+        self.initWidget()
         
         self.setContextMenuPolicy(Qt.CustomContextMenu)#右键菜单
         self.customContextMenuRequested.connect(self.createRightmenu)  # 连接到菜单显示函数
     
+    def RightMenuEvent(self):
+        """右键重命名点击事件"""
+        self.lineedit = QLineEdit(self)
+        self.lineedit.focusOutEvent = self.focusOutEvent
+        self.lineedit.setText(self.label_text.text())
+        self.lineedit.setFocus()#焦点
+        self.v_layout.addWidget(self.lineedit)
+        self.label_text.hide()
+        
+    def initWidget(self):
+        """初始化生成子控件"""
+        self.lable_image = QLabel(self)#图片
+        self.setImagePath(FilePath + "image/T_folder.png")
+        self.label_text = QLabel(self)#文字
+        self.setLabelText("新建文件夹")
+        self.label_text.setFont(QFont("Microsoft YaHei",15,QFont.Bold))#文字尺寸默认10
+        self.label_text.setStyleSheet("color: #a4a4a4 ")
+        
+        self.v_layout = QVBoxLayout(self)
+        self.v_layout.setSpacing(0)#各控件间距
+        self.v_layout.setContentsMargins(4,4,4,4)#layout边缘
+        self.v_layout.addWidget(self.lable_image,0,Qt.AlignHCenter)
+        self.v_layout.addWidget(self.label_text,0,Qt.AlignHCenter)
+    
+    def setImagePath(self,path,imagescale=2.5,scale_w=264,scale_h=177):
+        """设置图片路径"""
+        self.lable_image.setPixmap(QPixmap(path)\
+            .scaled(scale_w/imagescale,scale_h/imagescale,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
+        self.lable_image.setFixedSize(scale_w/imagescale,scale_h/imagescale)
+    
+    def setLabelText(self,text):
+        """设置图标文字"""
+        self.label_text.setText(text)
+
+    def createRightmenu(self):
+        """创建右键菜单函数"""
+        pass
+    
+    def setFilePath(self,path):
+        """设置文件路径"""
+        self.folderPath = path
+
+class QHoudiniNodeWidget(QBrowserItemBase):
+    """内容浏览器的节点"""
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self.setImagePath(FilePath + "image/Houdini3D_icon.png",scale_w=177)
+        self.setMinimumWidth(264/2.5)
+    
     def setNodeName(self,name,path):
         """设置节点名字"""
-        self.label_text.setText(name)
-        self.folderPath = path
+        self.setLabelText(name)
+        self.setFilePath(path)
     
     def focusOutEvent(self, arg__1):
         """失去焦点"""
@@ -85,38 +129,49 @@ class QHoudiniNodeWidget(QWidget):
         """鼠标点击事件"""
         if event.buttons() == Qt.LeftButton:
             #把路径传递给父控件
-            self.parent().runNode(self.folderPath)
+            self.runNode(self.folderPath)
         super().mousePressEvent(event)
+    
+    def runNode(self,path):
+        """运行节点代码生成节点"""
+        path = path# + ".json"
+        if os.path.exists(path) == False:
+            return
+        result = getJsonData(path)
+        try:
+            exec(result["data"])
+        except:pass
+    
+    def setCore(self,nodename):
+        """设置节点代码"""
+        import toolutils
+        data = toolutils.generateToolScriptForNode(nodename)
+        a = "kwargs = {'toolname': 'geo', 'panename': '', 'altclick': False, 'ctrlclick': False,\
+            'shiftclick': False, 'cmdclick': False, 'pane': None, 'viewport': None, 'inputnodename': '',\
+            'outputindex': -1, 'inputs': [], 'outputnodename': '', 'inputindex': -1, 'outputs': [],\
+            'branch': False, 'autoplace': False, 'requestnew': False}"
+        b = "import hou"
+        self.core = a+'\n'+b+'\n'+data
+    
+    def saveWidget(self,nodeName):
+        """序列化保存控件"""
+        path = self.folderPath
+        path_json = path + "/" + nodeName + ".json"
+        if not os.path.isdir(path):
+            os.makedirs(path)
+        data = {"type":"QHoudiniNodeWidget",
+            "data":self.core}
+        json.dump(data, open(path_json,'w'),ensure_ascii=False,indent=4)
 
-class QFolderWidget(QWidget):
+class QFolderWidget(QBrowserItemBase):
     """内容浏览器的文件夹"""
     def __init__(self, parent = None):
         super().__init__(parent)
-        self.setCursor(QCursor(Qt.PointingHandCursor))
-        self.folderPath = ""
-        
-        label = QLabel(self)
-        imagescale = 2.5
-        label.setPixmap(QPixmap(FilePath + "image/T_folder.png")\
-            .scaled(264/imagescale,177/imagescale,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
-        label.setFixedSize(264/imagescale,177/imagescale)
-        self.label_text = QLabel(self)
-        self.label_text.setText("新建文件夹")
-        self.label_text.setFont(QFont("Microsoft YaHei",15,QFont.Bold))#文字尺寸默认10
-        self.label_text.setStyleSheet("color: #a4a4a4 ")
-        self.v_layout = QVBoxLayout(self)
-        self.v_layout.setSpacing(0)#各控件间距
-        self.v_layout.setContentsMargins(4,4,4,4)#layout边缘
-        self.v_layout.addWidget(label,0,Qt.AlignHCenter)
-        self.v_layout.addWidget(self.label_text,0,Qt.AlignHCenter)
-        
-        self.setContextMenuPolicy(Qt.CustomContextMenu)#右键菜单
-        self.customContextMenuRequested.connect(self.createRightmenu)  # 连接到菜单显示函数
     
     def setFolderName(self,name,path):
         """设置文件夹名字"""
-        self.label_text.setText(name)
-        self.folderPath = path
+        self.setLabelText(name)
+        self.setFilePath(path)
     
     def focusOutEvent(self, arg__1):
         """失去焦点"""
@@ -134,15 +189,6 @@ class QFolderWidget(QWidget):
         #print(self.folderPath[:-len(name)]+newname)
         os.rename(self.folderPath,self.folderPath[:-len(name)]+newname)#修改文件夹名
         self.folderPath = self.folderPath[:-len(name)]+newname
-    
-    def RightMenuEvent(self):
-        """右键重命名点击事件"""
-        self.lineedit = QLineEdit(self)
-        self.lineedit.focusOutEvent = self.focusOutEvent
-        self.lineedit.setText(self.label_text.text())
-        self.lineedit.setFocus()#焦点
-        self.v_layout.addWidget(self.lineedit)
-        self.label_text.hide()
         
     def createRightmenu(self):
         """创建右键菜单函数"""
@@ -173,6 +219,72 @@ class QFolderWidget(QWidget):
             self.parent().openFolder(self.folderPath)
         super().mousePressEvent(event)
 
+class QHoudiniTextWidget(QBrowserItemBase):
+    """内容浏览器的笔记资产"""
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self.textData = ""
+        
+        self.setImagePath(FilePath + "image/Text_icon.png",scale_w=177)
+        self.setMinimumWidth(264/2.5)
+    
+    def newName(self,path):
+        """构造不重复的新名字"""
+        nodeName = "新建笔记"
+        num = 2
+        path_ = path + "/" + nodeName + ".json"
+        while True:
+            if os.path.exists(path_) == True:
+                #如果文件存在
+                path_ = path[:-(len(nodeName)+5+1)]#5个正好是.json 加1是/
+                nodeName = "新建笔记" + " (" + str(num) + ")"
+                path_ = path+"/"+nodeName + ".json"
+                num = num + 1
+            else:
+                break
+        return nodeName
+    
+    def focusOutEvent(self, arg__1):
+        """失去焦点"""
+        name = self.label_text.text()
+        newname = self.lineedit.text()
+        self.label_text.setText(newname)
+        self.label_text.show()
+        self.lineedit.close()
+        
+        os.rename(self.folderPath,self.folderPath[:-(len(name)+5)]+newname+".json")#修改文件夹名
+        self.folderPath = self.folderPath[:-(len(name)+5)]+newname+".json"
+        
+    def createRightmenu(self):
+        """创建右键菜单函数"""
+        self.groupBox_menu = QMenu(self)
+        self.actionA = QAction(u'重命名',self)#创建菜单选项对象
+        self.groupBox_menu.addAction(self.actionA)
+        self.actionA.triggered.connect(self.RightMenuEvent)
+        
+        self.actionB = QAction(u'删除',self)#创建菜单选项对象
+        self.groupBox_menu.addAction(self.actionB)
+        def RightMenuBEvent():
+            """右键删除点击事件"""
+            os.remove(self.folderPath)
+            self.parent().initWidgets()#刷新
+        self.actionB.triggered.connect(RightMenuBEvent)
+        #声明当鼠标在groupBox控件上右击时，在鼠标位置显示右键菜单   ,exec_,popup两个都可以，
+        self.groupBox_menu.popup(QCursor.pos())
+    
+    def saveWidget(self):
+        """序列化保存控件"""
+        data = {"type":"QHoudiniTextWidget",
+                "data":self.textData}
+        json.dump(data, open(self.folderPath,'w'),ensure_ascii=False,indent=4)
+    
+    def mousePressEvent(self, event):
+        """鼠标点击事件"""
+        if event.buttons() == Qt.LeftButton:
+            #把路径传递给父控件
+            pass
+        super().mousePressEvent(event)
+    
 class QContentBrowserWidget(QWidget):
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -230,9 +342,17 @@ class QContentBrowserWidget(QWidget):
                     folderWidget.setFolderName(dir,path+"/"+dir)
                     self.addWidget(folderWidget)
                 elif os.path.isfile(path+"/"+dir):
-                    nodeWidget = QHoudiniNodeWidget(self)
-                    nodeWidget.setNodeName(dir[:-5],path+"/"+dir)#.json
-                    self.addWidget(nodeWidget)
+                    data = getJsonData(path+"/"+dir)
+                    if data["type"]=="QHoudiniTextWidget":
+                        textw = QHoudiniTextWidget(self)
+                        textw.setFilePath(path+"/"+dir)
+                        textw.setLabelText(dir[:-5])
+                        textw.saveWidget()
+                        self.addWidget(textw)
+                    if data["type"]=="QHoudiniNodeWidget":
+                        nodeWidget = QHoudiniNodeWidget(self)
+                        nodeWidget.setNodeName(dir[:-5],path+"/"+dir)#.json
+                        self.addWidget(nodeWidget)
         else:
             os.makedirs(path)
             
@@ -265,7 +385,13 @@ class QContentBrowserWidget(QWidget):
         self.groupBox_menu.addAction(self.actionB)
         def RightMenuBEvent():
             """右键新建笔记点击事件"""
-            pass
+            textw = QHoudiniTextWidget(self)
+            path_ = ContentBrowserFilePath + self.BrowserPath
+            newname = textw.newName(path_)
+            textw.setFilePath(path_ +'/'+ newname + '.json')
+            textw.setLabelText(newname)
+            textw.saveWidget()
+            self.addWidget(textw)
         self.actionB.triggered.connect(RightMenuBEvent)
         
         self.actionC = QAction(u'刷新',self)#创建菜单选项对象
@@ -300,61 +426,27 @@ class QContentBrowserWidget(QWidget):
         self.initWidgets()#初始化
     
     def dropEvent(self, event):
+        """拖动事件"""
         source = event.source()
-        print("拖动成功:")
         if source and source != self:
             nodename = event.mimeData().text()
-            print(nodename)
-            import toolutils
-            data = toolutils.generateToolScriptForNode(nodename)
-            a = "kwargs = {'toolname': 'geo', 'panename': '', 'altclick': False, 'ctrlclick': False,\
-                'shiftclick': False, 'cmdclick': False, 'pane': None, 'viewport': None, 'inputnodename': '',\
-                'outputindex': -1, 'inputs': [], 'outputnodename': '', 'inputindex': -1, 'outputs': [],\
-                'branch': False, 'autoplace': False, 'requestnew': False}"
-            b = "import hou"
             
-            core = a+'\n'+b+'\n'+data
-            
-            nodeName = "新建节点"
-            path_ = self.BrowserPath+"/"+nodeName + ".json"
+            nodeFileName = "新建节点"
+            path_ = self.BrowserPath+"/"+nodeFileName + ".json"
             num = 2
             while True:
                 if os.path.exists(ContentBrowserFilePath + path_) == True:
                     #如果文件存在
-                    path_ = self.BrowserPath[:-(len(nodeName)+5+1)]
-                    nodeName = "新建节点" + " (" + str(num) + ")"
-                    path_ = self.BrowserPath+"/"+nodeName + ".json"
+                    path_ = self.BrowserPath[:-(len(nodeFileName)+5+1)]
+                    nodeFileName = "新建节点" + " (" + str(num) + ")"
+                    path_ = self.BrowserPath+"/"+nodeFileName + ".json"
                     num = num + 1
                 else:
                     break
             nodeWidget = QHoudiniNodeWidget(self)
-            nodeWidget.setNodeName(nodeName,ContentBrowserFilePath + path_)
+            nodeWidget.setNodeName(nodeFileName,ContentBrowserFilePath + path_)
+            nodeWidget.setCore(nodename)
+            nodeWidget.saveWidget(nodeFileName)
             self.addWidget(nodeWidget)
             
-            self.saveWidget(core,nodeName)
             
-    def runNode(self,path):
-        """运行节点代码生成节点"""
-        path = path# + ".json"
-        if os.path.exists(path) == False:
-            return
-        try:
-            with open(path, 'r',encoding='utf-8') as json_file:
-                data = json_file.read()
-                result = json.loads(data)
-        except:
-            with open(path, 'r',encoding='gbk') as json_file:
-                data = json_file.read()
-                result = json.loads(data)
-        try:
-            exec(result)
-        except:pass
-    
-    def saveWidget(self,core,nodeName):
-        """序列化保存控件"""
-        path = ContentBrowserFilePath + self.BrowserPath
-        path_json = path + "/" + nodeName + ".json"
-        if not os.path.isdir(path):
-            os.makedirs(path)
-        data = core
-        json.dump(data, open(path_json,'w'),ensure_ascii=False,indent=4)

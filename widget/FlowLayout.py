@@ -5,6 +5,7 @@ from PySide2.QtGui import *
 #瀑布流布局
 
 class FlowLayout(QLayout):
+    resized = Signal()
     def __init__(self, parent=None, margin=0, spacing=-1):
         super(FlowLayout, self).__init__(parent)
 
@@ -52,8 +53,15 @@ class FlowLayout(QLayout):
 
     def setGeometry(self, rect):
         super(FlowLayout, self).setGeometry(rect)
-        self.flowheight = self.doLayout(rect, False)
-
+        flowheight = self.doLayout(rect, False)
+        if flowheight != 0:
+            self.flowheight = flowheight
+            self.resized.emit()#发送尺寸改变信号
+        else:
+            if self.count() == 0:
+                self.flowheight = 0
+                self.resized.emit()#发送尺寸改变信号
+    
     def sizeHint(self):
         return self.minimumSize()
 
@@ -75,10 +83,13 @@ class FlowLayout(QLayout):
 
         for item in self.itemList:
             wid = item.widget()
-            spaceX = self.spacing() + wid.style().layoutSpacing(QSizePolicy.PushButton,
-                                                                QSizePolicy.PushButton, Qt.Horizontal)
-            spaceY = self.spacing() + wid.style().layoutSpacing(QSizePolicy.PushButton,
-                                                                QSizePolicy.PushButton, Qt.Vertical)
+            #可能会引起崩溃
+            # spaceX = self.spacing() + wid.style().layoutSpacing(QSizePolicy.PushButton,
+            #                                                     QSizePolicy.PushButton, Qt.Horizontal)
+            # spaceY = self.spacing() + wid.style().layoutSpacing(QSizePolicy.PushButton,
+            #                                                     QSizePolicy.PushButton, Qt.Vertical)
+            spaceX = -1
+            spaceY = -1
             nextX = x + item.sizeHint().width() + spaceX
             if nextX - spaceX > rect.right() and lineHeight > 0:
                 x = rect.x()
@@ -88,6 +99,8 @@ class FlowLayout(QLayout):
 
             if not testOnly:
                 item.setGeometry(QRect(QPoint(x, y), item.sizeHint()))
+                #打印黄色
+                #print("\033[1;33m",QRect(QPoint(x, y), item.sizeHint()),"\033[0m")
 
             x = nextX
             lineHeight = max(lineHeight, item.sizeHint().height())

@@ -14,7 +14,7 @@ from widget.store.HoudiniStore import HoudiniStoreScrollArea
 try:
     from widget.CopyHoudiniNodeData import getNodeData
 except:pass
-from widget.ContentBrowser.QContentBrowser import QContentBrowserWidget
+from widget.ContentBrowser.QContentBrowser import ContentBrowserScrollArea
 
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
@@ -117,7 +117,7 @@ class PyHoudiniWidget(main.MainWindow):
             try:
                 self.ui.stackedWidget.setCurrentWidget(self.contentBrowser)
             except:
-                self.contentBrowser = QContentBrowserWidget()#商店界面
+                self.contentBrowser = ContentBrowserScrollArea()#内容浏览器界面
                 self.ui.stackedWidget.addWidget(self.contentBrowser)
                 self.ui.stackedWidget.setCurrentWidget(self.contentBrowser)
             main.UIFunctions.resetStyle(self, btnName)

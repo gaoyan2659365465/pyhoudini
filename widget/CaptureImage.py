@@ -6,6 +6,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 
 class CaptureScreen(QWidget):
+    saveimage = Signal(object)
     # 初始化变量
     beginPosition = None
     endPosition = None
@@ -95,7 +96,8 @@ class CaptureScreen(QWidget):
         return pickRect
 
     def saveImage(self):
-        self.captureImage.save('picture.png', quality=95)   # 保存图片到当前文件夹中
+        self.saveimage.emit(self.captureImage)
+        #self.captureImage.save('picture.png', quality=95)   # 保存图片到当前文件夹中
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

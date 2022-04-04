@@ -1,14 +1,19 @@
 #Houdini内容浏览器可以显示文件夹和笔记
 import os
 import json
+from re import S
 import textwrap
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from widget.FlowLayout import FlowLayout
 from widget.StyleTool import *
+#导入houdini笔记本类
+from widget.ContentBrowser.QHoudiniNoteBook import QHoudiniNoteBook
 
 ContentBrowserFilePath = FilePath[:-7] + "data/ContentBrowser"
+
+#bug刷新以后笔记被清空
 
 def getJsonData(path):
     """获取json文件"""
@@ -17,9 +22,13 @@ def getJsonData(path):
             data = json_file.read()
             result = json.loads(data)
     except:
-        with open(path, 'r',encoding='gbk') as json_file:
-            data = json_file.read()
-            result = json.loads(data)
+        try:
+            with open(path, 'r',encoding='gbk') as json_file:
+                data = json_file.read()
+                result = json.loads(data)
+        except:
+            print("json文件读取失败")
+            return None
     return result
 
 class QBrowserItemBase(QWidget):
@@ -76,7 +85,7 @@ class QBrowserItemBase(QWidget):
         """设置文件路径"""
         self.folderPath = path
 
-class QHoudiniNodeWidget(QBrowserItemBase):
+class QHoudiniNodeItem(QBrowserItemBase):
     """内容浏览器的节点"""
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -155,15 +164,11 @@ class QHoudiniNodeWidget(QBrowserItemBase):
     
     def saveWidget(self,nodeName):
         """序列化保存控件"""
-        path = self.folderPath
-        path_json = path + "/" + nodeName + ".json"
-        if not os.path.isdir(path):
-            os.makedirs(path)
         data = {"type":"QHoudiniNodeWidget",
             "data":self.core}
-        json.dump(data, open(path_json,'w'),ensure_ascii=False,indent=4)
+        json.dump(data, open(self.folderPath,'w'),ensure_ascii=False,indent=4)
 
-class QFolderWidget(QBrowserItemBase):
+class QFolderItem(QBrowserItemBase):
     """内容浏览器的文件夹"""
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -219,7 +224,7 @@ class QFolderWidget(QBrowserItemBase):
             self.parent().openFolder(self.folderPath)
         super().mousePressEvent(event)
 
-class QHoudiniTextWidget(QBrowserItemBase):
+class QHoudiniTextItem(QBrowserItemBase):
     """内容浏览器的笔记资产"""
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -276,16 +281,22 @@ class QHoudiniTextWidget(QBrowserItemBase):
         """序列化保存控件"""
         data = {"type":"QHoudiniTextWidget",
                 "data":self.textData}
+        
         json.dump(data, open(self.folderPath,'w'),ensure_ascii=False,indent=4)
     
     def mousePressEvent(self, event):
         """鼠标点击事件"""
         if event.buttons() == Qt.LeftButton:
             #把路径传递给父控件
-            pass
+            noteBook = QHoudiniNoteBook(self.parent().parent())
+            noteBook.resize(self.parent().width(),self.parent().parent().height())
+            #显示笔记
+            noteBook.show()
+            noteBook.initBook(self.folderPath)
         super().mousePressEvent(event)
     
 class QContentBrowserWidget(QWidget):
+    """内容浏览器控件"""
     def __init__(self, parent = None):
         super().__init__(parent)
         
@@ -304,6 +315,7 @@ class QContentBrowserWidget(QWidget):
         self.h_layout.addWidget(self.button)
         self.h_layout.addStretch()
         self.g_layout = FlowLayout()
+        self.g_layout.resized.connect(self.layoutResize)
         self.v_layout.addLayout(self.h_layout)
         self.v_layout.addLayout(self.g_layout)
         self.setLayout(self.v_layout)
@@ -334,23 +346,23 @@ class QContentBrowserWidget(QWidget):
         """初始化所有子控件"""
         self.removeAllItem()
         path = ContentBrowserFilePath + self.BrowserPath
-        
         if os.path.isdir(path) == True:
             for dir in os.listdir(path):#获取路径下所有文件名/文件夹名
                 if os.path.isdir(path+"/"+dir):
-                    folderWidget = QFolderWidget(self)
+                    folderWidget = QFolderItem(self)
                     folderWidget.setFolderName(dir,path+"/"+dir)
                     self.addWidget(folderWidget)
                 elif os.path.isfile(path+"/"+dir):
+                    if dir[-5:] != ".json":
+                        continue
                     data = getJsonData(path+"/"+dir)
                     if data["type"]=="QHoudiniTextWidget":
-                        textw = QHoudiniTextWidget(self)
+                        textw = QHoudiniTextItem(self)
                         textw.setFilePath(path+"/"+dir)
                         textw.setLabelText(dir[:-5])
-                        textw.saveWidget()
                         self.addWidget(textw)
                     if data["type"]=="QHoudiniNodeWidget":
-                        nodeWidget = QHoudiniNodeWidget(self)
+                        nodeWidget = QHoudiniNodeItem(self)
                         nodeWidget.setNodeName(dir[:-5],path+"/"+dir)#.json
                         self.addWidget(nodeWidget)
         else:
@@ -376,7 +388,7 @@ class QContentBrowserWidget(QWidget):
                 else:
                     os.makedirs(ContentBrowserFilePath + path_)
                     break
-            folderWidget = QFolderWidget(self)
+            folderWidget = QFolderItem(self)
             folderWidget.setFolderName(FolderName,ContentBrowserFilePath + path_)
             self.addWidget(folderWidget)
         self.actionA.triggered.connect(RightMenuEvent)
@@ -385,7 +397,7 @@ class QContentBrowserWidget(QWidget):
         self.groupBox_menu.addAction(self.actionB)
         def RightMenuBEvent():
             """右键新建笔记点击事件"""
-            textw = QHoudiniTextWidget(self)
+            textw = QHoudiniTextItem(self)
             path_ = ContentBrowserFilePath + self.BrowserPath
             newname = textw.newName(path_)
             textw.setFilePath(path_ +'/'+ newname + '.json')
@@ -443,10 +455,30 @@ class QContentBrowserWidget(QWidget):
                     num = num + 1
                 else:
                     break
-            nodeWidget = QHoudiniNodeWidget(self)
+            nodeWidget = QHoudiniNodeItem(self)
             nodeWidget.setNodeName(nodeFileName,ContentBrowserFilePath + path_)
             nodeWidget.setCore(nodename)
             nodeWidget.saveWidget(nodeFileName)
             self.addWidget(nodeWidget)
-            
-            
+
+    def layoutResize(self):
+        """流布局尺寸改变槽函数"""
+        if self.g_layout.flowheight<self.parent().parent().height():
+            self.setFixedHeight(self.parent().parent().height())
+        else:
+            self.setFixedHeight(self.g_layout.flowheight+60)
+    
+class ContentBrowserScrollArea(QScrollArea):
+    """内容浏览器滚动框"""
+    def __init__(self,parent=None):
+        super().__init__(parent)
+        self.setFrameShape(QFrame.NoFrame)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)#隐藏横向滚动条
+        self.browser = QContentBrowserWidget(self)
+        self.browser.resize(self.size())
+        self.setWidget(self.browser)
+    
+    def resizeEvent(self, event):
+        """尺寸改变事件"""
+        self.widget().resize(self.size())
+        super().resizeEvent(event)

@@ -492,6 +492,7 @@ class QHoudiniEdit(QScrollArea):
         self.groupBox_menu.popup(QCursor.pos())
     
     def resizeEvent(self, a0: QResizeEvent):
+        """改变窗口大小事件"""
         self.topFiller.setGeometry(0,0,self.width()-10,self.height())
     
     def dropEvent(self, event):

@@ -25,17 +25,20 @@ def getJsonData(path):
             return None
     return result
 
-class QHoudiniNoteBook(QTextEdit):
+class QHoudiniNoteBook(QWidget):
     """笔记本页面类"""
     def __init__(self, parent=None):
         super(QHoudiniNoteBook, self).__init__(parent)
-        self.setFrameShape(QFrame.NoFrame)#无边框
         self.setStyleSheet(u"background-color: rgb(44, 49, 57);")
         
         self.v_layout = QVBoxLayout(self)
         self.h_layout = QHBoxLayout()
         self.v_layout.addLayout(self.h_layout)
         self.setLayout(self.v_layout)
+        
+        self.textedit = QTextEdit()
+        self.textedit.setFrameShape(QFrame.NoFrame)#无边框
+        self.v_layout.addWidget(self.textedit)
         
         button = QPushButton("", self)#关闭按钮
         button.clicked.connect(self.close)
@@ -69,10 +72,14 @@ class QHoudiniNoteBook(QTextEdit):
         self.h_layout.setAlignment(Qt.AlignLeft)
         
         self.bookpath = ""
+        self.imagepath = []#临时图片路径列表
         
     def saveBook(self):
         """保存笔记本"""
-        textdata = self.toHtml()
+        textdata = self.textedit.toHtml()
+        for i in range(len(self.imagepath)):
+            textdata = textdata.replace(self.imagepath[i], "NoteBookIamgePath:///")#替换图片路径
+        
         data = {"type":"QHoudiniTextWidget",
             "data":textdata}
         json.dump(data, open(self.bookpath,'w'),ensure_ascii=False,indent=4)
@@ -80,10 +87,16 @@ class QHoudiniNoteBook(QTextEdit):
     def initBook(self,path):
         """初始化笔记本"""
         self.bookpath = path
+        a = os.path.basename(self.bookpath)#带后缀的文件名 笔记1.json
+        resp = os.path.relpath(self.bookpath)#绝对路径转相对路径\data/ContentBrowser/笔记1.json
+        path_iamge = resp[:-len(a)]#\data/ContentBrowser/
+            
         data = getJsonData(path)
         if data["type"]=="QHoudiniTextWidget":
             textdata = data["data"]
-            self.setText(textdata)
+            textdata = textdata.replace("NoteBookIamgePath:///",path_iamge)#替换换行符
+            self.imagepath.append(path_iamge)#临时存图片路径
+            self.textedit.setText(textdata)
     
     def captureScreen(self):
         """截图"""
@@ -96,14 +109,19 @@ class QHoudiniNoteBook(QTextEdit):
         # 生成一个随机字符串
         uuid_str = uuid.uuid4().hex
         resp = os.path.relpath(self.bookpath)#绝对路径转相对路径
-        print(resp)
+        
         name = resp[:-5] + "_" + uuid_str + '.jpg'
         image.save(name, quality=95)   # 保存图片到当前文件夹中
         
+        a = os.path.basename(self.bookpath)#带后缀的文件名
+        b= a.split('.')[0]#不带后缀的文件名
         # 0.获取光标对象
-        tc = self.textCursor()
+        tc = self.textedit.textCursor()
         # 1.创建一个 QTextImageFormat 对象
         tif = QTextImageFormat()
         # 2.设置相关的参数
-        tif.setName(name)    #图片名称
+        tif.setName("NoteBookIamgePath:///"+ b + "_" + uuid_str + '.jpg')    #图片名称
         tc.insertImage(tif)          #插入图片
+        
+        self.saveBook()
+        self.initBook(self.bookpath)

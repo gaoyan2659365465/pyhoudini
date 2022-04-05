@@ -13,7 +13,6 @@ from widget.ContentBrowser.QHoudiniNoteBook import QHoudiniNoteBook
 
 ContentBrowserFilePath = FilePath[:-7] + "data/ContentBrowser"
 
-#bug刷新以后笔记被清空
 
 def getJsonData(path):
     """获取json文件"""
@@ -288,17 +287,21 @@ class QHoudiniTextItem(QBrowserItemBase):
         """鼠标点击事件"""
         if event.buttons() == Qt.LeftButton:
             #把路径传递给父控件
-            noteBook = QHoudiniNoteBook(self.parent().parent())
-            noteBook.resize(self.parent().width(),self.parent().parent().height())
+            self.noteBook = QHoudiniNoteBook(self.parent().parent())
+            self.noteBook.resize(self.parent().width(),self.parent().parent().height())
             #显示笔记
-            noteBook.show()
-            noteBook.initBook(self.folderPath)
+            self.noteBook.show()
+            self.noteBook.initBook(self.folderPath)
+            
+            self.parent().resizewidgets.clear()
+            self.parent().resizewidgets.append(self.noteBook)
         super().mousePressEvent(event)
     
 class QContentBrowserWidget(QWidget):
     """内容浏览器控件"""
     def __init__(self, parent = None):
         super().__init__(parent)
+        self.resizewidgets = []#记录需要改变尺寸的子控件
         
         self.v_layout = QVBoxLayout()
         self.v_layout.setSpacing(0)
@@ -467,6 +470,13 @@ class QContentBrowserWidget(QWidget):
             self.setFixedHeight(self.parent().parent().height())
         else:
             self.setFixedHeight(self.g_layout.flowheight+60)
+    
+    def resizeEvent(self, event):
+        """尺寸改变事件"""
+        for i in range(len(self.resizewidgets)):
+            #帮子控件自动调整大小
+            self.resizewidgets[i].resize(self.size())
+        super().resizeEvent(event)
     
 class ContentBrowserScrollArea(QScrollArea):
     """内容浏览器滚动框"""

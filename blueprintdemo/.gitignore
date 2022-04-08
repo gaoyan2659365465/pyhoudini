@@ -1,0 +1,7 @@
+.vscode
+__pycache__
+cDemo/Project1
+examples/__pycache__
+examples/Futility
+examples/Node/__pycache__
+examples/Plugins/__pycache__

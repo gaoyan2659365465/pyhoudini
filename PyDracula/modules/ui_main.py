@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainvAKnjH.ui'
+## Form generated from reading UI file 'mainxesxxy.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -699,6 +699,14 @@ class Ui_MainWindow(object):
         self.btn_browser.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-folder-open.png);")
 
         self.verticalLayout_8.addWidget(self.btn_browser)
+
+        self.btn_blueprint = QPushButton(self.topMenu)
+        self.btn_blueprint.setObjectName(u"btn_blueprint")
+        self.btn_blueprint.setMinimumSize(QSize(0, 45))
+        self.btn_blueprint.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_blueprint.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-infinity.png);")
+
+        self.verticalLayout_8.addWidget(self.btn_blueprint)
 
 
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
@@ -1558,6 +1566,10 @@ class Ui_MainWindow(object):
         self.btn_browser.setToolTip(QCoreApplication.translate("MainWindow", u"\u5185\u5bb9\u6d4f\u89c8\u5668", None))
 #endif // QT_CONFIG(tooltip)
         self.btn_browser.setText(QCoreApplication.translate("MainWindow", u"ContentBrowser", None))
+#if QT_CONFIG(tooltip)
+        self.btn_blueprint.setToolTip(QCoreApplication.translate("MainWindow", u"\u84dd\u56fe", None))
+#endif // QT_CONFIG(tooltip)
+        self.btn_blueprint.setText(QCoreApplication.translate("MainWindow", u"blueprint", None))
         self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
 #if QT_CONFIG(tooltip)

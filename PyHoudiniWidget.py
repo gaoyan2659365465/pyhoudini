@@ -16,6 +16,8 @@ try:
 except:pass
 from widget.ContentBrowser.QContentBrowser import ContentBrowserScrollArea
 
+from blueprintdemo.examples import *
+
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
         main.MainWindow.__init__(self)
@@ -40,7 +42,6 @@ class PyHoudiniWidget(main.MainWindow):
             #点击按钮，将选中的节点输出到json文件，用来给UE5生成场景
             self.ui.ue5Btn.clicked.connect(getNodeData)
         except:pass
-        
         
     
     def htmlShow(self):
@@ -122,6 +123,18 @@ class PyHoudiniWidget(main.MainWindow):
                 self.ui.stackedWidget.setCurrentWidget(self.contentBrowser)
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
+        
+        if btnName == "btn_blueprint":
+            try:
+                self.ui.stackedWidget.setCurrentWidget(self.blueprintWindow)
+            except:
+                self.blueprintWindow = BlueprintWindow()#蓝图
+                self.ui.stackedWidget.addWidget(self.blueprintWindow)
+                self.ui.stackedWidget.setCurrentWidget(self.blueprintWindow)
+            main.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
+                
+                
 
 if __name__ == "__main__":
     app=QApplication(sys.argv)

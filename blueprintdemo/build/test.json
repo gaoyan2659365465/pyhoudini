@@ -1,0 +1,253 @@
+{
+    "0": {
+        "class_name": "BP_Node_IntToString",
+        "bp_node": {
+            "uuid": "8ceac708-b732-11ec-8e49-c85b760416ed",
+            "new_socket_num": 1,
+            "w_node": {
+                "x": -245.87499999999986,
+                "y": 334.3125,
+                "w_title": {
+                    "title_text": "IntToString"
+                },
+                "node_data": {
+                    "0": {
+                        "data_type": 1,
+                        "direction": 0,
+                        "logic_type": 1,
+                        "socket_text": "Int",
+                        "input_value": "0"
+                    },
+                    "1": {
+                        "data_type": 3,
+                        "direction": 1,
+                        "logic_type": 1,
+                        "socket_text": "String",
+                        "input_value": ""
+                    }
+                }
+            },
+            "data_edges": {}
+        }
+    },
+    "1": {
+        "class_name": "BP_Node_ForLoop",
+        "bp_node": {
+            "uuid": "8b4de2c6-b732-11ec-a742-c85b760416ed",
+            "new_socket_num": 3,
+            "w_node": {
+                "x": 126.0,
+                "y": 65.0,
+                "w_title": {
+                    "title_text": "ForLoop"
+                },
+                "node_data": {
+                    "0": {
+                        "data_type": 0,
+                        "direction": 0,
+                        "logic_type": 0,
+                        "socket_text": "",
+                        "input_value": ""
+                    },
+                    "1": {
+                        "data_type": 1,
+                        "direction": 0,
+                        "logic_type": 1,
+                        "socket_text": "First Index",
+                        "input_value": "0"
+                    },
+                    "2": {
+                        "data_type": 1,
+                        "direction": 0,
+                        "logic_type": 1,
+                        "socket_text": "Last Index",
+                        "input_value": "10"
+                    },
+                    "3": {
+                        "data_type": 0,
+                        "direction": 1,
+                        "logic_type": 0,
+                        "socket_text": "Loop Body",
+                        "input_value": ""
+                    },
+                    "4": {
+                        "data_type": 1,
+                        "direction": 1,
+                        "logic_type": 1,
+                        "socket_text": "Index",
+                        "input_value": ""
+                    },
+                    "5": {
+                        "data_type": 0,
+                        "direction": 1,
+                        "logic_type": 0,
+                        "socket_text": "Completed",
+                        "input_value": ""
+                    }
+                }
+            },
+            "data_edges": {
+                "0": {
+                    "0": {
+                        "0": {
+                            "edge_node0": "7a60e1c0-b732-11ec-850d-c85b760416ed",
+                            "edge_node1": "8b4de2c6-b732-11ec-a742-c85b760416ed",
+                            "edge_uuid": "bec9caca-b732-11ec-8dc5-c85b760416ed"
+                        },
+                        "1": {
+                            "source": 1
+                        }
+                    }
+                },
+                "3": {
+                    "0": {
+                        "0": {
+                            "edge_node0": "8b4de2c6-b732-11ec-a742-c85b760416ed",
+                            "edge_node1": "7bc77e08-b732-11ec-b5b4-c85b760416ed",
+                            "edge_uuid": "c1cc0f24-b732-11ec-b406-c85b760416ed"
+                        },
+                        "1": {
+                            "source": 0
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "2": {
+        "class_name": "BP_Node_Branch",
+        "bp_node": {
+            "uuid": "845423ec-b732-11ec-b89f-c85b760416ed",
+            "new_socket_num": 3,
+            "w_node": {
+                "x": -254.0,
+                "y": 204.0,
+                "w_title": {
+                    "title_text": "Branch"
+                },
+                "node_data": {
+                    "0": {
+                        "data_type": 0,
+                        "direction": 0,
+                        "logic_type": 0,
+                        "socket_text": "",
+                        "input_value": ""
+                    },
+                    "1": {
+                        "data_type": 2,
+                        "direction": 0,
+                        "logic_type": 1,
+                        "socket_text": "Condition",
+                        "input_value": "False"
+                    },
+                    "2": {
+                        "data_type": 0,
+                        "direction": 1,
+                        "logic_type": 0,
+                        "socket_text": "True",
+                        "input_value": ""
+                    },
+                    "3": {
+                        "data_type": 0,
+                        "direction": 1,
+                        "logic_type": 0,
+                        "socket_text": "False",
+                        "input_value": ""
+                    }
+                }
+            },
+            "data_edges": {}
+        }
+    },
+    "3": {
+        "class_name": "BP_Node_PrintString",
+        "bp_node": {
+            "uuid": "7bc77e08-b732-11ec-b5b4-c85b760416ed",
+            "new_socket_num": 1,
+            "w_node": {
+                "x": 445.0,
+                "y": 68.0,
+                "w_title": {
+                    "title_text": "PrintString"
+                },
+                "node_data": {
+                    "0": {
+                        "data_type": 0,
+                        "direction": 0,
+                        "logic_type": 0,
+                        "socket_text": "",
+                        "input_value": ""
+                    },
+                    "1": {
+                        "data_type": 0,
+                        "direction": 1,
+                        "logic_type": 0,
+                        "socket_text": "",
+                        "input_value": ""
+                    },
+                    "2": {
+                        "data_type": 3,
+                        "direction": 0,
+                        "logic_type": 1,
+                        "socket_text": "String",
+                        "input_value": "Hello Houdini"
+                    }
+                }
+            },
+            "data_edges": {
+                "0": {
+                    "0": {
+                        "0": {
+                            "edge_node0": "8b4de2c6-b732-11ec-a742-c85b760416ed",
+                            "edge_node1": "7bc77e08-b732-11ec-b5b4-c85b760416ed",
+                            "edge_uuid": "c1cc0f24-b732-11ec-b406-c85b760416ed"
+                        },
+                        "1": {
+                            "source": 1
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "4": {
+        "class_name": "BP_Node_BeginPlay",
+        "bp_node": {
+            "uuid": "7a60e1c0-b732-11ec-850d-c85b760416ed",
+            "new_socket_num": 0,
+            "w_node": {
+                "x": -134.0,
+                "y": 70.0,
+                "w_title": {
+                    "title_text": "BeginPlay"
+                },
+                "node_data": {
+                    "0": {
+                        "data_type": 0,
+                        "direction": 1,
+                        "logic_type": 0,
+                        "socket_text": "",
+                        "input_value": ""
+                    }
+                }
+            },
+            "data_edges": {
+                "0": {
+                    "0": {
+                        "0": {
+                            "edge_node0": "7a60e1c0-b732-11ec-850d-c85b760416ed",
+                            "edge_node1": "8b4de2c6-b732-11ec-a742-c85b760416ed",
+                            "edge_uuid": "bec9caca-b732-11ec-8dc5-c85b760416ed"
+                        },
+                        "1": {
+                            "source": 0
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "bp_data": {
+        "node_num": 5
+    }
+}

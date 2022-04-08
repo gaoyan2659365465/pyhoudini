@@ -1,0 +1,5 @@
+LIBRARY wbcz.dll
+
+EXPORTS
+BP_取文本长度
+BP_取文本左边

@@ -77,6 +77,7 @@ class MainWindow(QMainWindow):#QWidget  QMainWindow
         widgets.btn_translation.clicked.connect(self.buttonClick)
         widgets.btn_store.clicked.connect(self.buttonClick)
         widgets.btn_browser.clicked.connect(self.buttonClick)
+        widgets.btn_blueprint.clicked.connect(self.buttonClick)
         
 
         # EXTRA LEFT BOX

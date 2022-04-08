@@ -1,0 +1,71 @@
+PYBP_Widget{
+    background-color: #1b1b1b;
+    border:1px solid rgb(97,97,97);
+    border-radius:4px;
+    }
+
+PYBP_Button{
+    background-color:qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #804d4d4d,stop:1 #004d4d4d);/* 背景色 */
+    border-style:solid;/* 边框风格 */
+    border-width:2px;/* 边框宽度 */
+    border-top-color:qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #ff000000,stop:1 #B3828282);/* 上边框颜色 */
+    border-bottom-color:qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #B3828282,stop:1 #ff000000);/* 下边框颜色 */
+    border-left-color:qlineargradient(x1:0, y1:0, x2:1, y2:0,stop:0 #ff000000,stop:1 #B3828282);/* 左边框颜色 */
+    border-right-color:qlineargradient(x1:0, y1:0, x2:1, y2:0,stop:0 #B3828282,stop:1 #ff000000);/* 右边框颜色 */
+}
+
+PYBP_Button:hover{
+    background-color: #b2b2b2;
+    border-style:solid;/* 边框风格 */
+    border-width:6px;/* 边框宽度 */
+    border-top-color:qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #000000, stop:0.333 #66dddddd,stop:1 #00b2b2b2);/* 上边框颜色 */
+    border-bottom-color:qlineargradient(x1:0, y1:1, x2:0, y2:0, stop:0 #000000, stop:0.333 #66dddddd,stop:1 #00b2b2b2);/* 下边框颜色 */
+    border-left-color:qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #000000, stop:0.333 #66dddddd,stop:1 #00b2b2b2);/* 左边框颜色 */
+    border-right-color:qlineargradient(x1:1, y1:0, x2:0, y2:0, stop:0 #000000, stop:0.333 #66dddddd,stop:1 #00b2b2b2);/* 右边框颜色 */
+}
+
+PYBP_Button:pressed{
+	background-color:qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #804d4d4d,stop:1 #222222);/* 背景色 */
+    border-style:solid;/* 边框风格 */
+    border-width:2px;/* 边框宽度 */
+    border-top-color:qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #ff000000,stop:1 #B3828282);/* 上边框颜色 */
+    border-bottom-color:qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #B3828282,stop:1 #ff000000);/* 下边框颜色 */
+    border-left-color:qlineargradient(x1:0, y1:0, x2:1, y2:0,stop:0 #ff000000,stop:1 #B3828282);/* 左边框颜色 */
+    border-right-color:qlineargradient(x1:0, y1:0, x2:1, y2:0,stop:0 #B3828282,stop:1 #ff000000);/* 右边框颜色 */
+}
+
+PYBP_Tool{
+    background-color:qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #292929,stop:0.3 #212121,stop:0.5 #801c1c1c,stop:0.7 #212121, stop:1 #292929);
+    border-style:solid;/* 边框风格 */
+    border-width:1px;/* 边框宽度 */
+    border-color:#000000;
+}
+
+#PYBP_Tool_Button{
+    background-color:#00000000;/* 背景色 */
+    font-size:12px;
+    color:#c5c5c5;
+}
+
+#PYBP_Tool_Button:hover{
+    background-color: #dea309;
+    font-size:12px;
+    color:#2f2302;
+    border-radius: 2px;
+}
+
+#PYBP_Tool_Button:pressed{
+    background-color: #da8209;
+    font-size:12px;
+    color:#2f2302;
+    text-align: top;
+    padding-top: 5px;
+    border-radius: 2px;
+}
+
+
+PYBP_ChildWidget{
+    background-color: #1b1b1b;
+    border:1px solid rgb(97,97,97);
+    border-radius:4px;
+    }

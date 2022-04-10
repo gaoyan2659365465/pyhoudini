@@ -31,3 +31,6 @@ from MiniMode import *
 
 #蓝图页面
 from blueprintdemo import *
+
+#版本管理页面
+from WesLib import *

@@ -9,5 +9,5 @@ __version__ = '0.1'
 
 #其中有hou模块需要Houdini运行时才能正常加载
 try:
-    from CopyHoudiniNodeData import *
+    from UE5.CopyHoudiniNodeData import *
 except:pass

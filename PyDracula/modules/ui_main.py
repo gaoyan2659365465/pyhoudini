@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainxesxxy.ui'
+## Form generated from reading UI file 'mainHjOvcI.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -707,6 +707,14 @@ class Ui_MainWindow(object):
         self.btn_blueprint.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-infinity.png);")
 
         self.verticalLayout_8.addWidget(self.btn_blueprint)
+
+        self.btn_weslib = QPushButton(self.topMenu)
+        self.btn_weslib.setObjectName(u"btn_weslib")
+        self.btn_weslib.setMinimumSize(QSize(0, 45))
+        self.btn_weslib.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_weslib.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-movie.png);")
+
+        self.verticalLayout_8.addWidget(self.btn_weslib)
 
 
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
@@ -1570,6 +1578,10 @@ class Ui_MainWindow(object):
         self.btn_blueprint.setToolTip(QCoreApplication.translate("MainWindow", u"\u84dd\u56fe", None))
 #endif // QT_CONFIG(tooltip)
         self.btn_blueprint.setText(QCoreApplication.translate("MainWindow", u"blueprint", None))
+#if QT_CONFIG(tooltip)
+        self.btn_weslib.setToolTip(QCoreApplication.translate("MainWindow", u"\u9879\u76ee\u7ba1\u7406", None))
+#endif // QT_CONFIG(tooltip)
+        self.btn_weslib.setText(QCoreApplication.translate("MainWindow", u"weslib", None))
         self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"Left Box", None))
 #if QT_CONFIG(tooltip)

@@ -11,7 +11,8 @@ from Plugins import *
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
         main.MainWindow.__init__(self)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
+        #self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
+        self.setWindowFlags(Qt.FramelessWindowHint)    #置顶
         self.houdinihelp=HoudiniHelp(self)
         self.ui.stackedWidget.addWidget(self.houdinihelp)
         
@@ -121,6 +122,16 @@ class PyHoudiniWidget(main.MainWindow):
                 self.blueprintWindow = BlueprintWindow()#蓝图
                 self.ui.stackedWidget.addWidget(self.blueprintWindow)
                 self.ui.stackedWidget.setCurrentWidget(self.blueprintWindow)
+            main.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
+        
+        if btnName == "btn_weslib":
+            try:
+                self.ui.stackedWidget.setCurrentWidget(self.proj)
+            except:
+                self.proj = ProjBrowser()#项目管理
+                self.ui.stackedWidget.addWidget(self.proj)
+                self.ui.stackedWidget.setCurrentWidget(self.proj)
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
                 

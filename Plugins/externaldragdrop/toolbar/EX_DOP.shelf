@@ -1,0 +1,1460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shelfDocument>
+  <!-- This file contains definitions of shelves, toolbars, and tools.
+ It should not be hand-edited when it is being used by the application.
+ Note, that two definitions of the same element are not allowed in
+ a single file. -->
+
+  <toolshelf name="EX_DOP" label="EX_DOP">
+    <memberTool name="foreach_copy_to_point"/>
+    <memberTool name="RBD_Bullet"/>
+    <memberTool name="RBD_Bullet_Constrain"/>
+    <memberTool name="Flip_Solver"/>
+    <memberTool name="init_pyro"/>
+    <memberTool name="Pyro_Solver"/>
+  </toolshelf>
+
+  <tool name="foreach_copy_to_point" label="foreach_copy_to_point" icon="SOP_foreach">
+    <toolMenuContext name="network">
+      <contextOpType>Sop/block_begin</contextOpType>
+    </toolMenuContext>
+    <script scriptType="python"><![CDATA[
+import sys
+import toolutils
+
+outputitem = None
+inputindex = -1
+inputitem = None
+outputindex = -1
+
+num_args = 1
+h_extra_args = ''
+pane = toolutils.activePane(kwargs)
+if not isinstance(pane, hou.NetworkEditor):
+    pane = hou.ui.paneTabOfType(hou.paneTabType.NetworkEditor)
+    if pane is None:
+       hou.ui.displayMessage(
+               'Cannot create node: cannot find any network pane')
+       sys.exit(0)
+else: # We're creating this tool from the TAB menu inside a network editor
+    pane_node = pane.pwd()
+#    if kwargs.has_key("outputnodename") and kwargs.has_key("inputindex"):
+    if "outputnodename" in kwargs and "inputindex" in kwargs:
+        outputitem = pane_node.item(kwargs["outputnodename"])
+        inputindex = kwargs["inputindex"]
+        h_extra_args += 'set arg4 = "' + kwargs["outputnodename"] + '"\n'
+        h_extra_args += 'set arg5 = "' + str(inputindex) + '"\n'
+        num_args = 6
+#    if kwargs.has_key("inputnodename") and kwargs.has_key("outputindex"):
+    if "inputnodename" in kwargs and "outputindex" in kwargs:
+        inputitem = pane_node.item(kwargs["inputnodename"])
+        outputindex = kwargs["outputindex"]
+        h_extra_args += 'set arg6 = "' + kwargs["inputnodename"] + '"\n'
+        h_extra_args += 'set arg9 = "' + str(outputindex) + '"\n'
+        num_args = 9 
+#    if kwargs.has_key("autoplace"):
+    if "autoplace" in kwargs:
+        autoplace = kwargs["autoplace"]
+    else:
+        autoplace = False
+    # If shift-clicked we want to auto append to the current
+    # node
+#    if kwargs.has_key("shiftclick") and kwargs["shiftclick"]:
+    if "shiftclick" in kwargs and "shiftclick" in kwargs:    
+        if inputitem is None:
+            inputitem = pane.currentNode()
+            outputindex = 0
+#    if kwargs.has_key("nodepositionx") and             kwargs.has_key("nodepositiony"):
+    if "nodepositionx" in kwargs and "nodepositiony" in kwargs:    
+        try:
+            pos = [ float( kwargs["nodepositionx"] ),
+                    float( kwargs["nodepositiony"] )]
+        except:
+            pos = None
+    else:
+        pos = None
+
+    if not autoplace and not pane.listMode():
+        if pos is not None:
+            pass
+        elif outputitem is None:
+            pos = pane.selectPosition(inputitem, outputindex, None, -1)
+        else:
+            pos = pane.selectPosition(inputitem, outputindex,
+                                      outputitem, inputindex)
+
+    if pos is not None:
+#        if kwargs.has_key("node_bbox"):
+        if "node_bbox" in kwargs:
+            size = kwargs["node_bbox"]
+            pos[0] -= size[0] / 2
+            pos[1] -= size[1] / 2
+        else:
+            pos[0] -= 0.573625
+            pos[1] -= 0.220625
+        h_extra_args += 'set arg2 = "' + str(pos[0]) + '"\n'
+        h_extra_args += 'set arg3 = "' + str(pos[1]) + '"\n'
+h_extra_args += 'set argc = "' + str(num_args) + '"\n'
+            
+pane_node = pane.pwd()
+child_type = pane_node.childTypeCategory().nodeTypes()
+
+if "compile_begin" not in child_type:
+   hou.ui.displayMessage(
+           'Cannot create node: incompatible pane network type')
+   sys.exit(0)
+
+# First clear the node selection
+pane_node.setSelected(False, True)
+
+h_path = pane_node.path()
+h_preamble = 'set arg1 = "' + h_path + '"\n'
+h_cmd = r''' 
+if ($argc < 2 || "$arg2" == "") then
+   set arg2 = 0
+endif
+if ($argc < 3 || "$arg3" == "") then
+   set arg3 = 0
+endif
+# Automatically generated script
+# $arg1 - the path to add this node
+# $arg2 - x position of the tile
+# $arg3 - y position of the tile
+# $arg4 - input node to wire to
+# $arg5 - which input to wire to
+# $arg6 - output node to wire to
+# $arg7 - the type of this node
+# $arg8 - the node is an indirect input
+# $arg9 - index of output from $arg6
+
+\set noalias = 1
+set saved_path = `execute("oppwf")`
+opcf $arg1
+
+# Node $_obj_geo1_foreach_begin1_metadata1 (Sop/block_begin)
+set _obj_geo1_foreach_begin1_metadata1 = `run("opadd -e -n -v block_begin foreach_begin1_metadata1")`
+oplocate -x `$arg2 + 0` -y `$arg3 + 0` $_obj_geo1_foreach_begin1_metadata1
+opparm -V 17.5.332 $_obj_geo1_foreach_begin1_metadata1 method ( input ) blockpath ( ../foreach_end1 )
+opcolor -c 0.75 0.40000000596046448 0 $_obj_geo1_foreach_begin1_metadata1
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F off -c on -e on -b off $_obj_geo1_foreach_begin1_metadata1
+opexprlanguage -s hscript $_obj_geo1_foreach_begin1_metadata1
+opset -p on $_obj_geo1_foreach_begin1_metadata1
+opcf $arg1
+
+# Node $_obj_geo1_copytopoints1 (Sop/copytopoints)
+set _obj_geo1_copytopoints1 = `run("opadd -e -n -v copytopoints copytopoints1")`
+oplocate -x `$arg2 + 1.3149807938540334` -y `$arg3 + -0.97311139564660598` $_obj_geo1_copytopoints1
+opset -d on -r on -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_copytopoints1
+opexprlanguage -s hscript $_obj_geo1_copytopoints1
+opset -p on $_obj_geo1_copytopoints1
+opcf $arg1
+
+# Node $_obj_geo1_foreach_end1 (Sop/block_end)
+set _obj_geo1_foreach_end1 = `run("opadd -e -n -v block_end foreach_end1")`
+oplocate -x `$arg2 + 1.316580807375999` -y `$arg3 + -1.9103713188220226` $_obj_geo1_foreach_end1
+opparm -V 17.5.332 $_obj_geo1_foreach_end1 itermethod ( pieces ) method ( merge ) useattrib ( off ) blockpath ( ../foreach_begin1 ) templatepath ( ../foreach_begin1 )
+opcolor -c 0.75 0.40000000596046448 0 $_obj_geo1_foreach_end1
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F off -c on -e on -b off $_obj_geo1_foreach_end1
+opexprlanguage -s hscript $_obj_geo1_foreach_end1
+opset -p on $_obj_geo1_foreach_end1
+opcf $arg1
+
+# Node $_obj_geo1_foreach_begin1 (Sop/block_begin)
+set _obj_geo1_foreach_begin1 = `run("opadd -e -n -v block_begin foreach_begin1")`
+oplocate -x `$arg2 + 2.6338028169014089` -y `$arg3 + 0` $_obj_geo1_foreach_begin1
+opparm -V 17.5.332 $_obj_geo1_foreach_begin1 method ( piece ) blockpath ( ../foreach_end1 )
+opcolor -c 0.75 0.40000000596046448 0 $_obj_geo1_foreach_begin1
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F off -c on -e on -b off $_obj_geo1_foreach_begin1
+opexprlanguage -s hscript $_obj_geo1_foreach_begin1
+opset -p on $_obj_geo1_foreach_begin1
+opcf $arg1
+
+# Node $_obj_geo1_compile_end1 (Sop/compile_end)
+set _obj_geo1_compile_end1 = `run("opadd -e -n -v compile_end compile_end1")`
+oplocate -x `$arg2 + 1.316580807375999` -y `$arg3 + -2.7682458386683733` $_obj_geo1_compile_end1
+opcolor -c 0.75 0.75 0 $_obj_geo1_compile_end1
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F off -c on -e on -b off $_obj_geo1_compile_end1
+opexprlanguage -s hscript $_obj_geo1_compile_end1
+opset -p on $_obj_geo1_compile_end1
+opcf $arg1
+
+# Node $_obj_geo1_compile_begin1 (Sop/compile_begin)
+set _obj_geo1_compile_begin1 = `run("opadd -e -n -v compile_begin compile_begin1")`
+oplocate -x `$arg2 + 2.7634438035347699` -y `$arg3 + 0.84507042253521192` $_obj_geo1_compile_begin1
+opparm -V 17.5.332 $_obj_geo1_compile_begin1 blockpath ( ../compile_end1 )
+opcolor -c 0.75 0.75 0 $_obj_geo1_compile_begin1
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F off -c on -e on -b off $_obj_geo1_compile_begin1
+opexprlanguage -s hscript $_obj_geo1_compile_begin1
+opset -p on $_obj_geo1_compile_begin1
+opcf $arg1
+
+# Node $_obj_geo1_compile_begin3 (Sop/compile_begin)
+set _obj_geo1_compile_begin3 = `run("opadd -e -n -v compile_begin compile_begin3")`
+oplocate -x `$arg2 + 0` -y `$arg3 + 0.84507042253521147` $_obj_geo1_compile_begin3
+opparm -V 17.5.332 $_obj_geo1_compile_begin3 blockpath ( ../compile_end1 )
+opcolor -c 0.75 0.75 0 $_obj_geo1_compile_begin3
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F off -c on -e on -b off $_obj_geo1_compile_begin3
+opexprlanguage -s hscript $_obj_geo1_compile_begin3
+opset -p on $_obj_geo1_compile_begin3
+
+opcf $arg1
+opwire -n $_obj_geo1_compile_begin3 -0 $_obj_geo1_foreach_begin1_metadata1
+opcf $arg1
+opwire -n $_obj_geo1_foreach_begin1_metadata1 -0 $_obj_geo1_copytopoints1
+opwire -n $_obj_geo1_foreach_begin1 -1 $_obj_geo1_copytopoints1
+opcf $arg1
+opwire -n $_obj_geo1_copytopoints1 -0 $_obj_geo1_foreach_end1
+opcf $arg1
+opwire -n $_obj_geo1_compile_begin1 -0 $_obj_geo1_foreach_begin1
+opcf $arg1
+opwire -n $_obj_geo1_foreach_end1 -0 $_obj_geo1_compile_end1
+opcf $arg1
+opcf $arg1
+
+set oidx = 0
+if ($argc >= 9 && "$arg9" != "") then
+    set oidx = $arg9
+endif
+
+if ($argc >= 5 && "$arg4" != "") then
+    set output = $_obj_geo1_compile_begin3
+    opwire -n $output -$arg5 $arg4
+endif
+if ($argc >= 6 && "$arg6" != "") then
+    set input = $_obj_geo1_foreach_begin1_metadata1
+    if ($arg8) then
+        opwire -n -i $arg6 -0 $input
+    else
+        opwire -n -o $oidx $arg6 -0 $input
+    endif
+endif
+opcf $saved_path
+'''
+hou.hscript(h_preamble + h_extra_args + h_cmd)
+]]></script>
+  </tool>
+
+  <tool name="init_pyro" label="init_pyro" icon="SOP_pyrosource">
+    <toolMenuContext name="network">
+      <contextOpType>Sop/pyrosource</contextOpType>
+    </toolMenuContext>
+    <script scriptType="python"><![CDATA[
+import sys
+import toolutils
+
+selNodes = hou.selectedNodes()
+
+outputitem = None
+inputindex = -1
+inputitem = None
+outputindex = -1
+
+num_args = 1
+h_extra_args = ''
+pane = toolutils.activePane(kwargs)
+if not isinstance(pane, hou.NetworkEditor):
+    pane = hou.ui.paneTabOfType(hou.paneTabType.NetworkEditor)
+    if pane is None:
+       hou.ui.displayMessage(
+               'Cannot create node: cannot find any network pane')
+       sys.exit(0)
+else: # We're creating this tool from the TAB menu inside a network editor
+    pane_node = pane.pwd()
+    if "outputnodename" in kwargs and "inputindex" in kwargs:
+        outputitem = pane_node.item(kwargs["outputnodename"])
+        inputindex = kwargs["inputindex"]
+        h_extra_args += 'set arg4 = "' + kwargs["outputnodename"] + '"\n'
+        h_extra_args += 'set arg5 = "' + str(inputindex) + '"\n'
+        num_args = 6
+    if "inputnodename" in kwargs and "outputindex" in kwargs:
+        inputitem = pane_node.item(kwargs["inputnodename"])
+        outputindex = kwargs["outputindex"]
+        h_extra_args += 'set arg6 = "' + kwargs["inputnodename"] + '"\n'
+        h_extra_args += 'set arg9 = "' + str(outputindex) + '"\n'
+        num_args = 9 
+    if "autoplace" in kwargs:
+        autoplace = kwargs["autoplace"]
+    else:
+        autoplace = False
+    # If shift-clicked we want to auto append to the current
+    # node
+    if "shiftclick" in kwargs and kwargs.get("shiftclick"):
+        if inputitem is None:
+            inputitem = pane.currentNode()
+            outputindex = 0
+    if "nodepositionx" in kwargs and "nodepositiony" in kwargs:
+        try:
+            pos = [ float( kwargs["nodepositionx"] ),
+                    float( kwargs["nodepositiony"] )]
+        except:
+            pos = None
+    else:
+        pos = None
+
+    if not autoplace and not pane.listMode():
+        if pos is not None:
+            pass
+        elif outputitem is None:
+            pos = pane.selectPosition(inputitem, outputindex, None, -1)
+        else:
+            pos = pane.selectPosition(inputitem, outputindex,
+                                      outputitem, inputindex)
+
+    if pos is not None:
+        if "node_bbox" in kwargs:
+            size = kwargs["node_bbox"]
+            pos[0] -= size[0] / 2
+            pos[1] -= size[1] / 2
+        else:
+            pos[0] -= 0.573625
+            pos[1] -= 0.220625
+        h_extra_args += 'set arg2 = "' + str(pos[0]) + '"\n'
+        h_extra_args += 'set arg3 = "' + str(pos[1]) + '"\n'
+h_extra_args += 'set argc = "' + str(num_args) + '"\n'
+            
+pane_node = pane.pwd()
+child_type = pane_node.childTypeCategory().nodeTypes()
+
+if 'null' not in child_type:
+   hou.ui.displayMessage(
+           'Cannot create node: incompatible pane network type')
+   sys.exit(0)
+
+# First clear the node selection
+pane_node.setSelected(False, True)
+
+h_path = pane_node.path()
+h_preamble = 'set arg1 = "' + h_path + '"\n'
+h_cmd = r''' 
+if ($argc < 2 || "$arg2" == "") then
+   set arg2 = 0
+endif
+if ($argc < 3 || "$arg3" == "") then
+   set arg3 = 0
+endif
+# Automatically generated script
+# $arg1 - the path to add this node
+# $arg2 - x position of the tile
+# $arg3 - y position of the tile
+# $arg4 - input node to wire to
+# $arg5 - which input to wire to
+# $arg6 - output node to wire to
+# $arg7 - the type of this node
+# $arg8 - the node is an indirect input
+# $arg9 - index of output from $arg6
+
+\set noalias = 1
+set saved_path = `execute("oppwf")`
+opcf $arg1
+
+# Node $_obj_sphere1_create_fuel (Sop/pyrosource)
+set _obj_sphere1_create_fuel = `run("opadd -e -n -v pyrosource create_fuel")`
+oplocate -x `$arg2 + 0` -y `$arg3 + 0` $_obj_sphere1_create_fuel
+opparm $_obj_sphere1_create_fuel  attributes ( 2 )
+opparm $_obj_sphere1_create_fuel mode ( 0 ) particlesep ( 0.099931291739145917 ) attributes ( 2 ) attribute1 ( fuel ) name1 ( fuel ) scale1 ( 1.8999999999999999 ) attribute2 ( temperature ) name2 ( temperature ) scale2 ( 1.8999999999999999 )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_create_fuel
+opexprlanguage -s hscript $_obj_sphere1_create_fuel
+opuserdata -n '___Version___' -v '' $_obj_sphere1_create_fuel
+opuserdata -n '___toolcount___' -v '1' $_obj_sphere1_create_fuel
+opuserdata -n '___toolid___' -v 'pyro_burn' $_obj_sphere1_create_fuel
+opset -p on $_obj_sphere1_create_fuel
+opcf $arg1
+
+# Node $_obj_sphere1_rasterize (Sop/volumerasterizeattributes)
+set _obj_sphere1_rasterize = `run("opadd -e -n -v volumerasterizeattributes rasterize")`
+oplocate -x `$arg2 + 0` -y `$arg3 + -1.7884` $_obj_sphere1_rasterize
+opparm $_obj_sphere1_rasterize  attribrules ( 0 )
+chblockbegin
+chadd -t 0 0 $_obj_sphere1_rasterize voxelsize
+chkey -t 0 -v 0 -V 0 -m 0 -M 0 -a 0 -A 0 -F 'ch("/obj/sphere1/create_fuel/particlesep") * ch("/obj/sphere1/create_fuel/particlescale") / 4' $_obj_sphere1_rasterize/voxelsize
+chblockend
+opparm $_obj_sphere1_rasterize points ( particles ) attributes ( 'density temperature fuel Cd Alpha v' ) voxelsize ( voxelsize ) densityattrib ( "" ) normalize ( on )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_rasterize
+opexprlanguage -s hscript $_obj_sphere1_rasterize
+opuserdata -n '___Version___' -v '' $_obj_sphere1_rasterize
+opuserdata -n '___toolcount___' -v '2' $_obj_sphere1_rasterize
+opuserdata -n '___toolid___' -v 'pyro_burn' $_obj_sphere1_rasterize
+opset -p on $_obj_sphere1_rasterize
+opcf $arg1
+
+# Node $_obj_sphere1_add_noise (Sop/attribnoise)
+set _obj_sphere1_add_noise = `run("opadd -e -n -v attribnoise add_noise")`
+oplocate -x `$arg2 + 0` -y `$arg3 + -0.89420000000000011` $_obj_sphere1_add_noise
+opparm $_obj_sphere1_add_noise  pdf ( 6 )
+opparm $_obj_sphere1_add_noise signature ( dim1 ) attribs ( 'fuel temperature' ) animated ( on ) remap ( on ) outmin1 ( -1.8999999999999999 ) outmax1 ( 1.8999999999999999 ) pdf ( 6 ) elementsize ( 0.99931291739145911 ) fractal ( none ) clampmin ( on ) pdf1value ( 1 ) pdf2pos ( 0.20000000000000001 ) pdf2value ( 0.69999999999999996 ) pdf3pos ( 0.40000000000000002 ) pdf3value ( 0.29999999999999999 ) pdf4pos ( 0.59999999999999998 ) pdf4value ( 0.10000000000000001 ) pdf5pos ( 0.80000000000000004 ) pdf5value ( 0.050000000000000003 ) pdf6pos ( 1 )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_add_noise
+opexprlanguage -s hscript $_obj_sphere1_add_noise
+opuserdata -n '___Version___' -v '' $_obj_sphere1_add_noise
+opuserdata -n '___toolcount___' -v '1' $_obj_sphere1_add_noise
+opuserdata -n '___toolid___' -v 'pyro_burn' $_obj_sphere1_add_noise
+opset -p on $_obj_sphere1_add_noise
+opcf $arg1
+
+# Node $_obj_sphere1_OUT_fuel (Sop/null)
+set _obj_sphere1_OUT_fuel = `run("opadd -e -n -v null OUT_fuel")`
+oplocate -x `$arg2 + 0` -y `$arg3 + -2.6825999999999999` $_obj_sphere1_OUT_fuel
+opset -d on -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_OUT_fuel
+opexprlanguage -s hscript $_obj_sphere1_OUT_fuel
+opuserdata -n '___toolcount___' -v '1' $_obj_sphere1_OUT_fuel
+opuserdata -n '___toolid___' -v 'pyro_burn' $_obj_sphere1_OUT_fuel
+opset -p on $_obj_sphere1_OUT_fuel
+
+opcf $arg1
+opwire -n $_obj_sphere1_sphere1 -0 $_obj_sphere1_create_fuel
+opcf $arg1
+opwire -n $_obj_sphere1_add_noise -0 $_obj_sphere1_rasterize
+opcf $arg1
+opwire -n $_obj_sphere1_create_fuel -0 $_obj_sphere1_add_noise
+opcf $arg1
+opwire -n $_obj_sphere1_rasterize -0 $_obj_sphere1_OUT_fuel
+
+set oidx = 0
+if ($argc >= 9 && "$arg9" != "") then
+    set oidx = $arg9
+endif
+
+if ($argc >= 5 && "$arg4" != "") then
+    set output = $_obj_sphere1_OUT_fuel
+    opwire -n $output -$arg5 $arg4
+endif
+if ($argc >= 6 && "$arg6" != "") then
+    set input = $_obj_sphere1_create_fuel
+    if ($arg8) then
+        opwire -n -i $arg6 -0 $input
+    else
+        opwire -n -o $oidx $arg6 -0 $input
+    endif
+endif
+opcf $saved_path
+'''
+hou.hscript(h_preamble + h_extra_args + h_cmd)
+
+if len(selNodes)>0:
+    selNode = selNodes[0]
+    pos = selNode.position()
+    solver = hou.selectedNodes()[0]
+    solver.setPosition(pos-hou.Vector2(0,1.5))
+    solver.setFirstInput(selNode)
+
+]]></script>
+  </tool>
+
+  <tool name="RBD_Bullet" label="RBD_Bullet" icon="NETWORKS_dop">
+    <helpURL>operator:Sop/dopnet</helpURL>
+    <toolMenuContext name="network">
+      <contextOpType>Sop/dopnet</contextOpType>
+    </toolMenuContext>
+    <script scriptType="python"><![CDATA[
+import sys
+import toolutils
+
+selNodes = hou.selectedNodes()
+
+outputitem = None
+inputindex = -1
+inputitem = None
+outputindex = -1
+
+num_args = 1
+h_extra_args = ''
+pane = toolutils.activePane(kwargs)
+if not isinstance(pane, hou.NetworkEditor):
+    pane = hou.ui.paneTabOfType(hou.paneTabType.NetworkEditor)
+    if pane is None:
+       hou.ui.displayMessage(
+               'Cannot create node: cannot find any network pane')
+       sys.exit(0)
+else: # We're creating this tool from the TAB menu inside a network editor
+    pane_node = pane.pwd()
+#    if kwargs.has_key("outputnodename") and kwargs.has_key("inputindex"):
+    if "outputnodename" in kwargs and "inputindex" in kwargs:
+        outputitem = pane_node.item(kwargs["outputnodename"])
+        inputindex = kwargs["inputindex"]
+        h_extra_args += 'set arg4 = "' + kwargs["outputnodename"] + '"\n'
+        h_extra_args += 'set arg5 = "' + str(inputindex) + '"\n'
+        num_args = 6
+#    if kwargs.has_key("inputnodename") and kwargs.has_key("outputindex"):
+    if "inputnodename" in kwargs and "outputindex" in kwargs:
+        inputitem = pane_node.item(kwargs["inputnodename"])
+        outputindex = kwargs["outputindex"]
+        h_extra_args += 'set arg6 = "' + kwargs["inputnodename"] + '"\n'
+        h_extra_args += 'set arg9 = "' + str(outputindex) + '"\n'
+        num_args = 9 
+    if "autoplace" in kwargs:
+        autoplace = kwargs["autoplace"]
+    else:
+        autoplace = False
+    # If shift-clicked we want to auto append to the current
+    # node
+    if "shiftclick" in kwargs and kwargs.get("shiftclick"):
+        if inputitem is None:
+            inputitem = pane.currentNode()
+            outputindex = 0
+#    if kwargs.has_key("nodepositionx") and             kwargs.has_key("nodepositiony"):
+    if "nodepositionx" in kwargs and "nodepositiony" in kwargs:
+        try:
+            pos = [ float( kwargs["nodepositionx"] ),
+                    float( kwargs["nodepositiony"] )]
+        except:
+            pos = None
+    else:
+        pos = None
+
+    if not autoplace and not pane.listMode():
+        if pos is not None:
+            pass
+        elif outputitem is None:
+            pos = pane.selectPosition(inputitem, outputindex, None, -1)
+        else:
+            pos = pane.selectPosition(inputitem, outputindex,
+                                      outputitem, inputindex)
+
+    if pos is not None:
+        if "node_bbox" in kwargs:
+            size = kwargs["node_bbox"]
+            pos[0] -= size[0] / 2
+            pos[1] -= size[1] / 2
+        else:
+            pos[0] -= 0.573625
+            pos[1] -= 0.220625
+        h_extra_args += 'set arg2 = "' + str(pos[0]) + '"\n'
+        h_extra_args += 'set arg3 = "' + str(pos[1]) + '"\n'
+h_extra_args += 'set argc = "' + str(num_args) + '"\n'
+            
+pane_node = pane.pwd()
+child_type = pane_node.childTypeCategory().nodeTypes()
+
+if 'dopnet' not in child_type:
+   hou.ui.displayMessage(
+           'Cannot create node: incompatible pane network type')
+   sys.exit(0)
+
+# First clear the node selection
+pane_node.setSelected(False, True)
+
+h_path = pane_node.path()
+h_preamble = 'set arg1 = "' + h_path + '"\n'
+h_cmd = r''' 
+if ($argc < 2 || "$arg2" == "") then
+   set arg2 = 0
+endif
+if ($argc < 3 || "$arg3" == "") then
+   set arg3 = 0
+endif
+# Automatically generated script
+# $arg1 - the path to add this node
+# $arg2 - x position of the tile
+# $arg3 - y position of the tile
+# $arg4 - input node to wire to
+# $arg5 - which input to wire to
+# $arg6 - output node to wire to
+# $arg7 - the type of this node
+# $arg8 - the node is an indirect input
+# $arg9 - index of output from $arg6
+
+\set noalias = 1
+set saved_path = `execute("oppwf")`
+opcf $arg1
+
+# Node $_obj_geo1_RBD_Bullet (Sop/dopnet)
+set _obj_geo1_RBD_Bullet = `run("opadd -e -n -v dopnet RBD_Bullet")`
+oplocate -x `$arg2 + 0` -y `$arg3 + 0` $_obj_geo1_RBD_Bullet
+opparm $_obj_geo1_RBD_Bullet  numobj ( 1 )
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet timestep
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("timescale")/(ch("substep")*$FPS)' $_obj_geo1_RBD_Bullet/timestep
+chadd -t 0 0 $_obj_geo1_RBD_Bullet timeoffset
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '(ch("startframe")-1)/$FPS' $_obj_geo1_RBD_Bullet/timeoffset
+chblockend
+opparm -V 17.5.332 $_obj_geo1_RBD_Bullet objname1 ( * )
+opset -d on -r on -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet
+opcf $_obj_geo1_RBD_Bullet
+
+# Node $_obj_geo1_RBD_Bullet_rbdpackedobject1 (Dop/rbdpackedobject)
+set _obj_geo1_RBD_Bullet_rbdpackedobject1 = `run("opadd -e -n -v rbdpackedobject rbdpackedobject1")`
+oplocate -x `$arg2 + 0.40000000000000024` -y `$arg3 + 5.3402264765326803` $_obj_geo1_RBD_Bullet_rbdpackedobject1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_rbdpackedobject1 createframe
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch(opcreator(".")+"/startframe")' $_obj_geo1_RBD_Bullet_rbdpackedobject1/createframe
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_rbdpackedobject1 bullet_shrink_amount
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("bullet_collision_margin")' $_obj_geo1_RBD_Bullet_rbdpackedobject1/bullet_shrink_amount
+chblockend
+opparm -V 4 $_obj_geo1_RBD_Bullet_rbdpackedobject1 geosource ( first )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_rbdpackedobject1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_rbdpackedobject1
+opuserdata -n '___Version___' -v '4' $_obj_geo1_RBD_Bullet_rbdpackedobject1
+opuserdata -n '___toolcount___' -v '3' $_obj_geo1_RBD_Bullet_rbdpackedobject1
+opuserdata -n '___toolid___' -v 'dop_rbdpackedobject' $_obj_geo1_RBD_Bullet_rbdpackedobject1
+
+# Node $_obj_geo1_RBD_Bullet_rigidbodysolver1 (Dop/rigidbodysolver)
+set _obj_geo1_RBD_Bullet_rigidbodysolver1 = `run("opadd -e -n -v rigidbodysolver rigidbodysolver1")`
+oplocate -x `$arg2 + 0.3965500049293042` -y `$arg3 + 2.6696382412385633` $_obj_geo1_RBD_Bullet_rigidbodysolver1
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_rigidbodysolver1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_rigidbodysolver1
+opuserdata -n '___Version___' -v '3' $_obj_geo1_RBD_Bullet_rigidbodysolver1
+opuserdata -n '___toolcount___' -v '7' $_obj_geo1_RBD_Bullet_rigidbodysolver1
+opuserdata -n '___toolid___' -v 'dop_rbdglueobject' $_obj_geo1_RBD_Bullet_rigidbodysolver1
+
+# Node $_obj_geo1_RBD_Bullet_groundplane1 (Dop/groundplane)
+set _obj_geo1_RBD_Bullet_groundplane1 = `run("opadd -e -n -v groundplane groundplane1")`
+oplocate -x `$arg2 + -3.1823529411764708` -y `$arg3 + 2.481402947120916` $_obj_geo1_RBD_Bullet_groundplane1
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_groundplane1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_groundplane1
+opuserdata -n '___Version___' -v '' $_obj_geo1_RBD_Bullet_groundplane1
+opuserdata -n '___toolcount___' -v '1' $_obj_geo1_RBD_Bullet_groundplane1
+opuserdata -n '___toolid___' -v 'dop_groundplane' $_obj_geo1_RBD_Bullet_groundplane1
+opcf ..
+opcf $_obj_geo1_RBD_Bullet
+
+# Node $_obj_geo1_RBD_Bullet_output (Dop/output)
+set _obj_geo1_RBD_Bullet_output = `run("opadd -e -n -v output output")`
+oplocate -x `$arg2 + -0.84002645857193858` -y `$arg3 + -0.74619707640205712` $_obj_geo1_RBD_Bullet_output
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_output f1
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '$FSTART' $_obj_geo1_RBD_Bullet_output/f1
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_output f2
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '$FEND' $_obj_geo1_RBD_Bullet_output/f2
+chblockend
+opparm $_obj_geo1_RBD_Bullet_output
+opset -d on -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_output
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_output
+opuserdata -n '___Version___' -v '' $_obj_geo1_RBD_Bullet_output
+
+# Node $_obj_geo1_RBD_Bullet_merge1 (Dop/merge)
+set _obj_geo1_RBD_Bullet_merge1 = `run("opadd -e -n -v merge merge1")`
+oplocate -x `$arg2 + -0.84117647058823497` -y `$arg3 + 1.3402264765326803` $_obj_geo1_RBD_Bullet_merge1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_merge1 activation
+chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'constant()' $_obj_geo1_RBD_Bullet_merge1/activation
+chblockend
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_merge1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_merge1
+
+# Node $_obj_geo1_RBD_Bullet_gravity1 (Dop/gravity)
+set _obj_geo1_RBD_Bullet_gravity1 = `run("opadd -e -n -v gravity gravity1")`
+oplocate -x `$arg2 + -0.84002644460209996` -y `$arg3 + 0.34792058257769531` $_obj_geo1_RBD_Bullet_gravity1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_gravity1 activation
+chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'constant()' $_obj_geo1_RBD_Bullet_gravity1/activation
+chblockend
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_gravity1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_gravity1
+oporder -e output rbdpackedobject1 merge1 rigidbodysolver1 gravity1 groundplane1 
+opcf ..
+opset -p on $_obj_geo1_RBD_Bullet
+
+opcf $arg1
+opwire -n $_obj_geo1_assemble1 -0 $_obj_geo1_RBD_Bullet
+opcf $_obj_geo1_RBD_Bullet
+opwire -n $_obj_geo1_RBD_Bullet_gravity1 -0 $_obj_geo1_RBD_Bullet_output
+opwire -n $_obj_geo1_RBD_Bullet_groundplane1 -0 $_obj_geo1_RBD_Bullet_merge1
+opwire -n $_obj_geo1_RBD_Bullet_rigidbodysolver1 -1 $_obj_geo1_RBD_Bullet_merge1
+opwire -n $_obj_geo1_RBD_Bullet_rbdpackedobject1 -0 $_obj_geo1_RBD_Bullet_rigidbodysolver1
+opwire -n $_obj_geo1_RBD_Bullet_merge1 -0 $_obj_geo1_RBD_Bullet_gravity1
+opcf ..
+
+set oidx = 0
+if ($argc >= 9 && "$arg9" != "") then
+    set oidx = $arg9
+endif
+
+if ($argc >= 5 && "$arg4" != "") then
+    set output = $_obj_geo1_RBD_Bullet
+    opwire -n $output -$arg5 $arg4
+endif
+if ($argc >= 6 && "$arg6" != "") then
+    set input = $_obj_geo1_RBD_Bullet
+    if ($arg8) then
+        opwire -n -i $arg6 -0 $input
+    else
+        opwire -n -o $oidx $arg6 -0 $input
+    endif
+endif
+opcf $saved_path
+'''
+hou.hscript(h_preamble + h_extra_args + h_cmd)
+
+
+if len(selNodes)>0:
+    selNode = selNodes[0]
+    pos = selNode.position()
+    bullet = hou.selectedNodes()[0]
+    bullet.setPosition(pos-hou.Vector2(0,1.5))
+    bullet.setFirstInput(selNode)]]></script>
+  </tool>
+
+  <tool name="RBD_Bullet_Constrain" label="RBD_Bullet_Constrain" icon="NETWORKS_dop">
+    <helpURL>operator:Sop/dopnet</helpURL>
+    <toolMenuContext name="network">
+      <contextOpType>Sop/dopnet</contextOpType>
+    </toolMenuContext>
+    <script scriptType="python"><![CDATA[
+import sys
+import toolutils
+
+
+selNodes = hou.selectedNodes()
+
+outputitem = None
+inputindex = -1
+inputitem = None
+outputindex = -1
+
+num_args = 1
+h_extra_args = ''
+pane = toolutils.activePane(kwargs)
+if not isinstance(pane, hou.NetworkEditor):
+    pane = hou.ui.paneTabOfType(hou.paneTabType.NetworkEditor)
+    if pane is None:
+       hou.ui.displayMessage(
+               'Cannot create node: cannot find any network pane')
+       sys.exit(0)
+else: # We're creating this tool from the TAB menu inside a network editor
+    pane_node = pane.pwd()
+    if "outputnodename" in kwargs and "inputindex" in kwargs:
+        outputitem = pane_node.item(kwargs["outputnodename"])
+        inputindex = kwargs["inputindex"]
+        h_extra_args += 'set arg4 = "' + kwargs["outputnodename"] + '"\n'
+        h_extra_args += 'set arg5 = "' + str(inputindex) + '"\n'
+        num_args = 6
+    if "inputnodename" in kwargs and "outputindex" in kwargs:
+        inputitem = pane_node.item(kwargs["inputnodename"])
+        outputindex = kwargs["outputindex"]
+        h_extra_args += 'set arg6 = "' + kwargs["inputnodename"] + '"\n'
+        h_extra_args += 'set arg9 = "' + str(outputindex) + '"\n'
+        num_args = 9 
+    if "autoplace" in kwargs:
+        autoplace = kwargs["autoplace"]
+    else:
+        autoplace = False
+    # If shift-clicked we want to auto append to the current
+    # node
+    if "shiftclick" in kwargs and kwargs.get("shiftclick"):
+        if inputitem is None:
+            inputitem = pane.currentNode()
+            outputindex = 0
+    if "nodepositionx" in kwargs and "nodepositiony" in kwargs:
+        try:
+            pos = [ float( kwargs["nodepositionx"] ),
+                    float( kwargs["nodepositiony"] )]
+        except:
+            pos = None
+    else:
+        pos = None
+
+    if not autoplace and not pane.listMode():
+        if pos is not None:
+            pass
+        elif outputitem is None:
+            pos = pane.selectPosition(inputitem, outputindex, None, -1)
+        else:
+            pos = pane.selectPosition(inputitem, outputindex,
+                                      outputitem, inputindex)
+
+    if pos is not None:
+        if "node_bbox" in kwargs:
+            size = kwargs["node_bbox"]
+            pos[0] -= size[0] / 2
+            pos[1] -= size[1] / 2
+        else:
+            pos[0] -= 0.573625
+            pos[1] -= 0.220625
+        h_extra_args += 'set arg2 = "' + str(pos[0]) + '"\n'
+        h_extra_args += 'set arg3 = "' + str(pos[1]) + '"\n'
+h_extra_args += 'set argc = "' + str(num_args) + '"\n'
+            
+pane_node = pane.pwd()
+child_type = pane_node.childTypeCategory().nodeTypes()
+
+if 'dopnet' not in child_type:
+   hou.ui.displayMessage(
+           'Cannot create node: incompatible pane network type')
+   sys.exit(0)
+
+# First clear the node selection
+pane_node.setSelected(False, True)
+
+h_path = pane_node.path()
+h_preamble = 'set arg1 = "' + h_path + '"\n'
+h_cmd = r''' 
+if ($argc < 2 || "$arg2" == "") then
+   set arg2 = 0
+endif
+if ($argc < 3 || "$arg3" == "") then
+   set arg3 = 0
+endif
+# Automatically generated script
+# $arg1 - the path to add this node
+# $arg2 - x position of the tile
+# $arg3 - y position of the tile
+# $arg4 - input node to wire to
+# $arg5 - which input to wire to
+# $arg6 - output node to wire to
+# $arg7 - the type of this node
+# $arg8 - the node is an indirect input
+# $arg9 - index of output from $arg6
+
+\set noalias = 1
+set saved_path = `execute("oppwf")`
+opcf $arg1
+
+# Node $_obj_geo1_RBD_Bullet_Constrain (Sop/dopnet)
+set _obj_geo1_RBD_Bullet_Constrain = `run("opadd -e -n -v dopnet RBD_Bullet_Constrain")`
+oplocate -x `$arg2 + 0` -y `$arg3 + 0` $_obj_geo1_RBD_Bullet_Constrain
+opparm $_obj_geo1_RBD_Bullet_Constrain  numobj ( 1 )
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain timestep
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("timescale")/(ch("substep")*$FPS)' $_obj_geo1_RBD_Bullet_Constrain/timestep
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain timeoffset
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '(ch("startframe")-1)/$FPS' $_obj_geo1_RBD_Bullet_Constrain/timeoffset
+chblockend
+opparm -V 17.5.332 $_obj_geo1_RBD_Bullet_Constrain objname1 ( * )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_Constrain
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_Constrain
+opuserdata -n '___toolcount___' -v '1' $_obj_geo1_RBD_Bullet_Constrain
+opuserdata -n '___toolid___' -v 'dopnet' $_obj_geo1_RBD_Bullet_Constrain
+opcf $_obj_geo1_RBD_Bullet_Constrain
+
+# Node $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1 (Dop/rbdpackedobject)
+set _obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1 = `run("opadd -e -n -v rbdpackedobject rbdpackedobject1")`
+oplocate -x `$arg2 + 0.10588235294117643` -y `$arg3 + 5.5078294118921107` $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1 createframe
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch(opcreator(".")+"/startframe")' $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1/createframe
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1 bullet_shrink_amount
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("bullet_collision_margin")' $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1/bullet_shrink_amount
+chblockend
+opparm -V 4 $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1 geosource ( first )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1
+opuserdata -n '___Version___' -v '4' $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1
+opuserdata -n '___toolcount___' -v '3' $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1
+opuserdata -n '___toolid___' -v 'dop_rbdpackedobject' $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1
+
+# Node $_obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1 (Dop/rigidbodysolver)
+set _obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1 = `run("opadd -e -n -v rigidbodysolver rigidbodysolver1")`
+oplocate -x `$arg2 + 0.32596176963518658` -y `$arg3 + 2.2225794177091518` $_obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1
+opuserdata -n '___Version___' -v '3' $_obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1
+opuserdata -n '___toolcount___' -v '7' $_obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1
+opuserdata -n '___toolid___' -v 'dop_rbdglueobject' $_obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1
+
+# Node $_obj_geo1_RBD_Bullet_Constrain_groundplane1 (Dop/groundplane)
+set _obj_geo1_RBD_Bullet_Constrain_groundplane1 = `run("opadd -e -n -v groundplane groundplane1")`
+oplocate -x `$arg2 + -3.1823529411764708` -y `$arg3 + 2.481402947120916` $_obj_geo1_RBD_Bullet_Constrain_groundplane1
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_Constrain_groundplane1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_Constrain_groundplane1
+opuserdata -n '___Version___' -v '' $_obj_geo1_RBD_Bullet_Constrain_groundplane1
+opuserdata -n '___toolcount___' -v '1' $_obj_geo1_RBD_Bullet_Constrain_groundplane1
+opuserdata -n '___toolid___' -v 'dop_groundplane' $_obj_geo1_RBD_Bullet_Constrain_groundplane1
+opcf ..
+opcf $_obj_geo1_RBD_Bullet_Constrain
+
+# Node $_obj_geo1_RBD_Bullet_Constrain_output (Dop/output)
+set _obj_geo1_RBD_Bullet_Constrain_output = `run("opadd -e -n -v output output")`
+oplocate -x `$arg2 + -0.84002645857193858` -y `$arg3 + -1.2591382647935745` $_obj_geo1_RBD_Bullet_Constrain_output
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain_output f1
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '$FSTART' $_obj_geo1_RBD_Bullet_Constrain_output/f1
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain_output f2
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '$FEND' $_obj_geo1_RBD_Bullet_Constrain_output/f2
+chblockend
+opparm $_obj_geo1_RBD_Bullet_Constrain_output
+opset -d on -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_Constrain_output
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_Constrain_output
+opuserdata -n '___Version___' -v '' $_obj_geo1_RBD_Bullet_Constrain_output
+opuserdata -n '___toolcount___' -v '1' $_obj_geo1_RBD_Bullet_Constrain_output
+opuserdata -n '___toolid___' -v 'dopnet' $_obj_geo1_RBD_Bullet_Constrain_output
+
+# Node $_obj_geo1_RBD_Bullet_Constrain_merge1 (Dop/merge)
+set _obj_geo1_RBD_Bullet_Constrain_merge1 = `run("opadd -e -n -v merge merge1")`
+oplocate -x `$arg2 + -0.84117647058823497` -y `$arg3 + 1.3402264765326803` $_obj_geo1_RBD_Bullet_Constrain_merge1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain_merge1 activation
+chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'constant()' $_obj_geo1_RBD_Bullet_Constrain_merge1/activation
+chblockend
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_Constrain_merge1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_Constrain_merge1
+opuserdata -n '___toolcount___' -v '1' $_obj_geo1_RBD_Bullet_Constrain_merge1
+opuserdata -n '___toolid___' -v 'dopnet' $_obj_geo1_RBD_Bullet_Constrain_merge1
+
+# Node $_obj_geo1_RBD_Bullet_Constrain_gravity1 (Dop/gravity)
+set _obj_geo1_RBD_Bullet_Constrain_gravity1 = `run("opadd -e -n -v gravity gravity1")`
+oplocate -x `$arg2 + -0.84002644460209996` -y `$arg3 + -0.20737354699029259` $_obj_geo1_RBD_Bullet_Constrain_gravity1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain_gravity1 activation
+chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'constant()' $_obj_geo1_RBD_Bullet_Constrain_gravity1/activation
+chblockend
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_Constrain_gravity1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_Constrain_gravity1
+opuserdata -n '___toolcount___' -v '1' $_obj_geo1_RBD_Bullet_Constrain_gravity1
+opuserdata -n '___toolid___' -v 'dopnet' $_obj_geo1_RBD_Bullet_Constrain_gravity1
+
+# Node $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1 (Dop/constraintnetwork)
+set _obj_geo1_RBD_Bullet_Constrain_constraintnetwork1 = `run("opadd -e -n -v constraintnetwork constraintnetwork1")`
+oplocate -x `$arg2 + 0.32941176470588251` -y `$arg3 + 3.6255676414012239` $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1 reloadfromsops
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'hou.pwd().hdaModule().shouldOverwriteWithSOP()' -l p $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1/reloadfromsops
+chblockend
+opparm -V 1 $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1 geosource ( second )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1
+opuserdata -n '___Version___' -v '1' $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1
+opuserdata -n '___toolcount___' -v '7' $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1
+opuserdata -n '___toolid___' -v 'dynamics_gluenetwork' $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1
+
+# Node $_obj_geo1_RBD_Bullet_Constrain_glueconrel1 (Dop/glueconrel)
+set _obj_geo1_RBD_Bullet_Constrain_glueconrel1 = `run("opadd -e -n -v glueconrel glueconrel1")`
+oplocate -x `$arg2 + 3.0185338205581211` -y `$arg3 + 5.5078294118921107` $_obj_geo1_RBD_Bullet_Constrain_glueconrel1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_RBD_Bullet_Constrain_glueconrel1 activation
+chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'constant()' $_obj_geo1_RBD_Bullet_Constrain_glueconrel1/activation
+chblockend
+opparm -V 17.5.332 $_obj_geo1_RBD_Bullet_Constrain_glueconrel1 dataname ( Glue )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_RBD_Bullet_Constrain_glueconrel1
+opexprlanguage -s hscript $_obj_geo1_RBD_Bullet_Constrain_glueconrel1
+oporder -e output rbdpackedobject1 merge1 rigidbodysolver1 gravity1 groundplane1 constraintnetwork1 glueconrel1 
+opcf ..
+opset -p on $_obj_geo1_RBD_Bullet_Constrain
+
+opcf $arg1
+opwire -n $_obj_geo1_assemble1 -0 $_obj_geo1_RBD_Bullet_Constrain
+opwire -n -o 1 $_obj_geo1_rbdconstraintproperties1 -1 $_obj_geo1_RBD_Bullet_Constrain
+opcf $_obj_geo1_RBD_Bullet_Constrain
+opwire -n $_obj_geo1_RBD_Bullet_Constrain_gravity1 -0 $_obj_geo1_RBD_Bullet_Constrain_output
+opwire -n $_obj_geo1_RBD_Bullet_Constrain_groundplane1 -0 $_obj_geo1_RBD_Bullet_Constrain_merge1
+opwire -n $_obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1 -1 $_obj_geo1_RBD_Bullet_Constrain_merge1
+opwire -n $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1 -0 $_obj_geo1_RBD_Bullet_Constrain_rigidbodysolver1
+opwire -n $_obj_geo1_RBD_Bullet_Constrain_merge1 -0 $_obj_geo1_RBD_Bullet_Constrain_gravity1
+opwire -n $_obj_geo1_RBD_Bullet_Constrain_rbdpackedobject1 -0 $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1
+opwire -n $_obj_geo1_RBD_Bullet_Constrain_glueconrel1 -1 $_obj_geo1_RBD_Bullet_Constrain_constraintnetwork1
+opcf ..
+
+set oidx = 0
+if ($argc >= 9 && "$arg9" != "") then
+    set oidx = $arg9
+endif
+
+if ($argc >= 5 && "$arg4" != "") then
+    set output = $_obj_geo1_RBD_Bullet_Constrain
+    opwire -n $output -$arg5 $arg4
+endif
+if ($argc >= 6 && "$arg6" != "") then
+    set input = $_obj_geo1_RBD_Bullet_Constrain
+    if ($arg8) then
+        opwire -n -i $arg6 -0 $input
+    else
+        opwire -n -o $oidx $arg6 -0 $input
+    endif
+endif
+opcf $saved_path
+'''
+hou.hscript(h_preamble + h_extra_args + h_cmd)
+
+
+if len(selNodes)>0:
+    selNode = selNodes[0]
+    pos = selNode.position()
+    bullet = hou.selectedNodes()[0]
+    bullet.setPosition(pos-hou.Vector2(0,1.5))
+    bullet.setFirstInput(selNode)]]></script>
+  </tool>
+
+  <tool name="Flip_Solver" label="Flip_Solver" icon="NETWORKS_dop">
+    <helpURL>operator:Sop/dopnet</helpURL>
+    <toolMenuContext name="network">
+      <contextOpType>Sop/dopnet</contextOpType>
+    </toolMenuContext>
+    <script scriptType="python"><![CDATA[
+import sys
+import toolutils
+
+selNodes = hou.selectedNodes()
+
+outputitem = None
+inputindex = -1
+inputitem = None
+outputindex = -1
+
+num_args = 1
+h_extra_args = ''
+pane = toolutils.activePane(kwargs)
+if not isinstance(pane, hou.NetworkEditor):
+    pane = hou.ui.paneTabOfType(hou.paneTabType.NetworkEditor)
+    if pane is None:
+       hou.ui.displayMessage(
+               'Cannot create node: cannot find any network pane')
+       sys.exit(0)
+else: # We're creating this tool from the TAB menu inside a network editor
+    pane_node = pane.pwd()
+    if "outputnodename" in kwargs and "inputindex" in kwargs:
+        outputitem = pane_node.item(kwargs["outputnodename"])
+        inputindex = kwargs["inputindex"]
+        h_extra_args += 'set arg4 = "' + kwargs["outputnodename"] + '"\n'
+        h_extra_args += 'set arg5 = "' + str(inputindex) + '"\n'
+        num_args = 6
+    if "inputnodename" in kwargs and "outputindex" in kwargs:
+        inputitem = pane_node.item(kwargs["inputnodename"])
+        outputindex = kwargs["outputindex"]
+        h_extra_args += 'set arg6 = "' + kwargs["inputnodename"] + '"\n'
+        h_extra_args += 'set arg9 = "' + str(outputindex) + '"\n'
+        num_args = 9 
+    if "autoplace" in kwargs:
+        autoplace = kwargs["autoplace"]
+    else:
+        autoplace = False
+    # If shift-clicked we want to auto append to the current
+    # node
+    if "shiftclick" in kwargs and kwargs.get("shiftclick"):
+        if inputitem is None:
+            inputitem = pane.currentNode()
+            outputindex = 0
+    if "nodepositionx" in kwargs and "nodepositiony" in kwargs:
+        try:
+            pos = [ float( kwargs["nodepositionx"] ),
+                    float( kwargs["nodepositiony"] )]
+        except:
+            pos = None
+    else:
+        pos = None
+
+    if not autoplace and not pane.listMode():
+        if pos is not None:
+            pass
+        elif outputitem is None:
+            pos = pane.selectPosition(inputitem, outputindex, None, -1)
+        else:
+            pos = pane.selectPosition(inputitem, outputindex,
+                                      outputitem, inputindex)
+
+    if pos is not None:
+        if "node_bbox" in kwargs:
+            size = kwargs["node_bbox"]
+            pos[0] -= size[0] / 2
+            pos[1] -= size[1] / 2
+        else:
+            pos[0] -= 0.573625
+            pos[1] -= 0.220625
+        h_extra_args += 'set arg2 = "' + str(pos[0]) + '"\n'
+        h_extra_args += 'set arg3 = "' + str(pos[1]) + '"\n'
+h_extra_args += 'set argc = "' + str(num_args) + '"\n'
+            
+pane_node = pane.pwd()
+child_type = pane_node.childTypeCategory().nodeTypes()
+
+if 'dopnet' not in  child_type:
+   hou.ui.displayMessage(
+           'Cannot create node: incompatible pane network type')
+   sys.exit(0)
+
+# First clear the node selection
+pane_node.setSelected(False, True)
+
+h_path = pane_node.path()
+h_preamble = 'set arg1 = "' + h_path + '"\n'
+h_cmd = r''' 
+if ($argc < 2 || "$arg2" == "") then
+   set arg2 = 0
+endif
+if ($argc < 3 || "$arg3" == "") then
+   set arg3 = 0
+endif
+# Automatically generated script
+# $arg1 - the path to add this node
+# $arg2 - x position of the tile
+# $arg3 - y position of the tile
+# $arg4 - input node to wire to
+# $arg5 - which input to wire to
+# $arg6 - output node to wire to
+# $arg7 - the type of this node
+# $arg8 - the node is an indirect input
+# $arg9 - index of output from $arg6
+
+\set noalias = 1
+set saved_path = `execute("oppwf")`
+opcf $arg1
+
+# Node $_obj_geo1_Flip_Solver (Sop/dopnet)
+set _obj_geo1_Flip_Solver = `run("opadd -e -n -v dopnet Flip_Solver")`
+oplocate -x `$arg2 + 0` -y `$arg3 + 0` $_obj_geo1_Flip_Solver
+opparm $_obj_geo1_Flip_Solver  numobj ( 1 )
+chblockbegin
+chadd -t 0 0 $_obj_geo1_Flip_Solver timestep
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("timescale")/(ch("substep")*$FPS)' $_obj_geo1_Flip_Solver/timestep
+chadd -t 0 0 $_obj_geo1_Flip_Solver timeoffset
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '(ch("startframe")-1)/$FPS' $_obj_geo1_Flip_Solver/timeoffset
+chblockend
+opparm -V 17.5.332 $_obj_geo1_Flip_Solver objname1 ( * )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_Flip_Solver
+opexprlanguage -s hscript $_obj_geo1_Flip_Solver
+opcf $_obj_geo1_Flip_Solver
+
+# Node $_obj_geo1_Flip_Solver_flipsolver1 (Dop/flipsolver::2.0)
+set _obj_geo1_Flip_Solver_flipsolver1 = `run("opadd -e -n -v flipsolver::2.0 flipsolver1")`
+oplocate -x `$arg2 + 0.15537352037122998` -y `$arg3 + 2.7402264765326807` $_obj_geo1_Flip_Solver_flipsolver1
+opparm $_obj_geo1_Flip_Solver_flipsolver1  attributefieldpairs ( 0 )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_Flip_Solver_flipsolver1
+opexprlanguage -s hscript $_obj_geo1_Flip_Solver_flipsolver1
+opuserdata -n '___Version___' -v '' $_obj_geo1_Flip_Solver_flipsolver1
+opuserdata -n '___toolcount___' -v '1' $_obj_geo1_Flip_Solver_flipsolver1
+opuserdata -n '___toolid___' -v 'dynamics_flipbox' $_obj_geo1_Flip_Solver_flipsolver1
+
+# Node $_obj_geo1_Flip_Solver_flipobject1 (Dop/flipobject)
+set _obj_geo1_Flip_Solver_flipobject1 = `run("opadd -e -n -v flipobject flipobject1")`
+oplocate -x `$arg2 + -1.2647058823529411` -y `$arg3 + 3.6225794177091513` $_obj_geo1_Flip_Solver_flipobject1
+opparm $_obj_geo1_Flip_Solver_flipobject1  guidevisramp ( 3 )
+chblockbegin
+chadd -t 0 0 $_obj_geo1_Flip_Solver_flipobject1 createframe
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch(opcreator(".")+"/startframe")' $_obj_geo1_Flip_Solver_flipobject1/createframe
+chblockend
+opparm $_obj_geo1_Flip_Solver_flipobject1 closedends ( on ) soppath ( "" ) guidevisramp1c ( 0 0 0.89999997615814209 ) guidevisramp2pos ( 0.5 ) guidevisramp2c ( 0 0.89999997615814209 0.89999997615814209 ) guidevisramp3pos ( 1 ) guidevisramp3c ( 1 1 1 )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_Flip_Solver_flipobject1
+opexprlanguage -s hscript $_obj_geo1_Flip_Solver_flipobject1
+opuserdata -n '___Version___' -v '' $_obj_geo1_Flip_Solver_flipobject1
+opuserdata -n '___toolcount___' -v '1' $_obj_geo1_Flip_Solver_flipobject1
+opuserdata -n '___toolid___' -v 'dynamics_flipbox' $_obj_geo1_Flip_Solver_flipobject1
+
+# Node $_obj_geo1_Flip_Solver_volumesource1 (Dop/volumesource)
+set _obj_geo1_Flip_Solver_volumesource1 = `run("opadd -e -n -v volumesource volumesource1")`
+oplocate -x `$arg2 + 1.4411764705882351` -y `$arg3 + 3.6225794177091508` $_obj_geo1_Flip_Solver_volumesource1
+opparm $_obj_geo1_Flip_Solver_volumesource1  numvolumes ( 1 )
+opparm $_obj_geo1_Flip_Solver_volumesource1 initialize ( sourceflip ) input ( first ) numvolumes ( 1 ) sourceparticles ( on ) killinside ( on ) killinsidedop ( surface ) volume1 ( surface ) vfield1 ( surface ) voperator1 ( min ) vnormalize1 ( off )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_Flip_Solver_volumesource1
+opexprlanguage -s hscript $_obj_geo1_Flip_Solver_volumesource1
+opuserdata -n '___Version___' -v '' $_obj_geo1_Flip_Solver_volumesource1
+opuserdata -n '___toolcount___' -v '3' $_obj_geo1_Flip_Solver_volumesource1
+opuserdata -n '___toolid___' -v 'pyro_smoketrail' $_obj_geo1_Flip_Solver_volumesource1
+opcf ..
+opcf $_obj_geo1_Flip_Solver
+
+# Node $_obj_geo1_Flip_Solver_output (Dop/output)
+set _obj_geo1_Flip_Solver_output = `run("opadd -e -n -v output output")`
+oplocate -x `$arg2 + -8.3874980883976833e-17` -y `$arg3 + -0.45659412952030398` $_obj_geo1_Flip_Solver_output
+chblockbegin
+chadd -t 0 0 $_obj_geo1_Flip_Solver_output f1
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '$FSTART' $_obj_geo1_Flip_Solver_output/f1
+chadd -t 0 0 $_obj_geo1_Flip_Solver_output f2
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '$FEND' $_obj_geo1_Flip_Solver_output/f2
+chblockend
+opparm $_obj_geo1_Flip_Solver_output
+opset -d on -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_Flip_Solver_output
+opexprlanguage -s hscript $_obj_geo1_Flip_Solver_output
+opuserdata -n '___Version___' -v '' $_obj_geo1_Flip_Solver_output
+
+# Node $_obj_geo1_Flip_Solver_merge1 (Dop/merge)
+set _obj_geo1_Flip_Solver_merge1 = `run("opadd -e -n -v merge merge1")`
+oplocate -x `$arg2 + -0.0011500120162965261` -y `$arg3 + 0.50716175877708325` $_obj_geo1_Flip_Solver_merge1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_Flip_Solver_merge1 activation
+chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'constant()' $_obj_geo1_Flip_Solver_merge1/activation
+chblockend
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_Flip_Solver_merge1
+opexprlanguage -s hscript $_obj_geo1_Flip_Solver_merge1
+
+# Node $_obj_geo1_Flip_Solver_gravity1 (Dop/gravity)
+set _obj_geo1_Flip_Solver_gravity1 = `run("opadd -e -n -v gravity gravity1")`
+oplocate -x `$arg2 + 0.15882352941176453` -y `$arg3 + 1.5284617587293994` $_obj_geo1_Flip_Solver_gravity1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_Flip_Solver_gravity1 activation
+chkey -t 0 -v 1 -m 0 -a 0 -A 0 -T a  -F 'constant()' $_obj_geo1_Flip_Solver_gravity1/activation
+chblockend
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_Flip_Solver_gravity1
+opexprlanguage -s hscript $_obj_geo1_Flip_Solver_gravity1
+
+# Node $_obj_geo1_Flip_Solver_staticobject1 (Dop/staticobject)
+set _obj_geo1_Flip_Solver_staticobject1 = `run("opadd -e -n -v staticobject staticobject1")`
+oplocate -x `$arg2 + -1.5117647058823529` -y `$arg3 + 2.2225794177091518` $_obj_geo1_Flip_Solver_staticobject1
+chblockbegin
+chadd -t 0 0 $_obj_geo1_Flip_Solver_staticobject1 createframe
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch(opcreator(".")+"/startframe")' $_obj_geo1_Flip_Solver_staticobject1/createframe
+chadd -t 0 0 $_obj_geo1_Flip_Solver_staticobject1 bullet_shrink_amount
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("bullet_collision_margin")' $_obj_geo1_Flip_Solver_staticobject1/bullet_shrink_amount
+chblockend
+opparm -V 4 $_obj_geo1_Flip_Solver_staticobject1 soppath ( '`opinputpath("..",1)`' )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_geo1_Flip_Solver_staticobject1
+opexprlanguage -s hscript $_obj_geo1_Flip_Solver_staticobject1
+opuserdata -n '___Version___' -v '4' $_obj_geo1_Flip_Solver_staticobject1
+opuserdata -n '___toolcount___' -v '16' $_obj_geo1_Flip_Solver_staticobject1
+opuserdata -n '___toolid___' -v 'dop_staticobject' $_obj_geo1_Flip_Solver_staticobject1
+oporder -e output flipsolver1 merge1 gravity1 staticobject1 flipobject1 volumesource1 
+opcf ..
+opset -p on $_obj_geo1_Flip_Solver
+
+opcf $arg1
+opcf $_obj_geo1_Flip_Solver
+opwire -n $_obj_geo1_Flip_Solver_merge1 -0 $_obj_geo1_Flip_Solver_output
+opwire -n $_obj_geo1_Flip_Solver_flipobject1 -0 $_obj_geo1_Flip_Solver_flipsolver1
+opwire -n $_obj_geo1_Flip_Solver_volumesource1 -3 $_obj_geo1_Flip_Solver_flipsolver1
+opwire -n $_obj_geo1_Flip_Solver_staticobject1 -0 $_obj_geo1_Flip_Solver_merge1
+opwire -n $_obj_geo1_Flip_Solver_gravity1 -1 $_obj_geo1_Flip_Solver_merge1
+opwire -n $_obj_geo1_Flip_Solver_flipsolver1 -0 $_obj_geo1_Flip_Solver_gravity1
+opcf ..
+
+set oidx = 0
+if ($argc >= 9 && "$arg9" != "") then
+    set oidx = $arg9
+endif
+
+if ($argc >= 5 && "$arg4" != "") then
+    set output = $_obj_geo1_Flip_Solver
+    opwire -n $output -$arg5 $arg4
+endif
+if ($argc >= 6 && "$arg6" != "") then
+    set input = $_obj_geo1_Flip_Solver
+    if ($arg8) then
+        opwire -n -i $arg6 -0 $input
+    else
+        opwire -n -o $oidx $arg6 -0 $input
+    endif
+endif
+opcf $saved_path
+'''
+hou.hscript(h_preamble + h_extra_args + h_cmd)
+
+if len(selNodes)>0:
+    selNode = selNodes[0]
+    pos = selNode.position()
+    solver = hou.selectedNodes()[0]
+    solver.setPosition(pos-hou.Vector2(0,1.5))
+    solver.setFirstInput(selNode)
+]]></script>
+  </tool>
+
+  <tool name="Pyro_Solver" label="Pyro_Solver" icon="NETWORKS_dop">
+    <helpURL>operator:Sop/dopnet</helpURL>
+    <toolMenuContext name="network">
+      <contextOpType>Sop/dopnet</contextOpType>
+    </toolMenuContext>
+    <script scriptType="python"><![CDATA[
+import sys
+import toolutils
+
+outputitem = None
+inputindex = -1
+inputitem = None
+outputindex = -1
+
+num_args = 1
+h_extra_args = ''
+pane = toolutils.activePane(kwargs)
+if not isinstance(pane, hou.NetworkEditor):
+    pane = hou.ui.paneTabOfType(hou.paneTabType.NetworkEditor)
+    if pane is None:
+       hou.ui.displayMessage(
+               'Cannot create node: cannot find any network pane')
+       sys.exit(0)
+else: # We're creating this tool from the TAB menu inside a network editor
+    pane_node = pane.pwd()
+#    if kwargs.has_key("outputnodename") and kwargs.has_key("inputindex"):
+    if "outputnodename" in kwargs and "inputindex" in kwargs:
+        outputitem = pane_node.item(kwargs["outputnodename"])
+        inputindex = kwargs["inputindex"]
+        h_extra_args += 'set arg4 = "' + kwargs["outputnodename"] + '"\n'
+        h_extra_args += 'set arg5 = "' + str(inputindex) + '"\n'
+        num_args = 6
+#    if kwargs.has_key("inputnodename") and kwargs.has_key("outputindex"):
+    if "inputnodename" in kwargs and "outputindex" in kwargs:
+        inputitem = pane_node.item(kwargs["inputnodename"])
+        outputindex = kwargs["outputindex"]
+        h_extra_args += 'set arg6 = "' + kwargs["inputnodename"] + '"\n'
+        h_extra_args += 'set arg9 = "' + str(outputindex) + '"\n'
+        num_args = 9 
+    if kwargs.has_key("autoplace"):
+        autoplace = kwargs["autoplace"]
+    else:
+        autoplace = False
+    # If shift-clicked we want to auto append to the current
+    # node
+    if "shiftclick" in kwargs and kwargs.get("shiftclick"):
+    
+        if inputitem is None:
+            inputitem = pane.currentNode()
+            outputindex = 0
+#    if kwargs.has_key("nodepositionx") and             kwargs.has_key("nodepositiony"):
+    if "nodepositionx" in kwargs and "nodepositiony" in kwargs:
+        try:
+            pos = [ float( kwargs["nodepositionx"] ),
+                    float( kwargs["nodepositiony"] )]
+        except:
+            pos = None
+    else:
+        pos = None
+
+    if not autoplace and not pane.listMode():
+        if pos is not None:
+            pass
+        elif outputitem is None:
+            pos = pane.selectPosition(inputitem, outputindex, None, -1)
+        else:
+            pos = pane.selectPosition(inputitem, outputindex,
+                                      outputitem, inputindex)
+
+    if pos is not None:
+        if kwargs.has_key("node_bbox"):
+            size = kwargs["node_bbox"]
+            pos[0] -= size[0] / 2
+            pos[1] -= size[1] / 2
+        else:
+            pos[0] -= 0.573625
+            pos[1] -= 0.220625
+        h_extra_args += 'set arg2 = "' + str(pos[0]) + '"\n'
+        h_extra_args += 'set arg3 = "' + str(pos[1]) + '"\n'
+h_extra_args += 'set argc = "' + str(num_args) + '"\n'
+            
+pane_node = pane.pwd()
+child_type = pane_node.childTypeCategory().nodeTypes()
+
+if "dopnet" not in child_type:
+   hou.ui.displayMessage(
+           'Cannot create node: incompatible pane network type')
+   sys.exit(0)
+
+# First clear the node selection
+pane_node.setSelected(False, True)
+
+h_path = pane_node.path()
+h_preamble = 'set arg1 = "' + h_path + '"\n'
+h_cmd = r''' 
+if ($argc < 2 || "$arg2" == "") then
+   set arg2 = 0
+endif
+if ($argc < 3 || "$arg3" == "") then
+   set arg3 = 0
+endif
+# Automatically generated script
+# $arg1 - the path to add this node
+# $arg2 - x position of the tile
+# $arg3 - y position of the tile
+# $arg4 - input node to wire to
+# $arg5 - which input to wire to
+# $arg6 - output node to wire to
+# $arg7 - the type of this node
+# $arg8 - the node is an indirect input
+# $arg9 - index of output from $arg6
+
+\set noalias = 1
+set saved_path = `execute("oppwf")`
+opcf $arg1
+
+# Node $_obj_sphere1_Pyro_Solver (Sop/dopnet)
+set _obj_sphere1_Pyro_Solver = `run("opadd -e -n -v dopnet Pyro_Solver")`
+oplocate -x `$arg2 + 0` -y `$arg3 + 0` $_obj_sphere1_Pyro_Solver
+opparm $_obj_sphere1_Pyro_Solver  numobj ( 1 )
+chblockbegin
+chadd -t 0 0 $_obj_sphere1_Pyro_Solver timestep
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("timescale")/(ch("substep")*$FPS)' $_obj_sphere1_Pyro_Solver/timestep
+chadd -t 0 0 $_obj_sphere1_Pyro_Solver timeoffset
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '(ch("startframe")-1)/$FPS' $_obj_sphere1_Pyro_Solver/timeoffset
+chblockend
+opparm -V 17.5.332 $_obj_sphere1_Pyro_Solver objname1 ( * )
+opset -d on -r on -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_Pyro_Solver
+opexprlanguage -s hscript $_obj_sphere1_Pyro_Solver
+opcf $_obj_sphere1_Pyro_Solver
+
+# Node $_obj_sphere1_Pyro_Solver_pyrosolver1 (Dop/pyrosolver::2.0)
+set _obj_sphere1_Pyro_Solver_pyrosolver1 = `run("opadd -e -n -v pyrosolver::2.0 pyrosolver1")`
+oplocate -x `$arg2 + 0.11419706375283359` -y `$arg3 + 1.0696382412385632` $_obj_sphere1_Pyro_Solver_pyrosolver1
+opparm $_obj_sphere1_Pyro_Solver_pyrosolver1  remap_cooldown_time ( 2 ) remap_dissipation_field ( 4 ) dist_control_field_ramp ( 2 ) control_field_ramp ( 2 ) turb_control_ramp ( 2 ) conf_control_field_ramp2 ( 2 ) color_remap_dissipation ( 2 )
+opparm $_obj_sphere1_Pyro_Solver_pyrosolver1 wind_2 ( 5 5 5 5 5 5 ) remap_cooldown_time1value ( 1 ) remap_cooldown_time2pos ( 1 ) remap_cooldown_time2value ( 0.10000000149011612 ) remap_dissipation_field1value ( 1 ) remap_dissipation_field1interp ( catmull-rom ) remap_dissipation_field2pos ( 0.17888999999999999 ) remap_dissipation_field2value ( 0.875 ) remap_dissipation_field2interp ( catmull-rom ) remap_dissipation_field3pos ( 0.36799999999999999 ) remap_dissipation_field3value ( 0.27000000000000002 ) remap_dissipation_field3interp ( catmull-rom ) remap_dissipation_field4pos ( 1 ) remap_dissipation_field4interp ( catmull-rom ) dist_control_field_ramp2pos ( 1 ) dist_control_field_ramp2value ( 1 ) control_field_ramp2pos ( 1 ) control_field_ramp2value ( 1 ) turb_control_ramp2pos ( 1 ) turb_control_ramp2value ( 1 ) conf_control_field_ramp2_2pos ( 1 ) conf_control_field_ramp2_2value ( 1 ) color_remap_dissipation1value ( 1 ) color_remap_dissipation1interp ( monotonecubic ) color_remap_dissipation2pos ( 1 ) color_remap_dissipation2interp ( constant )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_Pyro_Solver_pyrosolver1
+opexprlanguage -s hscript $_obj_sphere1_Pyro_Solver_pyrosolver1
+opuserdata -n '___Version___' -v '' $_obj_sphere1_Pyro_Solver_pyrosolver1
+opuserdata -n '___toolcount___' -v '2' $_obj_sphere1_Pyro_Solver_pyrosolver1
+opuserdata -n '___toolid___' -v 'dynamics_pyrobox' $_obj_sphere1_Pyro_Solver_pyrosolver1
+
+# Node $_obj_sphere1_Pyro_Solver_smokeobject1 (Dop/smokeobject)
+set _obj_sphere1_Pyro_Solver_smokeobject1 = `run("opadd -e -n -v smokeobject smokeobject1")`
+oplocate -x `$arg2 + -1.9352941176470586` -y `$arg3 + 2.0225794236696162` $_obj_sphere1_Pyro_Solver_smokeobject1
+opparm $_obj_sphere1_Pyro_Solver_smokeobject1  multifield_densityramp ( 2 ) multifield_cdramp ( 2 ) multifield_emitramp ( 2 ) multifield_emitcdramp ( 4 )
+chblockbegin
+chadd -t 0 0 $_obj_sphere1_Pyro_Solver_smokeobject1 createframe
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch(opcreator(".")+"/startframe")' $_obj_sphere1_Pyro_Solver_smokeobject1/createframe
+chadd -t 0 0 $_obj_sphere1_Pyro_Solver_smokeobject1 size_unit_compx
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("./divsize")- ((ch("./sizex")+ch("./tx"))%ch("./divsize"))' $_obj_sphere1_Pyro_Solver_smokeobject1/size_unit_compx
+chadd -t 0 0 $_obj_sphere1_Pyro_Solver_smokeobject1 size_unit_compy
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("./divsize")- ((ch("./sizey")+ch("./ty"))%ch("./divsize"))' $_obj_sphere1_Pyro_Solver_smokeobject1/size_unit_compy
+chadd -t 0 0 $_obj_sphere1_Pyro_Solver_smokeobject1 size_unit_compz
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F 'ch("./divsize")- ((ch("./sizez")+ch("./tz"))%ch("./divsize"))' $_obj_sphere1_Pyro_Solver_smokeobject1/size_unit_compz
+chblockend
+opparm $_obj_sphere1_Pyro_Solver_smokeobject1 size ( 9.3000000000000007 9.3000000000000007 9.3000000000000007 ) multifield_densityramp2pos ( 1 ) multifield_densityramp2value ( 1 ) multifield_cdramp2pos ( 1 ) multifield_cdramp2c ( 1 1 1 ) multifield_emitramp2pos ( 1 ) multifield_emitramp2value ( 1 ) multifield_emitcdramp2pos ( 0.54000002145767212 ) multifield_emitcdramp2c ( 1 0.43200001120567322 0 ) multifield_emitcdramp2interp ( catmull-rom ) multifield_emitcdramp3pos ( 0.89300000667572021 ) multifield_emitcdramp3c ( 1 0.88330000638961792 0 ) multifield_emitcdramp3interp ( catmull-rom ) multifield_emitcdramp4pos ( 1 ) multifield_emitcdramp4c ( 1 1 1 ) multifield_emitcdramp4interp ( catmull-rom )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_Pyro_Solver_smokeobject1
+opexprlanguage -s hscript $_obj_sphere1_Pyro_Solver_smokeobject1
+opuserdata -n '___Version___' -v '' $_obj_sphere1_Pyro_Solver_smokeobject1
+opuserdata -n '___toolcount___' -v '2' $_obj_sphere1_Pyro_Solver_smokeobject1
+opuserdata -n '___toolid___' -v 'dynamics_smokebox' $_obj_sphere1_Pyro_Solver_smokeobject1
+
+# Node $_obj_sphere1_Pyro_Solver_gasresizefluiddynamic1 (Dop/gasresizefluiddynamic)
+set _obj_sphere1_Pyro_Solver_gasresizefluiddynamic1 = `run("opadd -e -n -v gasresizefluiddynamic gasresizefluiddynamic1")`
+oplocate -x `$arg2 + 0.11764705882352949` -y `$arg3 + 2.021029423625099` $_obj_sphere1_Pyro_Solver_gasresizefluiddynamic1
+opparm $_obj_sphere1_Pyro_Solver_gasresizefluiddynamic1 delay_frames ( 1 ) use_max_bounds ( off )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_Pyro_Solver_gasresizefluiddynamic1
+opexprlanguage -s hscript $_obj_sphere1_Pyro_Solver_gasresizefluiddynamic1
+opuserdata -n '___Version___' -v '' $_obj_sphere1_Pyro_Solver_gasresizefluiddynamic1
+opuserdata -n '___toolcount___' -v '1' $_obj_sphere1_Pyro_Solver_gasresizefluiddynamic1
+opuserdata -n '___toolid___' -v 'dynamics_smokebox' $_obj_sphere1_Pyro_Solver_gasresizefluiddynamic1
+
+# Node $_obj_sphere1_Pyro_Solver_volumesource1 (Dop/volumesource)
+set _obj_sphere1_Pyro_Solver_volumesource1 = `run("opadd -e -n -v volumesource volumesource1")`
+oplocate -x `$arg2 + 2.7823529411764705` -y `$arg3 + 2.021029423625099` $_obj_sphere1_Pyro_Solver_volumesource1
+opparm $_obj_sphere1_Pyro_Solver_volumesource1  numvolumes ( 3 )
+opparm $_obj_sphere1_Pyro_Solver_volumesource1 initialize ( sourcefuel ) input ( first ) numvolumes ( 3 ) volume1 ( fuel ) vfield1 ( fuel ) volume2 ( temperature ) vfield2 ( temperature ) rank3 ( vector ) volume3 ( v ) vfield3 ( vel )
+opset -d off -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_Pyro_Solver_volumesource1
+opexprlanguage -s hscript $_obj_sphere1_Pyro_Solver_volumesource1
+opuserdata -n '___Version___' -v '' $_obj_sphere1_Pyro_Solver_volumesource1
+opuserdata -n '___toolcount___' -v '3' $_obj_sphere1_Pyro_Solver_volumesource1
+opuserdata -n '___toolid___' -v 'pyro_smoketrail' $_obj_sphere1_Pyro_Solver_volumesource1
+opcf ..
+opcf $_obj_sphere1_Pyro_Solver
+
+# Node $_obj_sphere1_Pyro_Solver_output (Dop/output)
+set _obj_sphere1_Pyro_Solver_output = `run("opadd -e -n -v output output")`
+oplocate -x `$arg2 + 0` -y `$arg3 + 0` $_obj_sphere1_Pyro_Solver_output
+chblockbegin
+chadd -t 0 0 $_obj_sphere1_Pyro_Solver_output f1
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '$FSTART' $_obj_sphere1_Pyro_Solver_output/f1
+chadd -t 0 0 $_obj_sphere1_Pyro_Solver_output f2
+chkey -t 0 -v 0 -m 0 -a 0 -A 0 -T a  -F '$FEND' $_obj_sphere1_Pyro_Solver_output/f2
+chblockend
+opparm $_obj_sphere1_Pyro_Solver_output
+opset -d on -r off -h off -f off -y off -t off -l off -s off -u off -F on -c on -e on -b off $_obj_sphere1_Pyro_Solver_output
+opexprlanguage -s hscript $_obj_sphere1_Pyro_Solver_output
+opuserdata -n '___Version___' -v '' $_obj_sphere1_Pyro_Solver_output
+oporder -e output pyrosolver1 smokeobject1 gasresizefluiddynamic1 volumesource1 
+opcf ..
+opset -p on $_obj_sphere1_Pyro_Solver
+
+opcf $arg1
+opwire -n $_obj_sphere1_OUT_fuel -0 $_obj_sphere1_Pyro_Solver
+opcf $_obj_sphere1_Pyro_Solver
+opwire -n $_obj_sphere1_Pyro_Solver_pyrosolver1 -0 $_obj_sphere1_Pyro_Solver_output
+opwire -n $_obj_sphere1_Pyro_Solver_smokeobject1 -0 $_obj_sphere1_Pyro_Solver_pyrosolver1
+opwire -n $_obj_sphere1_Pyro_Solver_gasresizefluiddynamic1 -1 $_obj_sphere1_Pyro_Solver_pyrosolver1
+opwire -n $_obj_sphere1_Pyro_Solver_volumesource1 -4 $_obj_sphere1_Pyro_Solver_pyrosolver1
+opcf ..
+
+set oidx = 0
+if ($argc >= 9 && "$arg9" != "") then
+    set oidx = $arg9
+endif
+
+if ($argc >= 5 && "$arg4" != "") then
+    set output = $_obj_sphere1_Pyro_Solver
+    opwire -n $output -$arg5 $arg4
+endif
+if ($argc >= 6 && "$arg6" != "") then
+    set input = $_obj_sphere1_Pyro_Solver
+    if ($arg8) then
+        opwire -n -i $arg6 -0 $input
+    else
+        opwire -n -o $oidx $arg6 -0 $input
+    endif
+endif
+opcf $saved_path
+'''
+hou.hscript(h_preamble + h_extra_args + h_cmd)
+]]></script>
+  </tool>
+</shelfDocument>

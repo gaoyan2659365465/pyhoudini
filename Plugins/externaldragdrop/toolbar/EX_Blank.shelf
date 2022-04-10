@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shelfDocument>
+  <!-- This file contains definitions of shelves, toolbars, and tools.
+ It should not be hand-edited when it is being used by the application.
+ Note, that two definitions of the same element are not allowed in
+ a single file. -->
+
+  <toolshelf name="EX_Blank" label="EX_Blank">
+    <memberTool name="LightManager"/>
+    <memberTool name="Screenshot"/>
+    <memberTool name="AN_HDRI_link"/>
+    <memberTool name="AN HAVEN"/>
+    <memberTool name="AN_HoudiniMat"/>
+    <memberTool name="AN FileLink"/>
+    <memberTool name="init_RS"/>
+    <memberTool name="RS Mat"/>
+    <memberTool name="an_Speedtree_Loader"/>
+    <memberTool name="HDRI Browser"/>
+  </toolshelf>
+
+  <tool name="init_RS" label="init_RS" icon="ROP_Redshift_ROP">
+    <script scriptType="python"><![CDATA[selNodes = hou.selectedNodes()
+
+out = hou.node("/out")
+rop = out.createNode("Redshift_ROP")
+ipr = out.createNode("Redshift_IPR")
+setting = out.createNode("rs_render_setting")
+rop.moveToGoodPosition()
+ipr.moveToGoodPosition()
+setting.moveToGoodPosition()
+
+rop_path = rop.path()
+setting.parm("rs_rop").set(rop_path)
+
+mat = hou.node("/shop/").createNode("redshift_vopnet")
+mat.moveToGoodPosition()
+root = mat.children()[0]
+stand = mat.createNode("redshift::Material")
+root.setInput(0,stand)
+mat.layoutChildren()
+
+for n in selNodes:
+    if n.type().name()=="geo":
+        n.parm("shop_materialpath").set(mat.path())
+
+dome = hou.node("/obj/").createNode("rslightdome::2.0","rs_Dome")
+dome.moveToGoodPosition()
+
+import objecttoolutils
+kwg = kwargs
+kwg = kwg ={}
+cam = objecttoolutils.genericCameraLightTool(kwg,'cam','caml',False)
+cam.parmTuple('res').set([1920 ,1080])
+cam.moveToGoodPosition()
+]]></script>
+  </tool>
+
+  <tool name="RS Mat" label="RS Mat" icon="C:/Users/Blank/Documents/houdini18.0/Tools/Blank//icons/icon-material.tif">
+    <script scriptType="python"><![CDATA[selNodes = hou.selectedNodes() #éæ©çèç¹
+
+for i in selNodes: #å¾ªç¯éä¸­çèç¹
+    if i.type().name()=="geo": #å¤æ­æ¯å¦æ¯geoèç¹
+        if len(i.evalParm("shop_materialpath"))==0: #æµéæ°ç»é¿åº¦æ¯å¦ä¸º0
+            mat = hou.node("/shop/").createNode("redshift_vopnet") #åå»ºshopéçrsæè´¨
+            mat.moveToGoodPosition() #ç§»å¨èç¹ä½ç½®
+            root = mat.children()[0] #éæ©rsæè´¨çå­å±çº§èç¹
+            stand = mat.createNode("redshift::Material") #åå»ºmaterialèç¹
+            root.setInput(0,stand) #è¿æ¥å°standèç¹ç0å·ç«¯å£
+            mat.layoutChildren() #éæ°æå¸èç¹
+            i.parm("shop_materialpath").set(mat.path()) #ç»æ¯ä¸ªæ°ç»é¿åº¦ä¸º0çä¸æè´¨
+
+            
+for n in selNodes: #å¾ªç¯éä¸­çèç¹
+    if n.type().name()=="material": #å¤æ­æ¯å¦æ¯materialèç¹
+        num = selNodes[0].evalParm("num_materials") #æµéåºéä¸­çmaterialæå¤§æ°é
+        for u in range(num): #å¾ªç¯materialçæ°é
+            if len(n.evalParm("shop_materialpath"+str(u+1)))==0:#æµéshop_materialpathçæ°ç»é¿åº¦æ¯å¦ä¸º0
+                mat = hou.node("/shop/").createNode("redshift_vopnet") #åå»ºshopéçrsæè´¨
+                mat.moveToGoodPosition() #ç§»å¨èç¹ä½ç½®
+                root = mat.children()[0] #éæ©rsæè´¨çå­å±çº§èç¹
+                stand = mat.createNode("redshift::Material") #åå»ºmaterialèç¹
+                root.setInput(0,stand) #è¿æ¥å°standèç¹ç0å·ç«¯å£
+                mat.layoutChildren() #éæ°æå¸èç¹
+                n.parm("shop_materialpath"+str(u+1)).set(mat.path()) #æ¯ä¸ªshop_materialpath
+                
+]]></script>
+  </tool>
+
+  <tool name="an_Speedtree_Loader0" label="an_Speedtree_Loader1" icon="opdef:/Sop/an_Speedtree_Loader?IconImage">
+    <toolMenuContext name="network">
+      <contextOpType>Sop/an_Speedtree_Loader</contextOpType>
+    </toolMenuContext>
+    <script scriptType="python"><![CDATA[]]></script>
+  </tool>
+
+  <tool name="AN FileLink" label="AN FileLink" icon="SOP_file">
+    <script scriptType="python"><![CDATA[from AN_FileLink import FL_server
+from AN_FileLink import FL_ui
+from AN_FileLink import FL_utils
+from AN_FileLink import globalvar
+try:
+    reload(FL_ui)
+except NameError:
+    from importlib import reload
+    reload(FL_ui)
+FL_ui.LoadWindow()]]></script>
+  </tool>
+
+  <tool name="AN_HoudiniMat" label="AN_HoudiniMat" icon="D:/my_projects/PCG_Plugins/Houdini/Third party plug-ins/Myx/scripts/python/Material_LINK/src/LINK.tif">
+    <script scriptType="python"><![CDATA[from Material_Library import window
+try:
+    reload(window)
+except NameError:
+    from importlib import reload
+    reload(window)
+win = window.Window()
+hou.session.material_link = win 
+win.show()
+
+
+this = hou.shelves.runningTool()
+if ".tif" not in this.icon():
+    import Material_Library as ml
+    f = ml.__file__
+    f = f.split("__init__")[0]
+    f = f+"src/MatLIB.tif"
+    f = f.replace("\\","/")
+    this.setIcon(f)
+    this.setLabel("Material_Library")
+    this.setName("Material_Library")]]></script>
+  </tool>
+
+  <tool name="Screenshot" label="Screenshot" icon="hicon:/SVGIcons.index?BUTTONS_capture.svg">
+    <script scriptType="python"><![CDATA[import hou
+
+# get view port
+cur_desktop = hou.ui.curDesktop()
+scene = cur_desktop.paneTabOfType(hou.paneTabType.SceneViewer)
+
+#save HIP
+a = hou.hipFile.name()
+k = a.split("/")
+hip = ''
+if len(k)==1:
+    hip = hou.ui.selectFile(title='Save',file_type=hou.fileType.Hip)
+    if hip!='':
+        hou.hipFile.save(file_name = hip)
+else:
+    hou.hipFile.save()
+    hip = '1'
+
+if hip!='':
+    #set name and path
+    f = hou.frame()
+    fn = hou.hipFile.basename().split(".")
+    del fn[-1]
+    filename = ".".join(fn)
+    
+    path=hou.hipFile.path().split("/")
+    del path[-1]
+    filepath = "/".join(path)+"/"+filename+".jpg"
+    
+    #getFlipbook
+    flip_options = scene.flipbookSettings().stash()
+    
+    #SetFlipbook
+    flip_options.frameRange((f, f))
+    flip_options.outputToMPlay(0)
+    flip_options.useResolution(1)
+    flip_options.resolution((500,500))
+    flip_options.output(filepath)
+    
+    #RunFlipbook
+    scene.flipbook(scene.curViewport(), flip_options)
+    
+    print ("Succeed!")
+]]></script>
+  </tool>
+
+  <tool name="LightManager" label="LightManager" icon="hicon:/SVGIcons.index?BUTTONS_add_light.svg">
+    <script scriptType="python"><![CDATA[from AN_LightManager import LightManager
+try:
+    reload(LightManager)
+except NameError:
+    from importlib import reload
+    reload(LightManager)
+    
+LightWindow = LightManager.LightManagerWindow()
+hou.session.lightManager = LightWindow 
+LightWindow.show()]]></script>
+  </tool>
+
+  <tool name="AN_HDRI_link" label="AN_HDRI_link" icon="D:/my_projects/PCG_Plugins/Houdini/Third party plug-ins/Myx/scripts/python/HDRI_LINK/src/LINK.tif">
+    <script scriptType="python"><![CDATA[from HDRI_LINK import window
+try:
+    reload(window)
+except NameError:
+    from importlib import reload
+    reload(window)
+win = window.Window()
+hou.session.hdri_link = win 
+win.show()]]></script>
+  </tool>
+
+  <tool name="AN HAVEN" label="AN HAVEN" icon="opdef:/Object/AN_HAVEN?IconImage">
+    <script scriptType="python"><![CDATA[#hou.objNodeTypeCategory().nodeType('AN_HAVEN').hdaModule().LoadWindow()
+
+
+import AN_HAVEN
+try:
+    reload(AN_HAVEN)
+except NameError:
+    from importlib import reload
+    reload(AN_HAVEN)
+
+AN_HAVEN.LoadWindow()
+
+this = hou.shelves.runningTool()
+if this.icon().count("opdef:/Object/AN_HAVEN?IconImage")==0:
+        this.setIcon("opdef:/Object/AN_HAVEN?IconImage")
+        this.setLabel("AN HAVEN")
+        this.setName("AN HAVEN")]]></script>
+  </tool>
+</shelfDocument>

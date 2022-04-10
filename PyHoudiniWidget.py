@@ -5,18 +5,8 @@ from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 
-from widget.pyHoudini import HoudiniHelp
 import PyDracula.main as main
-import widget.MiniWidget as mini
-import widget.Translation as tran
-from widget.Sign.Sign import HtmlView,isLogin
-from widget.store.HoudiniStore import HoudiniStoreScrollArea
-try:
-    from widget.CopyHoudiniNodeData import getNodeData
-except:pass
-from widget.ContentBrowser.QContentBrowser import ContentBrowserScrollArea
-
-from blueprintdemo.examples import *
+from Plugins import *
 
 class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
@@ -25,7 +15,7 @@ class PyHoudiniWidget(main.MainWindow):
         self.houdinihelp=HoudiniHelp(self)
         self.ui.stackedWidget.addWidget(self.houdinihelp)
         
-        self.miniw = mini.MiniWidget(None,self)
+        self.miniw = MiniWidget(None,self)
         self.miniw.setMaxWidget(self)
         self.isminiw = False#是否迷你模式
         # MINI
@@ -98,7 +88,7 @@ class PyHoudiniWidget(main.MainWindow):
             try:
                 self.ui.stackedWidget.setCurrentWidget(self.translation)
             except:
-                self.translation = tran.TranslationWidget()
+                self.translation = TranslationWidget()
                 self.ui.stackedWidget.addWidget(self.translation)
                 self.ui.stackedWidget.setCurrentWidget(self.translation)
             main.UIFunctions.resetStyle(self, btnName)

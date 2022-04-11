@@ -4,7 +4,7 @@ import os
 import re
 import time
 import json
-from hutil.Qt import QtWidgets, QtUiTools
+from hutil.Qt import QtWidgets, QtUiTools, QtCore
 
 
 
@@ -455,7 +455,8 @@ class ProjBrowser(QtWidgets.QWidget):
 
     def confignewproj(self):
         #Initial Message Box
-        msgbox = QtWidgets.QMessageBox(hou.qt.mainWindow())
+        msgbox = QtWidgets.QMessageBox()#hou.qt.mainWindow()
+        msgbox.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)    #置顶
         msgbox.setWindowTitle('Config Project')
         msgbox.setText("Config the Project")
         msgbox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)

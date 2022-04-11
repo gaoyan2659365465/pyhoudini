@@ -125,15 +125,15 @@ class PyHoudiniWidget(main.MainWindow):
             main.UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
         
-        # if btnName == "btn_weslib":
-        #     try:
-        #         self.ui.stackedWidget.setCurrentWidget(self.proj)
-        #     except:
-        #         self.proj = ProjBrowser()#项目管理
-        #         self.ui.stackedWidget.addWidget(self.proj)
-        #         self.ui.stackedWidget.setCurrentWidget(self.proj)
-        #     main.UIFunctions.resetStyle(self, btnName)
-        #     btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
+        if btnName == "btn_weslib":
+            try:
+                self.ui.stackedWidget.setCurrentWidget(self.proj)
+            except:
+                self.proj = ProjBrowser()#项目管理
+                self.ui.stackedWidget.addWidget(self.proj)
+                self.ui.stackedWidget.setCurrentWidget(self.proj)
+            main.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(main.UIFunctions.selectMenu(btn.styleSheet()))
                 
                 
 

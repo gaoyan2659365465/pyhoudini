@@ -59,15 +59,17 @@ QMenu::item:pressed {
     background:#dea309;
     border:1px solid #dea309;/*摁下状态*/}
 
-
-QCheckBox:indicator{
+/*QCheckBox*/
+#W_CheckBox:indicator{
     width: 10px;
     height: 10px;
     background:#2e302e;
     border:2px solid #dddddd;
     border-radius:3px;}
-QCheckBox:indicator:checked {
-    image: url(blueprintdemo/examples/Node/images/checkbox_checked.png);}
+/*
+#W_CheckBox:indicator:checked {
+    image: url(Plugins/blueprintdemo/examples/Node/images/checkbox_checked.png);}
+*/
 
 QLineEdit{  
     border:1px solid #a8a9a8;/*边框*/

@@ -33,4 +33,4 @@ from MiniMode import *
 from blueprintdemo import *
 
 #版本管理页面
-#from WesLib import *
+from WesLib import *

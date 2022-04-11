@@ -1,6 +1,8 @@
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
+
+from blueprintdemo.examples.Node.W_DockWidget import IMAGEPATH
 from .W_SocketBase import *
 from .BP_Json import BP_Json
 
@@ -9,8 +11,12 @@ class W_CheckBox(QCheckBox):
     def __init__(self,parent:QWidget=None):
         super(W_CheckBox,self).__init__(parent)
         self.setText("")
+        self.setObjectName("W_CheckBox")
         self.setPalette(QPalette(QColor("#00000000")))
         self.setAutoFillBackground(True) #自动填充背景
+        #设置QCheckBox图标
+        self.setStyleSheet("#W_CheckBox:indicator:checked {\
+    image: url(" + IMAGEPATH.replace("\\","/") + "checkbox_checked.png);}")
     
 class w_input(QLineEdit):
     def __init__(self,parent:QWidget=None):

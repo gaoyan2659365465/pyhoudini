@@ -19,7 +19,7 @@ def getNodeData():
             print(n.name())
             list1[n.name()] = list(list2)
     
-    path = FilePath + 'UE5/'
+    path = __file__[:-len(__file__.split("\\")[-1])]
     path_json = path + "HoudiniNodeData.json"
     if not os.path.isdir(path):
         os.makedirs(path)

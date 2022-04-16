@@ -137,7 +137,7 @@ class HoudiniStoreAssetShoppingTrolleyWidget(QWidget):
         self.buttonB.setFixedSize(30,24)
         self.buttonB.setStyleSheet(HoudiniStoreAssetShoppingTrolleyWidgetButton)
         icon2 = QIcon()
-        icon2.addFile(FilePath + "image/xin.png", QSize(40,40), QIcon.Normal, QIcon.Off)
+        icon2.addFile(__file__[:-22] + "NodeBook/image/xin.png", QSize(40,40), QIcon.Normal, QIcon.Off)
         self.buttonB.setIcon(icon2)
         self.h_layout.addWidget(self.buttonB)
         
@@ -266,6 +266,8 @@ class HoudiniStoreAssetsBlockWidget(QWidget):
         self.setMinimumWidth(900)
         self.setMaximumWidth(1300)
         
+        self.setObjectName("HoudiniStoreAssetsBlockWidget")
+        
         self.v_layout = QVBoxLayout()
         self.v_layout.setContentsMargins(30,32,30,0)
         self.v_layout.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
@@ -284,37 +286,67 @@ class HoudiniStoreAssetsBlockWidget(QWidget):
         self.name_layout.addWidget(self.nametitleB)
         
         self.g_layout = FlowLayout()
+        self.g_layout.resized.connect(self.layoutResize)
         self.v_layout.addLayout(self.g_layout)
         
     def addAssetWidget(self,widget:HoudiniStoreAssetWidget):
         """添加商品展示控件"""
         self.g_layout.addWidget(widget)
-
-    def demo(self):
-        """测试"""
-        for i in range(5):
-            saw = HoudiniStoreAssetWidget()
-            self.addAssetWidget(saw)
     
     def addAssetForData(self,data):
         """根据数据添加商品"""
         if not data:
-            self.demo()
             return#没服务器就获取不到数据
         for i in data:
             saw = HoudiniStoreAssetWidget()
             self.addAssetWidget(saw)
             saw.initWidget(i)
+            saw.show()
     
-    def resizeEvent(self, e):
+    def layoutResize(self):
+        """流布局尺寸改变槽函数"""
+        #print(self.g_layout.flowheight)
         h = self.name_layout.sizeHint().height()
-        self.setMinimumHeight(self.g_layout.flowheight+h+60)
-        self.resize(self.width(),self.g_layout.flowheight+h+60)
+        self.setFixedHeight(self.g_layout.flowheight+h+300)
+        if self.g_layout.flowheight+h+300 > self.parent().parent().parent().height():
+            self.parent().setFixedHeight(self.g_layout.flowheight+h+300)
+        else:
+            self.parent().setFixedHeight(self.parent().parent().parent().height())
+        # print("self.objectName()   "+self.objectName())
+        # print(self.height())
+        # print("self.parent().objectName()   "+self.parent().objectName())
+        # print(self.parent().height())
+        # print("self.parent().parent().objectName()   "+self.parent().parent().objectName())
+        # print(self.parent().parent().height())
+        # print("self.parent().parent().parent().objectName()   "+self.parent().parent().parent().objectName())
+        # print(self.parent().parent().parent().height())
+        # if self.g_layout.flowheight<self.parent().parent().parent().height():
+        #     self.setFixedHeight(self.parent().parent().parent().height()+self.g_layout.flowheight)
+        # else:
+        #     self.setFixedHeight(self.g_layout.flowheight)
+
+    # def resizeEvent(self, e):
+    #     # h = self.name_layout.sizeHint().height()
+    #     # self.setMinimumHeight(self.g_layout.flowheight+h+60)
+    #     # self.resize(self.width(),self.g_layout.flowheight+h+60)
+    #     super().resizeEvent(e)
+
+class QThreadAddAssetForData(QThread):
+    """多线程添加商品"""
+    def __init__(self,parent=None):
+        super().__init__(parent)
+        self.HoudiniStoreScrollArea = None
+        
+    def run(self):
+        data = getStoreAssetData()
+        self.HoudiniStoreScrollArea.add_signal.emit(data)
 
 class HoudiniStoreScrollArea(QScrollArea):
     """Houdini商店滚动区域"""
+    add_signal=Signal(object)#添加控件信号
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setObjectName("HoudiniStore")
         self.setFrameShape(QFrame.NoFrame)#无边框
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)#隐藏横向滚动条
         self.nodeswidget = QWidget(self)
@@ -335,13 +367,17 @@ class HoudiniStoreScrollArea(QScrollArea):
         self.assetswidgetA.show()
         
         self.nodeswidget.setStyleSheet(HoudiniStoreScrollAreaStyle)
-        self.addAssetForData()#网络加载资源
+        
+        self.add_signal.connect(self.assetswidgetA.addAssetForData)
+        
+        self.thread_1 = QThreadAddAssetForData()#网络加载资源
+        self.thread_1.HoudiniStoreScrollArea = self
+        self.thread_1.start()  # 开始线程
 
     def resizeEvent(self, e):
-        self.nodeswidget.resize(self.width(),self.nodeswidget.sizeHint().height())
-    
-    def addAssetForData(self):
-        """根据数据添加商品"""
-        data = getStoreAssetData()
-        self.assetswidgetA.addAssetForData(data)
+        #self.nodeswidget.resize(self.width(),self.nodeswidget.sizeHint().height())
+        if self.nodeswidget.height()<self.height():
+            self.nodeswidget.resize(self.width(),self.height())
+        else:
+            self.nodeswidget.resize(self.width(),self.nodeswidget.height())
     

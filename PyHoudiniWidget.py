@@ -12,7 +12,7 @@ class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
         main.MainWindow.__init__(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
-        #self.setWindowFlags(Qt.FramelessWindowHint)    #置顶
+        #self.setWindowFlags(Qt.FramelessWindowHint)    #无边框
         self.houdinihelp=HoudiniHelp(self)
         self.ui.stackedWidget.addWidget(self.houdinihelp)
         

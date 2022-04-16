@@ -8,6 +8,7 @@ from PySide2.QtGui import *
 from Plugins.Tools import *
 #导入houdini笔记本类
 from ContentBrowser.QHoudiniNoteBook import QHoudiniNoteBook
+import re
 
 ContentBrowserFilePath = __file__[:-18] + "data/ContentBrowser"
 
@@ -102,6 +103,7 @@ class QHoudiniNodeItem(QBrowserItemBase):
         self.label_text.show()
         self.lineedit.close()
         
+        newname = re.sub('[\/:*?"<>|]','-',newname)#去掉非法字符
         os.rename(self.folderPath,self.folderPath[:-(len(name)+5)]+newname+".json")#修改文件夹名
         self.folderPath = self.folderPath[:-(len(name)+5)]+newname+".json"
     
@@ -183,12 +185,7 @@ class QFolderItem(QBrowserItemBase):
         self.label_text.show()
         self.lineedit.close()
         
-        #print("name:" + name)
-        #print("newname:" + newname)
-        #print("folderPath:" + self.folderPath)
-        #print("folderPath[:-len(name)]:" + self.folderPath[:-len(name)])
-        #print(-len(name))
-        #print(self.folderPath[:-len(name)]+newname)
+        newname = re.sub('[\/:*?"<>|]','-',newname)#去掉非法字符
         os.rename(self.folderPath,self.folderPath[:-len(name)]+newname)#修改文件夹名
         self.folderPath = self.folderPath[:-len(name)]+newname
         
@@ -254,6 +251,7 @@ class QHoudiniTextItem(QBrowserItemBase):
         self.label_text.show()
         self.lineedit.close()
         
+        newname = re.sub('[\/:*?"<>|]','-',newname)#去掉非法字符
         os.rename(self.folderPath,self.folderPath[:-(len(name)+5)]+newname+".json")#修改文件夹名
         self.folderPath = self.folderPath[:-(len(name)+5)]+newname+".json"
         

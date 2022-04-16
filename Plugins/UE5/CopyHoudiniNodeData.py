@@ -16,7 +16,7 @@ def getNodeData():
             list2 = []
             for i in points:
                 list2.append(i.attribValue(n))
-            print(n.name())
+            #print(n.name())
             list1[n.name()] = list(list2)
     
     path = __file__[:-len(__file__.split("\\")[-1])]

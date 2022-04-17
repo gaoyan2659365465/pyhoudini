@@ -33,7 +33,8 @@ class PyHoudiniWidget(main.MainWindow):
             #点击按钮，将选中的节点输出到json文件，用来给UE5生成场景
             self.ui.ue5Btn.clicked.connect(getNodeData)
         except:pass
-        
+        #self.b = QComboBox()
+        #self.b.lineEdit()
     
     def htmlShow(self):
         """创建网页登录"""

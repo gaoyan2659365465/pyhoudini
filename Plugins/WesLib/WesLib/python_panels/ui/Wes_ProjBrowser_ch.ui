@@ -54,6 +54,9 @@
         <font>
          <family>Microsoft YaHei UI</family>
          <pointsize>10</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
@@ -91,6 +94,7 @@ background-color:rgb(127, 104, 130);
          <family>Microsoft YaHei UI</family>
          <pointsize>10</pointsize>
          <weight>50</weight>
+         <italic>false</italic>
          <bold>false</bold>
         </font>
        </property>
@@ -128,6 +132,9 @@ background-color:rgb(127, 104, 130);
         <font>
          <family>Microsoft YaHei UI</family>
          <pointsize>10</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
@@ -164,6 +171,9 @@ background-color:rgb(127, 104, 130);
         <font>
          <family>Microsoft YaHei UI</family>
          <pointsize>10</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
@@ -188,7 +198,10 @@ background-color:rgb(127, 104, 130);
     <widget class="QLabel" name="project_path">
      <property name="font">
       <font>
+       <family>Microsoft JhengHei UI</family>
        <pointsize>9</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="text">
@@ -215,6 +228,7 @@ background-color:rgb(127, 104, 130);
        <family>Segoe UI</family>
        <pointsize>19</pointsize>
        <weight>50</weight>
+       <italic>false</italic>
        <bold>false</bold>
        <kerning>true</kerning>
       </font>
@@ -246,7 +260,10 @@ font: 19pt &quot;Segoe UI&quot;;</string>
     <widget class="QListWidget" name="hiplist">
      <property name="font">
       <font>
+       <family>Microsoft YaHei UI</family>
        <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="styleSheet">
@@ -324,7 +341,7 @@ background-color: rgb(86, 77, 127);
       <widget class="QComboBox" name="scene">
        <property name="minimumSize">
         <size>
-         <width>50</width>
+         <width>100</width>
          <height>30</height>
         </size>
        </property>
@@ -338,12 +355,15 @@ background-color: rgb(86, 77, 127);
         <font>
          <family>Microsoft YaHei UI</family>
          <pointsize>11</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">QComboBox {
 font: 11pt &quot;Microsoft YaHei UI&quot;;
-background-color: rgb(26, 26, 26);
+background-color: rgb(33, 37, 43);
 }</string>
        </property>
        <property name="editable">
@@ -389,7 +409,7 @@ background-color: rgb(26, 26, 26);
       <widget class="QComboBox" name="shot">
        <property name="minimumSize">
         <size>
-         <width>70</width>
+         <width>100</width>
          <height>30</height>
         </size>
        </property>
@@ -403,12 +423,15 @@ background-color: rgb(26, 26, 26);
         <font>
          <family>Microsoft YaHei UI</family>
          <pointsize>11</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">QComboBox {
 font: 11pt &quot;Microsoft YaHei UI&quot;;
-background-color: rgb(26, 26, 26);
+background-color: rgb(33, 37, 43);
 }</string>
        </property>
        <property name="editable">
@@ -474,10 +497,13 @@ background-color: rgb(26, 26, 26);
         <font>
          <family>Microsoft YaHei UI</family>
          <pointsize>11</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(26, 26, 26);
+        <string notr="true">background-color: rgb(33, 37, 43);
 font: 11pt &quot;Microsoft YaHei UI&quot;;
 border-radius: 5px;
 border-style: none;
@@ -550,6 +576,7 @@ border-style: none;
          <family>Microsoft YaHei UI</family>
          <pointsize>9</pointsize>
          <weight>50</weight>
+         <italic>false</italic>
          <bold>false</bold>
         </font>
        </property>
@@ -594,6 +621,7 @@ background-color:rgb(109, 109, 150);
          <family>Microsoft YaHei UI</family>
          <pointsize>9</pointsize>
          <weight>50</weight>
+         <italic>false</italic>
          <bold>false</bold>
         </font>
        </property>
@@ -632,6 +660,7 @@ background-color:rgb(109, 109, 150);
          <family>Microsoft YaHei UI</family>
          <pointsize>9</pointsize>
          <weight>50</weight>
+         <italic>false</italic>
          <bold>false</bold>
         </font>
        </property>
@@ -670,6 +699,7 @@ background-color:rgb(109, 109, 150);
          <family>Microsoft YaHei UI</family>
          <pointsize>9</pointsize>
          <weight>50</weight>
+         <italic>false</italic>
          <bold>false</bold>
         </font>
        </property>
@@ -752,13 +782,16 @@ background-color:rgb(134, 134, 134);
         <font>
          <family>Microsoft YaHei UI</family>
          <pointsize>11</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">QComboBox {
 border-radius: 6px;
 font: 11pt &quot;Microsoft YaHei UI&quot;;
-background-color: rgb(26, 26, 26);
+background-color: rgb(33, 37, 43);
 }
 
 QComboBox::drop-down {
@@ -796,12 +829,15 @@ QComboBox::drop-down {
         <font>
          <family>Microsoft YaHei UI</family>
          <pointsize>11</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
         <string notr="true">border-radius: 6px;
 font: 11pt &quot;Microsoft YaHei UI&quot;;
-background-color: rgb(26, 26, 26);</string>
+background-color: rgb(33, 37, 43);</string>
        </property>
       </widget>
      </item>
@@ -823,6 +859,9 @@ background-color: rgb(26, 26, 26);</string>
         <font>
          <family>Microsoft YaHei UI</family>
          <pointsize>10</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">

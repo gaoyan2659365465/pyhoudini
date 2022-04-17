@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainKWVlAo.ui'
+## Form generated from reading UI file 'mainDuOXaj.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -1185,7 +1185,7 @@ class Ui_MainWindow(object):
         self.comboBox.setFont(font)
         self.comboBox.setAutoFillBackground(False)
         self.comboBox.setStyleSheet(u"background-color: rgb(33, 37, 43);")
-        self.comboBox.setEditable(False)
+        self.comboBox.setEditable(True)
         self.comboBox.setIconSize(QSize(16, 16))
         self.comboBox.setFrame(True)
 

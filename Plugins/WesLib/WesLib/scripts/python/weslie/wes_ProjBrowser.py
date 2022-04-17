@@ -92,6 +92,13 @@ class ProjBrowser(QtWidgets.QWidget):
         layout.addWidget(self.ui)  
         self.setLayout(layout)
         
+        self.sceneText = self.scene.lineEdit()
+        self.sceneText.setStyleSheet("border: none;\
+            background-color: rgb(33, 37, 43);")
+        
+        self.shotText = self.shot.lineEdit()
+        self.shotText.setStyleSheet("border: none;\
+            background-color: rgb(33, 37, 43);")
 
     def getshotinfo(self):
         self.jobenv = hou.getenv("JOB")+"/"

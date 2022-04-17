@@ -13,8 +13,8 @@ class SetingWidget(QWidget):
         super().__init__()
         self.setWindowFlags(Qt.WindowStaysOnTopHint)    #置顶
         
-        self.label3 = QLabel("图标目录:")
-        self.line_edit3 = QLineEdit()
+        #self.label3 = QLabel("图标目录:")
+        #self.line_edit3 = QLineEdit()
         
         self.label2 = QLabel("展示类型:")
         self.combo_box = QComboBox()
@@ -25,9 +25,9 @@ class SetingWidget(QWidget):
                   "VEXNetworks","VOPNodes"]
         self.combo_box.addItems(list01)
         
-        self.label4 = QLabel("默认尺寸:")
-        self.line_edit4_1 = QLineEdit()
-        self.line_edit4_2 = QLineEdit()
+        #self.label4 = QLabel("默认尺寸:")
+        #self.line_edit4_1 = QLineEdit()
+        #self.line_edit4_2 = QLineEdit()
         
         self.label5 = QLabel("图标尺寸:")
         self.line_edit5 = QLineEdit()
@@ -45,18 +45,18 @@ class SetingWidget(QWidget):
         
         self.v_layout = QVBoxLayout()
         
-        self.h_layout3 = QHBoxLayout()
-        self.h_layout3.addWidget(self.label3)
-        self.h_layout3.addWidget(self.line_edit3)
+        #self.h_layout3 = QHBoxLayout()
+        #self.h_layout3.addWidget(self.label3)
+        #self.h_layout3.addWidget(self.line_edit3)
         
         self.h_layout2 = QHBoxLayout()
         self.h_layout2.addWidget(self.label2)
         self.h_layout2.addWidget(self.combo_box)
         
-        self.h_layout4 = QHBoxLayout()
-        self.h_layout4.addWidget(self.label4)
-        self.h_layout4.addWidget(self.line_edit4_1)
-        self.h_layout4.addWidget(self.line_edit4_2)
+        #self.h_layout4 = QHBoxLayout()
+        #self.h_layout4.addWidget(self.label4)
+        #self.h_layout4.addWidget(self.line_edit4_1)
+        #self.h_layout4.addWidget(self.line_edit4_2)
         
         self.h_layout5 = QHBoxLayout()
         self.h_layout5.addWidget(self.label5)
@@ -70,9 +70,9 @@ class SetingWidget(QWidget):
         self.h_layout7.addWidget(self.label7)
         self.h_layout7.addWidget(self.line_edit7)
         
-        self.v_layout.addLayout(self.h_layout3)
+        #self.v_layout.addLayout(self.h_layout3)
         self.v_layout.addLayout(self.h_layout2)
-        self.v_layout.addLayout(self.h_layout4)
+        #self.v_layout.addLayout(self.h_layout4)
         self.v_layout.addLayout(self.h_layout5)
         self.v_layout.addLayout(self.h_layout6)
         self.v_layout.addLayout(self.h_layout7)
@@ -89,18 +89,18 @@ class SetingWidget(QWidget):
         # 读取.ini文件
         conf.read(self.path+"config.ini")
         # get()函数读取section里的参数值
-        SCRPATH  = conf.get("config","SCRPATH")
-        self.line_edit3.setText(SCRPATH)
+        #SCRPATH  = conf.get("config","SCRPATH")
+        #self.line_edit3.setText(SCRPATH)
         SORT  = conf.get("config","SORT")
         
         for i in range(self.combo_box.count()):
             if self.combo_box.itemText(i) == SORT:
                 self.combo_box.setCurrentIndex(i)   # 设置默认值
         
-        default_size = conf.get("config","DefaultSize")
-        default_size = default_size.split(',')#字符串转列表
-        self.line_edit4_1.setText(default_size[0])
-        self.line_edit4_2.setText(default_size[1])
+        #default_size = conf.get("config","DefaultSize")
+        #default_size = default_size.split(',')#字符串转列表
+        #self.line_edit4_1.setText(default_size[0])
+        #self.line_edit4_2.setText(default_size[1])
         
         iconsize = conf.get("config","iconsize")
         self.line_edit5.setText(iconsize)
@@ -116,13 +116,13 @@ class SetingWidget(QWidget):
         conf = configparser.ConfigParser()
         conf.read(self.path+"config.ini")
         
-        conf.set('config', 'SCRPATH', self.line_edit3.text())
+        #conf.set('config', 'SCRPATH', self.line_edit3.text())
         
         conf.set('config', 'SORT', self.combo_box.currentText())
         
-        size_1 = self.line_edit4_1.text()
-        size_2 = self.line_edit4_2.text()
-        conf.set('config', 'DefaultSize', size_1+','+size_2)
+        #size_1 = self.line_edit4_1.text()
+        #size_2 = self.line_edit4_2.text()
+        #conf.set('config', 'DefaultSize', size_1+','+size_2)
         
         conf.set('config', 'iconsize', self.line_edit5.text())
         

@@ -37,6 +37,7 @@ class QHoudiniNoteBook(QWidget):
         self.setLayout(self.v_layout)
         
         self.textedit = QTextEdit()
+        self.textedit.setStyleSheet(u"font: 18pt \"Microsoft YaHei UI\";")
         self.textedit.setFrameShape(QFrame.NoFrame)#无边框
         self.v_layout.addWidget(self.textedit)
         

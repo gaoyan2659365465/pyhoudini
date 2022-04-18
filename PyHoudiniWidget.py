@@ -12,7 +12,6 @@ class PyHoudiniWidget(main.MainWindow):
     def __init__(self):
         main.MainWindow.__init__(self)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)    #置顶
-        #self.setWindowFlags(Qt.FramelessWindowHint)    #无边框
         self.houdinihelp=HoudiniHelp(self)
         self.ui.stackedWidget.addWidget(self.houdinihelp)
         
@@ -33,8 +32,6 @@ class PyHoudiniWidget(main.MainWindow):
             #点击按钮，将选中的节点输出到json文件，用来给UE5生成场景
             self.ui.ue5Btn.clicked.connect(getNodeData)
         except:pass
-        #self.b = QComboBox()
-        #self.b.lineEdit()
     
     def htmlShow(self):
         """创建网页登录"""

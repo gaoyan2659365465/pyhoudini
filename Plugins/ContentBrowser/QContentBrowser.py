@@ -8,6 +8,7 @@ from PySide2.QtGui import *
 from Plugins.Tools import *
 #导入houdini笔记本类
 from ContentBrowser.QHoudiniNoteBook import QHoudiniNoteBook
+from ContentBrowser.CaptureImage import CaptureScreen
 import re
 
 ContentBrowserFilePath = __file__[:-18] + "data/ContentBrowser"
@@ -94,6 +95,10 @@ class QHoudiniNodeItem(QBrowserItemBase):
         """设置节点名字"""
         self.setLabelText(name)
         self.setFilePath(path)
+        #判断文件是否存在
+        if os.path.exists(self.folderPath[:-5]+'.jpg'):
+            self.lable_image.setPixmap(QPixmap(self.folderPath[:-5]+'.jpg')\
+                .scaled(self.lable_image.width(),self.lable_image.height(),Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
     
     def focusOutEvent(self, arg__1):
         """失去焦点"""
@@ -107,6 +112,12 @@ class QHoudiniNodeItem(QBrowserItemBase):
         os.rename(self.folderPath,self.folderPath[:-(len(name)+5)]+newname+".json")#修改文件夹名
         self.folderPath = self.folderPath[:-(len(name)+5)]+newname+".json"
     
+    def setImagePath(self,path,imagescale=2.5,scale_w=264,scale_h=177):
+        """设置图片路径"""
+        self.lable_image.setPixmap(QPixmap(path)\
+            .scaled(scale_w/imagescale,scale_h/imagescale,Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
+        self.lable_image.setFixedSize(scale_w/imagescale,scale_h/imagescale)
+    
     def RightMenuEvent(self):
         """右键重命名点击事件"""
         self.lineedit = QLineEdit(self)
@@ -115,7 +126,21 @@ class QHoudiniNodeItem(QBrowserItemBase):
         self.lineedit.setFocus()#焦点
         self.v_layout.addWidget(self.lineedit)
         self.label_text.hide()
-        
+    
+    def RightMenuCEvent(self):
+        """右键缩略图点击事件"""
+        self.windows = CaptureScreen()
+        self.windows.saveimage.connect(self.setImage)
+        self.windows.show()
+    
+    def setImage(self,image):
+        """设置截图"""
+        image.save(self.folderPath[:-5]+'.jpg', quality=95)   # 保存图片到当前文件夹中
+        self.lable_image.setPixmap(image.scaled(\
+            self.lable_image.width(),\
+            self.lable_image.height(),\
+            Qt.IgnoreAspectRatio,Qt.SmoothTransformation))
+    
     def createRightmenu(self):
         """创建右键菜单函数"""
         self.groupBox_menu = QMenu(self)
@@ -128,8 +153,15 @@ class QHoudiniNodeItem(QBrowserItemBase):
         def RightMenuBEvent():
             """右键删除点击事件"""
             os.remove(self.folderPath)
+            #如果存在缩略图就删除
+            if os.path.exists(self.folderPath[:-5]+'.jpg'):
+                os.remove(self.folderPath[:-5]+'.jpg')
             self.parent().initWidgets()#刷新
         self.actionB.triggered.connect(RightMenuBEvent)
+        
+        self.actionC = QAction(u'缩略图',self)#创建菜单选项对象
+        self.groupBox_menu.addAction(self.actionC)
+        self.actionC.triggered.connect(self.RightMenuCEvent)
         #声明当鼠标在groupBox控件上右击时，在鼠标位置显示右键菜单   ,exec_,popup两个都可以，
         self.groupBox_menu.popup(QCursor.pos())
     

@@ -3,13 +3,15 @@ import random
 import json
 import os
 
-def spawnActor(path,location,scale):
+def spawnActor(path,location,scale,rotation):
     actor_class = unreal.EditorAssetLibrary.load_asset(path)
     actor_location = unreal.Vector(location[0]*100,location[2]*100,location[1]*100)
     actor_rotation = unreal.Rotator(0,0,0)#0-360
     actor = unreal.EditorLevelLibrary.spawn_actor_from_object(actor_class,actor_location,actor_rotation)
     actor_scale = unreal.Vector(scale[0],scale[1],scale[2])
     actor.set_actor_scale3d(actor_scale)
+    actor_rotation = unreal.Rotator(rotation[0],rotation[1],rotation[2])
+    actor.set_actor_rotation(actor_rotation,True)
     return actor
 
 
@@ -39,7 +41,7 @@ def executeSlowTask():
             if slow_task.should_cancel():
                 break
             slow_task.enter_progress_frame(1,"My Slow Task Text ..."+str(x)+'/'+str(quantity_steps_in_slow_task))
-            actor = spawnActor(data['meshPath'][x],P[x],data['scale'][x])
+            actor = spawnActor(data['meshPath'][x],P[x],data['scale'][x],data['rotation'][x])
             listactor.append(actor)
     return listactor
 

@@ -89,8 +89,12 @@ class QHoudiniNoteBook(QWidget):
         """初始化笔记本"""
         self.bookpath = path
         a = os.path.basename(self.bookpath)#带后缀的文件名 笔记1.json
-        resp = os.path.relpath(self.bookpath)#绝对路径转相对路径\data/ContentBrowser/笔记1.json
-        path_iamge = resp[:-len(a)]#\data/ContentBrowser/
+        # try:
+        #     resp = os.path.relpath(self.bookpath)#绝对路径转相对路径\data/ContentBrowser/笔记1.json
+        # except:
+        #     print(resp)
+        #     print("出现错误:请将插件安装到C盘应该就能解决")
+        path_iamge = self.bookpath[:-len(a)]#\data/ContentBrowser/
             
         data = getJsonData(path)
         if data["type"]=="QHoudiniTextWidget":
@@ -109,9 +113,9 @@ class QHoudiniNoteBook(QWidget):
         """设置截图"""
         # 生成一个随机字符串
         uuid_str = uuid.uuid4().hex
-        resp = os.path.relpath(self.bookpath)#绝对路径转相对路径
+        #resp = os.path.relpath(self.bookpath)#绝对路径转相对路径
         
-        name = resp[:-5] + "_" + uuid_str + '.jpg'
+        name = self.bookpath[:-5] + "_" + uuid_str + '.jpg'
         image.save(name, quality=95)   # 保存图片到当前文件夹中
         
         a = os.path.basename(self.bookpath)#带后缀的文件名

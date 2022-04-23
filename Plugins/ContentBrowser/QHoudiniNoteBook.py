@@ -89,11 +89,7 @@ class QHoudiniNoteBook(QWidget):
         """初始化笔记本"""
         self.bookpath = path
         a = os.path.basename(self.bookpath)#带后缀的文件名 笔记1.json
-        # try:
-        #     resp = os.path.relpath(self.bookpath)#绝对路径转相对路径\data/ContentBrowser/笔记1.json
-        # except:
-        #     print(resp)
-        #     print("出现错误:请将插件安装到C盘应该就能解决")
+        #resp = os.path.relpath(self.bookpath)#绝对路径转相对路径\data/ContentBrowser/笔记1.json
         path_iamge = self.bookpath[:-len(a)]#\data/ContentBrowser/
             
         data = getJsonData(path)

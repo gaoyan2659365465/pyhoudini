@@ -235,14 +235,16 @@ class HoudiniHelp(QWidget):
             #print("存在icons目录")
             pass
         else:
-            print("不存在icons目录,正在解压...")
+            print("首次加载插件,正在解压icons目录...")
             try:
-                z = zipfile.ZipFile(SCRPATH, 'r')
+                iconsPath = __file__[:-11] + "icons.zip"
+                z = zipfile.ZipFile(iconsPath, 'r')
                 z.extractall(path=PATH + "/icons")
                 z.close()
             except:
-                print("第一次运行请手动修改此处的图标zip路径并重新打开")
-                os.system(r'notepad '+__file__[:-11]+"config.ini")
+                pass
+                #print("第一次运行请手动修改此处的图标zip路径并重新打开")
+                #os.system(r'notepad '+__file__[:-11]+"config.ini")
     
     def initWidget(self):
         """初始化子控件"""

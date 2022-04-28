@@ -9,3 +9,8 @@
 
 常见问题：
 qq群271878722
+
+自动更新API
+https://api.github.com/repos/gaoyan2659365465/pyhoudini/releases
+
+https://api.github.com/repos/gaoyan2659365465/pyhoudini/zipball/tag1.0

@@ -1,6 +1,12 @@
 import sys
-#这里填入插件的路径,注意反斜杠/
-PATH = "C:/Users/26593/Desktop/pyhoudini/"
+#这里填入插件的路径,注意所有都是反斜杠/
+#你的目录也可能是C:/Users/26593/Desktop/py-houdini-master/
+#注意别把r删了只能改里面的路径
+
+PATH = r"C:/Users/26593/Desktop/pyhoudini/"
+
+#以下不用动---------------------------------------------------
+PATH = PATH.replace('\\','/')
 sys.path.append(PATH) 
 
 import PyHoudiniWidget

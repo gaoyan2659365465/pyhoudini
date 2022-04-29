@@ -34,3 +34,6 @@ from blueprintdemo import *
 
 #版本管理页面
 from WesLib import *
+
+#自动更新页面
+from Servers import *

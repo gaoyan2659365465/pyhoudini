@@ -37,13 +37,13 @@ class TranslationWidget(QWidget):
         self.textedit = ActionText()
         v_layout.addWidget(self.textedit)
         self.textedit.setFrameShape(QFrame.NoFrame)
-        self.textedit.setStyleSheet(u"background-color: rgb(44, 49, 57);")
-        self.textedit.textChanged.connect(self.startTranslation)
+        self.textedit.setStyleSheet(u"font: 18pt \"Microsoft YaHei UI\";background-color: rgb(44, 49, 57);")
+        self.textedit.textChanged.connect(self.prepareTranslation)
         
         self.texteditB = QTextEdit()
         v_layout.addWidget(self.texteditB)
         self.texteditB.setFrameShape(QFrame.NoFrame)
-        self.texteditB.setStyleSheet(u"background-color: rgb(44, 49, 57);")
+        self.texteditB.setStyleSheet(u"font: 18pt \"Microsoft YaHei UI\";background-color: rgb(44, 49, 57);")
         
         
         h_layout_text = QHBoxLayout()
@@ -78,6 +78,16 @@ class TranslationWidget(QWidget):
         #-----------
         
         self.search_result = google_translator(timeout=10)#翻译类
+    
+    def prepareTranslation(self):
+        """准备翻译"""
+        try:
+            self.timer2.stop()
+        except:pass
+        self.timer2=QTimer()
+        self.timer2.timeout.connect(self.startTranslation)
+        #设置时间间隔并启动定时器
+        self.timer2.start(1000)
     
     def startTranslation(self):
         """开始翻译"""

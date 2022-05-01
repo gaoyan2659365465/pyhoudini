@@ -142,9 +142,6 @@ if __name__ == "__main__":
     if tagv != "tag1.1":
         pro = UpdateGitHub()
         pro.show()
-    else:
-        print(tagv)
-        print("没有更新")
     sys.exit(app.exec_())
 else:
     pyhwidget=PyHoudiniWidget()

@@ -38,11 +38,13 @@ class TranslationWidget(QWidget):
         v_layout.addWidget(self.textedit)
         self.textedit.setFrameShape(QFrame.NoFrame)
         self.textedit.setStyleSheet(u"background-color: rgb(44, 49, 57);")
+        self.textedit.textChanged.connect(self.startTranslation)
         
         self.texteditB = QTextEdit()
         v_layout.addWidget(self.texteditB)
         self.texteditB.setFrameShape(QFrame.NoFrame)
         self.texteditB.setStyleSheet(u"background-color: rgb(44, 49, 57);")
+        
         
         h_layout_text = QHBoxLayout()
         button = QPushButton("",self.textedit)

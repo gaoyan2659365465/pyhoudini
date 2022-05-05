@@ -9,21 +9,23 @@ import json
 import requests
 from contextlib import closing
 
-res = requests.get("https://api.github.com/repos/gaoyan2659365465/pyhoudini/releases")
+#如果断网
+try:
+    res = requests.get("https://api.github.com/repos/gaoyan2659365465/pyhoudini/releases")
+    data = json.loads(res.text)
+    fs = []
+    for item in data:
+        str1 = item["tag_name"]
+        f1 = float(str1[3:])#去掉tag
+        fs.append(f1)
 
-data = json.loads(res.text)
+    #数组排序,找出最新的版本
+    fs.sort(reverse=True)
+    tagv = "tag"+str(fs[0])
 
-fs = []
-for item in data:
-    str1 = item["tag_name"]
-    f1 = float(str1[3:])#去掉tag
-    fs.append(f1)
-
-#数组排序,找出最新的版本
-fs.sort(reverse=True)
-tagv = "tag"+str(fs[0])
-
-file_url = "https://api.github.com/repos/gaoyan2659365465/pyhoudini/zipball/" + tagv
+    file_url = "https://api.github.com/repos/gaoyan2659365465/pyhoudini/zipball/" + tagv
+except:
+    tagv = ""
 
 class ProgressBar(object):
     def __init__(self, title,

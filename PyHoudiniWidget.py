@@ -139,12 +139,12 @@ if __name__ == "__main__":
     app=QApplication(sys.argv)
     pyhwidget=PyHoudiniWidget()
     pyhwidget.show()
-    if tagv != "tag1.1":
+    if tagv != "tag1.1" and tagv != "":
         pro = UpdateGitHub()
         pro.show()
     sys.exit(app.exec_())
 else:
     pyhwidget=PyHoudiniWidget()
-    if tagv != "tag1.1":
+    if tagv != "tag1.1" and tagv != "":
         pro = UpdateGitHub()
         pro.show()

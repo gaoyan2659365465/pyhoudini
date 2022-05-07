@@ -444,6 +444,12 @@ class QContentBrowserWidget(QWidget):
             self.initWidgets()#初始化
         self.actionC.triggered.connect(RightMenuCEvent)
         
+        self.actionD = QAction(u'打开目录',self)#创建菜单选项对象
+        self.groupBox_menu.addAction(self.actionD)
+        def RightMenuDEvent():
+            """右键打开目录"""
+            os.startfile(ContentBrowserFilePath + self.BrowserPath)
+        self.actionD.triggered.connect(RightMenuDEvent)
         #声明当鼠标在groupBox控件上右击时，在鼠标位置显示右键菜单   ,exec_,popup两个都可以，
         self.groupBox_menu.popup(QCursor.pos())
     
